@@ -24,6 +24,10 @@ library("tidyr")
 library("ggplot2")
 library("lubridate")
 
+<<<<<<< HEAD
+=======
+#
+>>>>>>> 8bc6aa3ec1e1cedb40147afb9d361175a3ff7021
 
 #### Species Info ####
 # Read data set that contains means between replicates
