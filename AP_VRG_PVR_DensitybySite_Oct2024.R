@@ -81,47 +81,47 @@ data_PV <- data_PV %>%
          Era = case_when(
            Year < 2014 ~ "Pre-Wasting",
            Year >= 2014 & Year <= 2016 ~ "Wasting Event",
-           TRUE ~ "Post Wasting Recovery"))
+           TRUE ~ "Post Wasting Recovery")) +
+  factor(data_PV$Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"))
+
+
+data_PV <- data_PV %>%
+  mutate(
+    Period = if_else(Year < 2020, "Before", "After"),
+    Wasting = if_else(Year < 2013, "Pre-Wasting", "Wasting"),
+    Era = case_when(
+      Year < 2014 ~ "Pre-Wasting",
+      Year >= 2014 & Year <= 2016 ~ "Wasting Event",
+      TRUE ~ "Post-Wasting Recovery"),
+    Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"))  # Set factor levels here
+  )
 
 # stacked bar plot of species production by site, era, depth zone
-# stacked_bar_sp <- data_PV |>
-#   #Any species <1% production is grouped as "Other"
-#   # mutate(Species = case_when(Species %in% data_PV$Species~Species,
-#   #                             TRUE ~ "Other")) |>
-#   group_by(Species, Era, SiteType, DepthZone) |>
-#   summarize(mean_density_100_m2 = sum(Density_100m2)) |>
-#   ungroup() |>
-#   droplevels() |>
-#   mutate(Species = factor(Species, levels = data_PV$Species),
-#          DepthZone = factor(DepthZone, labels = c("I", "M", "O", "D") )) |>
-#   ggplot(aes(x = Era,
-#              y = Density_100m2,
-#              fill = Species)) +
-#   #geom_bar_pattern replaces geom_bar - part of the ggpattern package needed to add diagonal lines to algae categories
-#   geom_col() +
-#   #https://github.com/EmilHvitfeldt/r-color-palettes/blob/master/type-sorted-palettes.md
-#   scale_fill_paletteer_d("Polychrome::palette36") +
-#   guides(fill = guide_legend(
-#     position = "top",
-#     theme = theme(
-#       legend.text = element_text(size = 9,
-#                                  face = "italic",
-#                                  margin = margin(l = 0)),
-#       legend.key.spacing.x = unit(2, "pt"),
-#       legend.key.spacing.y = unit(0, "pt"),
-#     ))) +
-#   labs(x = "Era", y = bquote(Mean~Production~(100/m^2/yr))) +
-#   facet_nested(~SiteType + DepthZone,scales = "free_x",  space='free') + #from ggh4x package '
-#   theme_classic() +
-#   scale_x_discrete(labels=c("Pre-Construction" = 'Pr', "Post-Construction" = 'Po')) +
-#   #theme(strip.text.x = element_text(margin = margin(r = 0, l = 0))) +
-#   theme(panel.spacing.x=unit(0.1, "lines"))
-# 
-# print(stacked_bar_sp)
+
+ggplot(data_PV, aes(x = Era, y = Density_100m2, fill = Species)) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(~ DepthZone) +
+  geom_col() +
+  #https://github.com/EmilHvitfeldt/r-color-palettes/blob/master/type-sorted-palettes.md
+  scale_fill_brewer() +
+  guides(fill = guide_legend(
+    position = "top",
+    theme = theme(
+      legend.text = element_text(size = 9,
+                                 face = "italic",
+                                 margin = margin(l = 0)),
+      legend.key.spacing.x = unit(2, "pt"),
+      legend.key.spacing.y = unit(0, "pt"),
+    ))) +
+  labs(x = "Era",
+       y = "Mean Density per 100m²") +
+  labs(x = "Era", y = bquote("Mean Density / 100 m"^2)) +
+  #facet_nested(~SiteType + DepthZone,scales = "free_x",  space='free') + #from ggh4x package '
+  theme_classic() +
+  scale_x_discrete(labels=c("Palos Verdes Reference" = 'PV Ref', "MPA" = 'MPA', "MPA Control Sites" = "MPA Con", "Palos Verdes Adjacent" = "PVR Adj")) +
+  #theme(strip.text.x = element_text(margin = margin(r = 0, l = 0))) +
+  theme(panel.spacing.x=unit(0.1, "lines"))
 
 
-
-densitybyspecies <- ggplot(data_PV, aes(x = Era, y = Density_100m2, fill = Species)) +
-  geom_bar(position = "stack", stat = "Species")
 
 
