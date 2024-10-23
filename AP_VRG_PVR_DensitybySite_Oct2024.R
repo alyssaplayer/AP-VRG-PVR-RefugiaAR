@@ -96,6 +96,24 @@ data_PV <- data_PV %>%
     Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"))  # Set factor levels here
   )
 
+data_PV <- data_PV %>%
+  mutate(
+    Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE),
+    DepthZone = factor(DepthZone, levels = c("Inner", "Middle", "Outer Middle", "Deep", "ARM"), ordered = TRUE) 
+  )
+
+data_PV <- data_PV %>%
+  mutate(
+    FunctionalGroup = case_when(
+      Species %in% c("Patiria miniata", "Pisaster ochraceus", "Pisaster giganteus") ~ "Stars",
+      Species %in% c("Mesocentrotus franciscanus", "Strongylocentrotus purpuratus") ~ "Urchins",
+      Species %in% c("Apostichopus californicus", "Apostichopus parvimensis") ~ "Cucumbers",
+      TRUE ~ "Other"  # To catch any species not listed
+    ),
+    FunctionalGroup = factor(FunctionalGroup, levels = c("Stars", "Urchins", "Cucumbers"))
+  )
+
+
 # stacked bar plot of species production by site, era, depth zone
 
 ggplot(data_PV, aes(x = Era, y = Density_100m2, fill = Species)) +
@@ -116,12 +134,28 @@ ggplot(data_PV, aes(x = Era, y = Density_100m2, fill = Species)) +
   labs(x = "Era",
        y = "Mean Density per 100m²") +
   labs(x = "Era", y = bquote("Mean Density / 100 m"^2)) +
-  #facet_nested(~SiteType + DepthZone,scales = "free_x",  space='free') + #from ggh4x package '
+  facet_nested(~SiteType + DepthZone,scales = "free_x",  space='free') + #from ggh4x package '
   theme_classic() +
   scale_x_discrete(labels=c("Palos Verdes Reference" = 'PV Ref', "MPA" = 'MPA', "MPA Control Sites" = "MPA Con", "Palos Verdes Adjacent" = "PVR Adj")) +
   #theme(strip.text.x = element_text(margin = margin(r = 0, l = 0))) +
   theme(panel.spacing.x=unit(0.1, "lines"))
 
-
+ggplot(data_PV, aes(x = Era, y = Density_100m2, fill = Species)) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(~ DepthZone) +
+  facet_wrap(~ FunctionalGroup, nrow = 1, ncol = 3) +  # Adjust based on your functional groups
+  scale_fill_brewer() +
+  guides(fill = guide_legend(
+    position = "top",
+    theme = theme(
+      legend.text = element_text(size = 9, face = "italic", margin = margin(l = 0)),
+      legend.key.spacing.x = unit(2, "pt"),
+      legend.key.spacing.y = unit(0, "pt")
+    ))) +
+  labs(x = "Era", y = bquote("Mean Density / 100 m"^2)) +
+  #facet_nested(~SiteType + DepthZone,scales = "free_x",  space='free') + 
+  theme_classic() +
+  scale_x_discrete(labels = c("Palos Verdes Reference" = 'PV Ref', "MPA" = 'MPA', "MPA Control Sites" = "MPA Con", "Palos Verdes Adjacent" = "PVR Adj")) +
+  theme(panel.spacing.x = unit(0.1, "lines"))
 
 
