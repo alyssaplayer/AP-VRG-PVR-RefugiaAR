@@ -140,6 +140,8 @@ ggplot(data_PV, aes(x = Era, y = Density_100m2, fill = Species)) +
   #theme(strip.text.x = element_text(margin = margin(r = 0, l = 0))) +
   theme(panel.spacing.x=unit(0.1, "lines"))
 
+
+#GOT SPECIES TO BE FACET WRAPPED
 ggplot(data_PV, aes(x = Era, y = Density_100m2, fill = Species)) +
   geom_bar(stat = "identity", position = "stack") +
   facet_wrap(~ DepthZone) +
