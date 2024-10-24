@@ -9,7 +9,7 @@ library("ggplot2")
 library("lubridate")
 library("ggh4x")
 
-#### Species Info ####
+#### Dataset Filtering - Keep the Same for Each Response ####
 # Read data set that contains means between replicates
 data_PV <- read.csv("PV_Stars_Urchins_2024-10-11.csv", check.names = F)
 colnames(data_PV)[colnames(data_PV)=="BenthicReefSpecies"] <- "Species"
@@ -38,7 +38,6 @@ pvr_control_sites <- c(#"Hawthorne Reef",
   "Rocky Point South",
   "Rocky Point North",
   "Ridges North")
-
 
 pvr_impact_sites <- c("KOU Rock",
                       "Old 18th",
@@ -76,15 +75,15 @@ data_PV <- data_PV %>%
     TRUE ~ 'Other'  # This will capture any site that doesn't fall into the above categories
   ))
 
-data_PV <- data_PV %>%
-  mutate(Period = if_else(Year < 2020, "Before", "After"),
-         Wasting = if_else(Year < 2013, "Pre-Wasting", "Wasting"),
-         Era = case_when(
-           Year < 2014 ~ "Pre-Wasting",
-           Year >= 2014 & Year <= 2016 ~ "Wasting Event",
-           TRUE ~ "Post Wasting Recovery")) +
-  factor(data_PV$Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"))
-
+# data_PV <- data_PV %>%
+#   mutate(Period = if_else(Year < 2020, "Before", "After"),
+#          Wasting = if_else(Year < 2013, "Pre-Wasting", "Wasting"),
+#          Era = case_when(
+#            Year < 2014 ~ "Pre-Wasting",
+#            Year >= 2014 & Year <= 2016 ~ "Wasting Event",
+#            TRUE ~ "Post Wasting Recovery")) +
+#   factor(data_PV$Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"))
+# 
 
 data_PV <- data_PV %>%
   mutate(
@@ -118,8 +117,6 @@ data_PV <- data_PV %>%
   filter(!is.na(DepthZone))
 
 # stacked bar plot of species production by site, era, depth zone
-data_PV <- data_PV %>%
-  filter(!is.na(DepthZone))
 
 #GOT SPECIES TO BE FACET WRAPPED
 ggplot(data_PV, aes(x = Era, y = Density_100m2, fill = Species)) +
