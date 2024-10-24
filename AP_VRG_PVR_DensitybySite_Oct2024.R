@@ -7,6 +7,7 @@ library("plyr")
 library("tidyr")
 library("ggplot2")
 library("lubridate")
+library("ggh4x")
 
 #### Species Info ####
 # Read data set that contains means between replicates
@@ -113,38 +114,17 @@ data_PV <- data_PV %>%
     FunctionalGroup = factor(FunctionalGroup, levels = c("Stars", "Urchins", "Cucumbers"))
   )
 
+data_PV <- data_PV %>%
+  filter(!is.na(DepthZone))
 
 # stacked bar plot of species production by site, era, depth zone
-
-ggplot(data_PV, aes(x = Era, y = Density_100m2, fill = Species)) +
-  geom_bar(stat = "identity", position = "stack") +
-  facet_wrap(~ DepthZone) +
-  geom_col() +
-  #https://github.com/EmilHvitfeldt/r-color-palettes/blob/master/type-sorted-palettes.md
-  scale_fill_brewer() +
-  guides(fill = guide_legend(
-    position = "top",
-    theme = theme(
-      legend.text = element_text(size = 9,
-                                 face = "italic",
-                                 margin = margin(l = 0)),
-      legend.key.spacing.x = unit(2, "pt"),
-      legend.key.spacing.y = unit(0, "pt"),
-    ))) +
-  labs(x = "Era",
-       y = "Mean Density per 100m²") +
-  labs(x = "Era", y = bquote("Mean Density / 100 m"^2)) +
-  facet_nested(~SiteType + DepthZone,scales = "free_x",  space='free') + #from ggh4x package '
-  theme_classic() +
-  scale_x_discrete(labels=c("Palos Verdes Reference" = 'PV Ref', "MPA" = 'MPA', "MPA Control Sites" = "MPA Con", "Palos Verdes Adjacent" = "PVR Adj")) +
-  #theme(strip.text.x = element_text(margin = margin(r = 0, l = 0))) +
-  theme(panel.spacing.x=unit(0.1, "lines"))
-
+data_PV <- data_PV %>%
+  filter(!is.na(DepthZone))
 
 #GOT SPECIES TO BE FACET WRAPPED
 ggplot(data_PV, aes(x = Era, y = Density_100m2, fill = Species)) +
   geom_bar(stat = "identity", position = "stack") +
-  facet_wrap(~ DepthZone) +
+  facet_wrap(~DepthZone) +
   facet_wrap(~ FunctionalGroup, nrow = 1, ncol = 3) +  # Adjust based on your functional groups
   scale_fill_brewer() +
   guides(fill = guide_legend(
@@ -155,9 +135,10 @@ ggplot(data_PV, aes(x = Era, y = Density_100m2, fill = Species)) +
       legend.key.spacing.y = unit(0, "pt")
     ))) +
   labs(x = "Era", y = bquote("Mean Density / 100 m"^2)) +
-  #facet_nested(~SiteType + DepthZone,scales = "free_x",  space='free') + 
+  facet_nested(~ SiteType + DepthZone,scales = "free_x",  space='free') + 
   theme_classic() +
   scale_x_discrete(labels = c("Palos Verdes Reference" = 'PV Ref', "MPA" = 'MPA', "MPA Control Sites" = "MPA Con", "Palos Verdes Adjacent" = "PVR Adj")) +
-  theme(panel.spacing.x = unit(0.1, "lines"))
+  theme(panel.spacing.x = unit(0.1, "lines"),
+  axis.text.x = element_text(angle = 45, hjust = 1)) 
 
 
