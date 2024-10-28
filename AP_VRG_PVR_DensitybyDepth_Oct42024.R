@@ -8,6 +8,9 @@ library("tidyr")
 library("ggplot2")
 library("lubridate")
 library("ggh4x")
+library("broom")
+library("AICcmodavg")
+library("car")
 
 #setwd("/Users/alyssaplayer/Desktop/AP VRG PVR 2024")
 
@@ -118,6 +121,21 @@ data_PV <- data_PV %>%
 data_PV <- data_PV %>%
   filter(!is.na(DepthZone))
 
+##STASTICAL TEST
+leveneTest(Density_100m2 ~ DepthZone * Species, data = data_PV)
+
+# 2. Fit the two-way ANOVA model
+anova_model <- aov(Density_100m2 ~ DepthZone * Species, data = data_PV)
+
+# Summary of ANOVA results
+summary(anova_model)
+
+# 3. Check normality of residuals (useful for assumptions)
+# Plotting residuals to inspect
+par(mfrow = c(1, 2))
+plot(anova_model, which = 1)  # Residuals vs Fitted
+plot(anova_model, which = 2)
+
 densitybydepth <- ggplot(data_PV, aes(x = DepthZone, y = Density_100m2, color = Era)) +
   geom_boxplot(outlier.shape = NA) +  # Set outlier.shape inside geom_boxplot()
   geom_point(aes(group = Era),
@@ -125,6 +143,12 @@ densitybydepth <- ggplot(data_PV, aes(x = DepthZone, y = Density_100m2, color = 
              size = 0.7)+
   labs(x = "Depth Zone",
        y = bquote("Mean Density / 100 m"^2)) +
+  stat_summary(fun.data = mean_cl_normal, 
+               geom = "pointrange", 
+               position = position_dodge(width = 0.5), 
+               aes(group = Era), 
+               color = "black", 
+               size = 0.3) +
   scale_x_discrete(
     labels = c(
       "Inner" = "I",
@@ -132,24 +156,15 @@ densitybydepth <- ggplot(data_PV, aes(x = DepthZone, y = Density_100m2, color = 
       "Outer" = "O",
       "Deep" = "D",
       "ARM" = "A",
-      "Outer Middle"= "OM"
-    )) +
-  facet_grid(cols = vars(SiteType), scales = "free_x", space='free') +
-  # geom_crossbar(
-  #   data = drop_na(as_tibble(data_PV)),
-  #   aes(
-  #     y = Density_100m2,
-  #     ymin = asymp.LCL,
-  #     ymax = asymp.UCL,
-  #     group = Era,
-  #     fill = Era,
-  #     alpha = 0.4
-  #   ),
-  #   width = 0.4,
-  #   position = position_dodge(width = 0.5),
-  #   color = "black") + 
-  scale_color_brewer(palette="Blues")
-  
+      "Outer Middle"= "OM")) + 
+  #Following facet_wraps are three variations of organising the plot
+ facet_grid(rows = vars(FunctionalGroup), cols = vars(SiteType), scales = "free_y", space = 'free') + #Too squished on the y axis 
+ #facet_grid(rows = vars(SiteType), cols = vars(FunctionalGroup), scales = "free_y", space = 'free') + #This could be the best, has the Sitetype on the left and then in columns grouped by species 
+ #facet_wrap(~ SiteType + FunctionalGroup, scales = "free_y", ncol = 3) + #This one has the SiteType and the Group stacked on each other in columns
+ scale_color_brewer(palette="Blues")
 
 print(densitybydepth)
+
+
+
 
