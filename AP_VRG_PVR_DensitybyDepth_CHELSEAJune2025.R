@@ -21,7 +21,7 @@ colnames(data_PV)[colnames(data_PV)=="BenthicReefSpecies"] <- "Species"
 colnames(data_PV)[colnames(data_PV)=="SampleYear"] <- "Year"
 
 data_PV <- data_PV %>%
-  mutate(Density_100m2=100*Density_m2) #Create a column that is Density per 100m2
+mutate(Density_100m2=100*Density_m2) #Create a column that is Density per 100m2
 complete(nesting(Site, Year), Species, fill = list(Density_m2=0, Density_100m2=0)) 
 
 # Focal species list

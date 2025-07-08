@@ -7,7 +7,12 @@ library("plyr")
 library("tidyr")
 library("ggplot2")
 library("lubridate")
+library("ggh4x")
+library("broom")
+library("AICcmodavg")
+library("car")
 
+#no longer using as file exists in repository
 #setwd("/Users/alyssaplayer/Desktop/AP VRG PVR 2024")
 
 #### Species Info ####
@@ -16,6 +21,7 @@ data_PV <- read.csv("PV_Stars_Urchins_2024-10-11.csv", check.names = F)
 colnames(data_PV)[colnames(data_PV)=="BenthicReefSpecies"] <- "Species"
 colnames(data_PV)[colnames(data_PV)=="SampleYear"] <- "Year"
 
+#create a new column that calculates density per 100m2
 data_PV <- data_PV %>%
   mutate(Density_100m2=100*Density_m2) #Create a column that is Density per 100m2
   complete(nesting(Site, Year), Species, fill = list(Density_m2=0, Density_100m2=0)) 
@@ -29,22 +35,23 @@ foc_spp <- c("Mesocentrotus franciscanus",
               "Apostichopus parvimensis",
               "Apostichopus californicus")
   
+#Filters the complete data_PV dataset into Years greater than 2008, removes outer middle, and defines the periods of wasting / Eras of AR
 data_PV <- data_PV %>%
-  filter(Species %in% foc_spp, Year >= 2008) %>%
-  filter(DepthZone !="Outer Middle")
-
-data_PV <- data_PV %>%
-  mutate(Period = if_else(Year < 2020, "Before", "After"),
-         Wasting = if_else(Year < 2013, "Pre-Wasting", "Wasting"),
-         Era = case_when(
-           Year < 2014 ~ "Pre-Wasting",
-           Year >= 2014 & Year <= 2016 ~ "Wasting Event",
-           TRUE ~ "Post Wasting Recovery"))
+  filter(Species %in% foc_spp, Year >= 2008, DepthZone != "Outer Middle") %>%
   mutate(
+    Period = if_else(Year < 2020, "Before", "After"),
+    Wasting = if_else(Year < 2013, "Pre-Wasting", "Wasting"),
+    Era = case_when(
+      Year < 2014 ~ "Pre-Wasting",
+      Year >= 2014 & Year <= 2016 ~ "Wasting Event",
+      TRUE ~ "Post-Wasting Recovery"  # fixed typo here too
+    ),
     Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE),
-    DepthZone = factor(DepthZone, levels = c("Inner", "Middle", "Outer", "Deep", "ARM"), ordered = TRUE) 
+    DepthZone = factor(DepthZone, levels = c("Inner", "Middle", "Outer", "Deep", "ARM"), ordered = TRUE)
   )
   
+
+##These sites are leftover from my thesis - We're now looking at specific modules
 pvr_control_sites <- c(#"Hawthorne Reef",
   "Honeymoon Cove",
   "Lunada Bay",
@@ -52,7 +59,6 @@ pvr_control_sites <- c(#"Hawthorne Reef",
   "Rocky Point South",
   "Rocky Point North",
   "Ridges North")
-
 
 pvr_impact_sites <- c("KOU Rock",
                       "Old 18th",
@@ -90,40 +96,97 @@ both_control_sites <- c("Hawthorne Reef",
 #     TRUE ~ 'Other'  # This will capture any site that doesn't fall into the above categories
 #   ))
 
+data_PV <- data_PV %>%
+  mutate(SiteType = case_when(
+    Site %in% pvr_control_sites ~ 'PVR Ref',
+    Site %in% pvr_impact_sites ~ 'PVR Adj',
+    Site %in% MPA_control_sites ~ 'MPA Ref',
+    Site %in% MPA_impact_sites ~ 'MPA',
+    TRUE ~ 'Other'  # This will capture any site that doesn't fall into the above categories
+  ))
+
+
 densitybydepth <- data_PV %>%
   group_by(DepthZone, Year, Species, Site, Era) %>%
   dplyr::summarise(DZ_Density_100m2=mean(Density_100m2))
 
-densitybydepthplot <- ggplot(densitybydepth, aes(x = DepthZone, y = log(DZ_Density_100m2), color = Era)) +
-  geom_boxplot(outlier.shape = NA) + # Set outlier.shape inside geom_boxplot()
-  geom_point(aes(group = Era),
-             #position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.5),
-             size = 0.7)+
-  # labs(x = "Depth Zone",
-  #      y = expression(paste("Mean Density (100m ^{2}, ", " /yr)"))) +
-  # scale_x_discrete(
-  #   labels = c(
-  #     "Inner" = "I",
-  #     "Middle" = "M",
-  #     "Outer" = "O",
-  #     "Deep" = "D"
-  #   )) +
-  facet_grid(vars(Species, DepthZone)) +
-  geom_crossbar(
-    data = drop_na(as_tibble(data_PV)),
-    aes(
-      y = Density_100m2,
-      ymin = 0,
-      ymax = 500,
-      group = Era,
-      fill = Era,
-      alpha = 0.4
-    ),
-  width = 0.4,
-  position = position_dodge(width = 0.5),
-  color = "black"
-  )
-  
 
-print(densitybydepthplot)
+data_PV <- data_PV %>%
+  mutate(
+    Period = if_else(Year < 2020, "Before", "After"),
+    Wasting = if_else(Year < 2013, "Pre-Wasting", "Wasting"),
+    Era = case_when(
+      Year < 2014 ~ "Pre-Wasting",
+      Year >= 2014 & Year <= 2016 ~ "Wasting Event",
+      TRUE ~ "Post-Wasting Recovery"),
+    Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"))  # Set factor levels here
+  )
+
+data_PV <- data_PV %>%
+  mutate(
+    Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE),
+    DepthZone = factor(DepthZone, levels = c("Inner", "Middle", "Outer Middle", "Deep", "ARM"), ordered = TRUE) 
+  )
+
+data_PV <- data_PV %>%
+  mutate(
+    FunctionalGroup = case_when(
+      Species %in% c("Patiria miniata", "Pisaster ochraceus", "Pisaster giganteus") ~ "Stars",
+      Species %in% c("Mesocentrotus franciscanus", "Strongylocentrotus purpuratus") ~ "Urchins",
+      Species %in% c("Apostichopus californicus", "Apostichopus parvimensis") ~ "Cucumbers",
+      TRUE ~ "Other"  # To catch any species not listed
+    ),
+    FunctionalGroup = factor(FunctionalGroup, levels = c("Stars", "Urchins", "Cucumbers"))
+  )
+
+data_PV <- data_PV %>%
+  filter(!is.na(DepthZone))
+
+dat_density_DZ <- data_PV %>%
+  group_by(Year, DepthZone, Species, Site, Era, FunctionalGroup) %>%
+  dplyr::summarise(DZ_Density_100m2 = mean(Density_100m2))
+
+##STASTICAL TEST
+leveneTest(Density_100m2 ~ DepthZone * Species, data = data_PV)
+
+# 2. Fit the two-way ANOVA model
+anova_model <- aov(Density_100m2 ~ DepthZone * Species, data = data_PV)
+
+# Summary of ANOVA results
+summary(anova_model)
+
+# 3. Check normality of residuals (useful for assumptions)
+# Plotting residuals to inspect
+par(mfrow = c(1, 2))
+plot(anova_model, which = 1)  # Residuals vs Fitted
+plot(anova_model, which = 2)
+
+densitybydepth <- ggplot(dat_density_DZ, aes(x = DepthZone, y = log(DZ_Density_100m2), color = Era)) +
+  geom_boxplot(outlier.shape = NA) +  # Set outlier.shape inside geom_boxplot()
+  geom_point(aes(group = Era),
+             position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.5),
+             size = 0.7)+
+  labs(x = "Depth Zone",
+       y = bquote("Mean Density / 100 m"^2)) +
+  stat_summary(fun.data = mean_cl_normal, 
+               geom = "pointrange", 
+               position = position_dodge(width = 0.5), 
+               aes(group = Era), 
+               color = "black", 
+               size = 0.3) +
+  scale_x_discrete(
+    labels = c(
+      "Inner" = "I",
+      "Middle" = "M",
+      "Outer" = "O",
+      "Deep" = "D",
+      "ARM" = "A",
+      "Outer Middle"= "OM")) + 
+  #Following facet_wraps are three variations of organising the plot
+  facet_grid(rows = vars(FunctionalGroup), scales = "free_y", space = 'free') + #Too squished on the y axis 
+  #facet_grid(rows = vars(SiteType), cols = vars(FunctionalGroup), scales = "free_y", space = 'free') + #This could be the best, has the Sitetype on the left and then in columns grouped by species 
+  #facet_wrap(~ SiteType + FunctionalGroup, scales = "free_y", ncol = 3) + #This one has the SiteType and the Group stacked on each other in columns
+  scale_color_brewer(palette="Blues")
+
+print(densitybydepth)
 
