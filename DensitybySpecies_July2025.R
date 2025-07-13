@@ -1,6 +1,4 @@
-##Species Density by Site/Era
-##Created Oct 18, 2024 
-
+#Starting Density by Species from Scratch - July 7, 2025
 # Require packages
 library("dplyr")
 library("plyr")
@@ -8,8 +6,12 @@ library("tidyr")
 library("ggplot2")
 library("lubridate")
 library("ggh4x")
+library("broom")
+library("AICcmodavg")
+library("car")
 
-#### Dataset Filtering - Keep the Same for Each Response ####
+
+#### Species Info ####
 # Read data set that contains means between replicates
 data_PV <- read.csv("PV_Stars_Urchins_2024-10-11.csv", check.names = F)
 colnames(data_PV)[colnames(data_PV)=="BenthicReefSpecies"] <- "Species"
@@ -17,7 +19,7 @@ colnames(data_PV)[colnames(data_PV)=="SampleYear"] <- "Year"
 
 data_PV <- data_PV %>%
   mutate(Density_100m2=100*Density_m2) #Create a column that is Density per 100m2
-  complete(nesting(Site, Year), Species, fill = list(Density_m2=0, Density_100m2=0)) 
+complete(nesting(Site, Year), Species, fill = list(Density_m2=0, Density_100m2=0)) 
 
 # Focal species list
 foc_spp <- c("Mesocentrotus franciscanus",
@@ -68,22 +70,12 @@ both_control_sites <- c("Hawthorne Reef",
 
 data_PV <- data_PV %>%
   mutate(SiteType = case_when(
-    Site %in% pvr_control_sites ~ 'Palos Verdes Reference',
-    Site %in% pvr_impact_sites ~ 'Palos Verdes Adjacent',
-    Site %in% MPA_control_sites ~ 'MPA Reference',
+    Site %in% pvr_control_sites ~ 'PVR Ref',
+    Site %in% pvr_impact_sites ~ 'PVR Adj',
+    Site %in% MPA_control_sites ~ 'MPA Ref',
     Site %in% MPA_impact_sites ~ 'MPA',
     TRUE ~ 'Other'  # This will capture any site that doesn't fall into the above categories
   ))
-
-# data_PV <- data_PV %>%
-#   mutate(Period = if_else(Year < 2020, "Before", "After"),
-#          Wasting = if_else(Year < 2013, "Pre-Wasting", "Wasting"),
-#          Era = case_when(
-#            Year < 2014 ~ "Pre-Wasting",
-#            Year >= 2014 & Year <= 2016 ~ "Wasting Event",
-#            TRUE ~ "Post Wasting Recovery")) +
-#   factor(data_PV$Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"))
-# 
 
 data_PV <- data_PV %>%
   mutate(
@@ -116,26 +108,54 @@ data_PV <- data_PV %>%
 data_PV <- data_PV %>%
   filter(!is.na(DepthZone))
 
-# stacked bar plot of species production by site, era, depth zone
+dat_density_DZ <- data_PV %>%
+  group_by(Year, DepthZone, Species, Site, Era, SiteType, FunctionalGroup) %>%
+  dplyr::summarise(DZ_Density_100m2 = mean(Density_100m2))
 
-#GOT SPECIES TO BE FACET WRAPPED
-ggplot(data_PV, aes(x = Era, y = Density_100m2, fill = Species)) +
-  geom_bar(stat = "identity", position = "stack") +
-  facet_wrap(~DepthZone) +
-  facet_wrap(~ FunctionalGroup, nrow = 1, ncol = 3) +  # Adjust based on your functional groups
-  scale_fill_brewer() +
-  guides(fill = guide_legend(
-    position = "top",
-    theme = theme(
-      legend.text = element_text(size = 9, face = "italic", margin = margin(l = 0)),
-      legend.key.spacing.x = unit(2, "pt"),
-      legend.key.spacing.y = unit(0, "pt")
-    ))) +
-  labs(x = "Era", y = bquote("Mean Density / 100 m"^2)) +
-  facet_nested(~ SiteType + DepthZone,scales = "free_x",  space='free') + 
-  theme_classic() +
-  scale_x_discrete(labels = c("Palos Verdes Reference" = 'PV Ref', "MPA" = 'MPA', "MPA Control Sites" = "MPA Con", "Palos Verdes Adjacent" = "PVR Adj")) +
-  theme(panel.spacing.x = unit(0.1, "lines"),
-  axis.text.x = element_text(angle = 45, hjust = 1)) 
+##STASTICAL TEST
+leveneTest(Density_100m2 ~ DepthZone * Species, data = data_PV)
+
+# 2. Fit the two-way ANOVA model
+anova_model <- aov(Density_100m2 ~ DepthZone * Species, data = data_PV)
+
+# Summary of ANOVA results
+summary(anova_model)
+
+# 3. Check normality of residuals (useful for assumptions)
+# Plotting residuals to inspect
+par(mfrow = c(1, 2))
+plot(anova_model, which = 1)  # Residuals vs Fitted
+plot(anova_model, which = 2)
+
+densitybyspecies_plot <- ggplot(dat_density_DZ, aes(x = Species, y = log(DZ_Density_100m2), color = Era)) +
+  geom_bar(stat = "identity", position = position_dodge(), width = 0.7) + # Setting columns without the stats
+  geom_point(aes(group = Era),
+             position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.5),
+             size = 0.7)+
+  labs(x = "Depth Zone",
+       y = bquote("Mean Density / 100 m"^2)) +
+  # #stat_summary(fun.data = mean_cl_normal, 
+  #              geom = "pointrange", 
+  #              position = position_dodge(width = 0.5), 
+  #              aes(group = Era), 
+  #              color = "black", 
+  #              size = 0.3) +
+  scale_x_discrete(
+    labels = c(
+      "Inner" = "I",
+      "Middle" = "M",
+      "Outer" = "O",
+      "Deep" = "D",
+      "ARM" = "A",
+      "Outer Middle"= "OM")) + 
+  #Following facet_wraps are three variations of organising the plot
+  #facet_grid(rows = vars(SiteType), cols = vars(Species), scales = "free_y", space = 'free') + #Too squished on the y axis 
+  facet_grid(rows = vars(SiteType), cols = vars(FunctionalGroup), scales = "free_y", space = 'free') + #This could be the best, has the Sitetype on the left and then in columns grouped by species 
+  #facet_wrap(~ SiteType + FunctionalGroup, scales = "free_y", ncol = 3) + #This one has the SiteType and the Group stacked on each other in columns
+  scale_color_brewer(palette="Blues")
+
+print(densitybyspecies_plot)
+
+
 
 
