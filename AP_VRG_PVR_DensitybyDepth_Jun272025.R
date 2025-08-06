@@ -8,6 +8,7 @@ library("tidyr")
 library("ggplot2")
 library("lubridate")
 library("ggh4x")
+
 library("broom")
 library("AICcmodavg")
 library("car")
@@ -128,8 +129,8 @@ densitybydepth <- data_PV %>%
 
 
 densitybydepthplot <- ggplot(densitybydepth, aes(x = Era, y = log(DZ_Density_100m2), color = Era)) +
-  geom_boxplot(outlier.shape = NA, aes(fill=Era, alpha=0.4)) + # Set outlier.shape inside geom_boxplot(), alpha makes transparency so the data points are visible
-  geom_point(aes(group = Era),
+  geom_boxplot(outlier.shape = NA, aes(fill=Era), alpha = 0.4) + # Set outlier.shape inside geom_boxplot(), alpha makes transparency so the data points are visible
+  geom_point(aes(color = Era),
              position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.5),
              size = 0.7)+
   theme_classic()+
@@ -144,7 +145,8 @@ densitybydepthplot <- ggplot(densitybydepth, aes(x = Era, y = log(DZ_Density_100
   #     "Deep" = "D"
   #   )) + #x-axis is now Era .. Depth Zone at the top as facet - 
   facet_grid(rows = vars(Species), cols = vars(DepthZone), scales = "free_y", space = 'free') +
-  scale_color_brewer(palette="Blues")
+  scale_color_brewer(palette="Blues")+
+  scale_fill_brewer(palette="Blues")
 
 print(densitybydepthplot)
 

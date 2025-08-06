@@ -42,7 +42,7 @@ data_PV <- data_PV %>%
     Year < 2014 ~ "Pre-Wasting",
     Year >= 2014 & Year <= 2016 ~ "Wasting Event",
     Year > 2016 ~ "Post-Wasting Recovery"),
-    #Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE),#I added this change to the densitybydepth function and now it's correctly being ordered in the plot
+    Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE),#I added this change to the densitybydepth function and now it's correctly being ordered in the plot
     DepthZone = factor(DepthZone, levels = c("Inner", "Middle", "Outer", "Deep", "ARM"), ordered = TRUE)
   )
 
@@ -76,22 +76,22 @@ data_PV <- data_PV %>%
 #                       "3 Palms East",
 #                       "Bunker Point")
 # 
-# MPA_control_sites <- c(#"Hawthorne Reef",
+# MPA_control_sites <- c("Hawthorne Reef",
 #   "Marguerite Central",
 #   "Albondigas",
 #   "Marguerite East",  
 #   "Golden Cove",
-#   #"Resort Point",
+#   "Resort Point",
 #   "Portuguese Bend")
 # 
-# MPA_impact_sites <- c("Long Point East",
-#                       "120 Reef",
-#                       "Abalone Cove Kelp West",
-#                       "Long Point West",
-#                       "Old Marineland",                 
-#                       "Point Vicente West",
-#                       "Portuguese Point")
-# 
+ MPA_impact_sites <- c("Long Point East",
+                      "120 Reef",
+                      "Abalone Cove Kelp West",
+                      "Long Point West",
+                      "Old Marineland",
+                      "Point Vicente West",
+                      "Portuguese Point")
+
 # 
 # both_control_sites <- c("Hawthorne Reef",
 #                         "Resort Point") 
@@ -121,11 +121,18 @@ summary(anova_model)
 par(mfrow = c(1, 2))
 plot(anova_model, which = 1)  # R
 
+densitybyspecies <- data_PV %>%
+  group_by(DepthZone, Year, Species, Site, Era, FunctionalGroup) %>%
+  dplyr::summarise(DZ_Density_100m2=mean(Density_100m2)) %>%
+  mutate(Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE))# %>%
+  #filter(DepthZone == "Outer" | DepthZone == "Deep" |DepthZone == "ARM") %>%
+  #filter(Species == "Pisaster ochraceus")
 
-speciesdensityplot <- ggplot(data_PV, aes(x = Era, y = log(Density_100m2), fill = Species)) +
+
+speciesdensityplot <- ggplot(densitybyspecies, aes(x = Era, y = (DZ_Density_100m2), fill = Species)) +
   geom_bar(stat = "identity", position = "stack") +
-  facet_wrap(~DepthZone) +
-  facet_wrap(~ FunctionalGroup, nrow = 1, ncol = 3) +  # Adjust based on your functional groups
+  #facet_wrap(~ DepthZone) +
+  facet_wrap(FunctionalGroup ~ DepthZone, nrow = 3, ncol = 5) +  # Adjust based on your functional groups
   #scale_fill_brewer() +
   guides(fill = guide_legend(
     position = "top",
@@ -142,4 +149,6 @@ speciesdensityplot <- ggplot(data_PV, aes(x = Era, y = log(Density_100m2), fill 
         axis.text.x = element_text(angle = 45, hjust = 1)) 
 
 
+
 print(speciesdensityplot)
+
