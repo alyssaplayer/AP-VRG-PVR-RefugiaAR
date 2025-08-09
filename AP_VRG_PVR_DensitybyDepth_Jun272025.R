@@ -28,12 +28,12 @@ data_PV <- data_PV %>%
 # Focal species list
 foc_spp <- c("Mesocentrotus franciscanus",
               "Strongylocentrotus purpuratus",
-              #"Patiria miniata", 
+              "Patiria miniata", 
               "Pisaster ochraceus", 
-              "Pisaster giganteus", 
-              "Apostichopus parvimensis",
-              "Apostichopus californicus")
+              "Pisaster giganteus")
   
+#used to have a. parvimensis, a. californicus but removed bc not relevant to findings
+
 data_PV <- data_PV %>%
   filter(Species %in% foc_spp, Year >= 2008) %>%
   filter(DepthZone !="Outer Middle") #Removes outermiddle as a zone
@@ -53,59 +53,25 @@ data_PV <- data_PV %>%
       FunctionalGroup = case_when(
         Species %in% c("Patiria miniata", "Pisaster ochraceus", "Pisaster giganteus") ~ "Stars",
         Species %in% c("Mesocentrotus franciscanus", "Strongylocentrotus purpuratus") ~ "Urchins",
-        Species %in% c("Apostichopus californicus", "Apostichopus parvimensis") ~ "Cucumbers",
         TRUE ~ "Other"  # To catch any species not listed
       ),
-      FunctionalGroup = factor(FunctionalGroup, levels = c("Stars", "Urchins", "Cucumbers")) #defining the functional groups 
+      FunctionalGroup = factor(FunctionalGroup, levels = c("Stars", "Urchins")) #defining the functional groups 
     )
 
-#Creating the site groups (More necessary for the BACIPS analysis, but keeping in for good measure 7/12/25)
-pvr_control_sites <- c(#"Hawthorne Reef",
-  "Honeymoon Cove",
-  "Lunada Bay",
-  #"Resort Point",  
-  "Rocky Point South",
-  "Rocky Point North",
-  "Ridges North")
+#Creating the site groups 
+grouped_sites <- data_PV %>%
+  mutate(category = case_when(
+    Site %in% c("Long Point East", 
+                "120 Reef", 
+                "Abalone Cove Kelp West",
+                "Long Point West", 
+                "Old Marineland", 
+                "Point Vicente West",
+                "Portuguese Point") ~ "MPA",
+    DepthZone == "ARM" ~ "PVR",
+    TRUE ~ "non-MPA"
+  ))
 
-
-pvr_impact_sites <- c("KOU Rock",
-                      "Old 18th",
-                      "Burial Grounds",
-                      "Cape Point",
-                      "3 Palms West",
-                      "3 Palms East",
-                      "Bunker Point")
-
-MPA_control_sites <- c(#"Hawthorne Reef",
-  "Marguerite Central",
-  "Albondigas",
-  "Marguerite East",  
-  "Golden Cove",
-  #"Resort Point",
-  "Portuguese Bend")
-
-MPA_impact_sites <- c("Long Point East",
-                      "120 Reef",
-                      "Abalone Cove Kelp West",
-                      "Long Point West",
-                      "Old Marineland",                 
-                      "Point Vicente West",
-                      "Portuguese Point")
-
-
-both_control_sites <- c("Hawthorne Reef",
-                        "Resort Point") 
-
-###THIS IS FROM HONORS THESIS, unnecessary for this plot
-# data_PV <- data_PV %>%
-#   mutate(SiteType = case_when(
-#     Site %in% pvr_control_sites ~ 'Naturally Occuring Palos Verdes Sites',
-#     Site %in% pvr_impact_sites ~ 'Sites Adjacent to Palos Verdes Reef',
-#     Site %in% MPA_control_sites ~ 'Naturally Occuring MPA Sites',
-#     Site %in% MPA_impact_sites ~ 'Sites Within the Marine Protected Area',
-#     TRUE ~ 'Other'  # This will capture any site that doesn't fall into the above categories
-#   ))
 
 #Statistical Tests:
 ##STASTICAL TEST
@@ -122,10 +88,13 @@ summary(anova_model)
 par(mfrow = c(1, 2))
 plot(anova_model, which = 1)  # R
 
-densitybydepth <- data_PV %>%
-  group_by(DepthZone, Year, Species, Site, Era, FunctionalGroup) %>%
+densitybydepth <- grouped_sites %>%
+  group_by(DepthZone, Year, Species, Site, Era) %>%
   dplyr::summarise(DZ_Density_100m2=mean(Density_100m2)) %>%
   mutate(Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE))
+
+density_stars <- densitybydepth %>%
+  filter(Species %in% c("Patiria miniata", "Pisaster ochraceus", "Pisaster giganteus"))
 
 
 densitybydepthplot <- ggplot(densitybydepth, aes(x = Era, y = log(DZ_Density_100m2), color = Era)) +
