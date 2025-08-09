@@ -8,7 +8,6 @@ library("tidyr")
 library("ggplot2")
 library("lubridate")
 library("ggh4x")
-
 library("broom")
 library("AICcmodavg")
 library("car")
@@ -59,8 +58,8 @@ data_PV <- data_PV %>%
     )
 
 #Creating the site groups 
-grouped_sites <- data_PV %>%
-  mutate(category = case_when(
+data_PV <- data_PV %>%
+  mutate(Site_Category = case_when(
     Site %in% c("Long Point East", 
                 "120 Reef", 
                 "Abalone Cove Kelp West",
@@ -69,7 +68,7 @@ grouped_sites <- data_PV %>%
                 "Point Vicente West",
                 "Portuguese Point") ~ "MPA",
     DepthZone == "ARM" ~ "PVR",
-    TRUE ~ "non-MPA"
+    TRUE ~ "Non-MPA"
   ))
 
 
@@ -88,8 +87,8 @@ summary(anova_model)
 par(mfrow = c(1, 2))
 plot(anova_model, which = 1)  # R
 
-densitybydepth <- grouped_sites %>%
-  group_by(DepthZone, Year, Species, Site, Era) %>%
+densitybydepth <- data_PV %>%
+  group_by(DepthZone, Year, Species, Site, Era, Site_Category) %>%
   dplyr::summarise(DZ_Density_100m2=mean(Density_100m2)) %>%
   mutate(Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE))
 
@@ -97,25 +96,36 @@ density_stars <- densitybydepth %>%
   filter(Species %in% c("Patiria miniata", "Pisaster ochraceus", "Pisaster giganteus"))
 
 
-densitybydepthplot <- ggplot(densitybydepth, aes(x = Era, y = log(DZ_Density_100m2), color = Era)) +
+densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(DZ_Density_100m2), color = Era)) +
   geom_boxplot(outlier.shape = NA, aes(fill=Era), alpha = 0.4) + # Set outlier.shape inside geom_boxplot(), alpha makes transparency so the data points are visible
   geom_point(aes(color = Era),
              position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.5),
              size = 0.7)+
   theme_classic()+
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "Depth Zone", # should i change this to Era
+  labs(x = "Site Type", # should i change this to Era
        y = expression("Mean Density (100" * m^2 * " / yr)"))+
-  # scale_x_discrete(
-  #   labels = c(
-  #     "Inner" = "I",
-  #     "Middle" = "M",
-  #     "Outer" = "O",
-  #     "Deep" = "D"
-  #   )) + #x-axis is now Era .. Depth Zone at the top as facet - 
-  facet_grid(rows = vars(Species), cols = vars(DepthZone), scales = "free_y", space = 'free') +
+  facet_grid(rows = vars(Species), cols = vars(Site_Category), scales = "free_y", space = 'free') +
   scale_color_brewer(palette="Blues")+
   scale_fill_brewer(palette="Blues")
 
-print(densitybydepthplot)
+print(densitybydepthplot_stars)
 
+density_urchins <- densitybydepth %>%
+  filter(Species %in% c("Mesocentrotus franciscanus", "Strongylocentrotus purpuratus"))
+         
+densitybydepthplot_urchins <- ggplot(density_urchins, aes(x = Era, y = log(DZ_Density_100m2), color = Era)) +
+  geom_boxplot(outlier.shape = NA, aes(fill=Era), alpha = 0.4) + # Set outlier.shape inside geom_boxplot(), alpha makes transparency so the data points are visible
+  geom_point(aes(color = Era),
+                      position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.5),
+                      size = 0.7)+
+           theme_classic()+
+           theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+           labs(x = "Site Type", 
+                y = expression("Mean Density (100" * m^2 * " / yr)"))+
+           facet_grid(rows = vars(Species), cols = vars(Site_Category), scales = "free_y", space = 'free') +
+           scale_color_brewer(palette="Oranges") +
+           scale_fill_brewer(palette="Oranges")
+         
+print(densitybydepthplot_urchins)
+   
