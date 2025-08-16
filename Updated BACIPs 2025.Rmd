@@ -1,14 +1,13 @@
 ---
 title: "BACIPS_APlayer_Nov6"
 author: "Alyssa Player"
-date: "2023-11-06"
+date: "2025-08-15"
 output: html_document
 ---
 ```{r}
 #####Preliminary Data Filtering 
-# CREATION DATE: July 3rd, 2023
+# ORIGINAL CREATION DATE: July 3rd, 2023 #This file is a duplicate/updated version of the BACIPS from my honors project (2023)
 # AUTHOR: Alyssa Player (aplayer@oxy.edu)
-# EDIT DATE: Oct 16, 2023
 
 # PURPOSE: To do a Progressive-Change BACIPS on Sea Star and Urchin density along the Palos Verdes Peninsula to determine the role of artificial reefs in rehabilitation and recruiment of juvenile species.
 ## This version is an expanded code for an analysis incorporating the MPA, Natural Reef, and PVR
@@ -20,7 +19,6 @@ output: html_document
 # Require packages
 library("dplyr")
 library("plyr")
-
 library("tidyr")
 library("ggplot2")
 library("lubridate")
@@ -34,21 +32,20 @@ colnames(data_PV)[colnames(data_PV)=="BenthicReefSpecies"] <- "Species"
 
 # Add year and density per 100m2
 data_PV <- data_PV %>%
-  mutate(SampleDate = dmy(SampleDate),
-         Year = year(SampleDate),
-         Density_100m2 = 100*Density_m2) %>%
+  mutate(Year = as.numeric(as.character(SampleYear)),
+         Density_100m2 = 100 * Density_m2) %>%
   ungroup() %>% droplevels() %>%
-  complete(nesting(Site, Year, SampleDate), Species, fill = list(Density_m2=0, Density_100m2=0)) #Looks for grouped data of the nesting variables and if there is N/A, it inputs 0 for both density variables
+  complete(nesting(Site, Year), Species, fill = list(Density_m2=0, Density_100m2=0)) 
+#Looks for grouped data of the nesting variables and if there is N/A, it inputs 0 for both density variables
 
 # Focal species list
 foc_spp <- c("Mesocentrotus franciscanus",
              "Strongylocentrotus purpuratus",
              "Patiria miniata", 
              "Pisaster ochraceus", 
-             "Pisaster giganteus", 
-             "Apostichopus parvimensis",
-             "Apostichopus californicus")
-
+             "Pisaster giganteus")#, 
+             #"Apostichopus parvimensis",
+             #"Apostichopus californicus")
 
 data_PV <- data_PV %>%
   filter(Species %in% foc_spp, Year >= 2008)
@@ -93,20 +90,21 @@ pvr_impact_sites <- c("KOU Rock",
                       "3 Palms East",
                       "Bunker Point")
 
-time.true <- c(2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023) #Sample Years
-time.model <- c(0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11) # 0 = pre-impact and impact, 1 = 2013 onwards (onset of wasting)
+time.true <- c(2008, 2009, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024) #Sample Years #ADD 2010 back
+time.model <- c(0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12) # 0 = pre-impact and impact, 1 = 2013 onwards (onset of wasting)
 
 #Set control and impact and bind to time.true and time.model
  
 control <- data_PV %>%
-  filter(Site %in% pvr_control_sites, Year != 2010) %>%
+  filter(Site %in% pvr_control_sites) %>%
   group_by(Species, Year) %>%
   dplyr::summarise(control = mean(Density_100m2)) 
 
-impact <-data_PV %>%
+impact <- data_PV %>%
   filter(Site %in% pvr_impact_sites) %>%
   group_by(Species, Year) %>%
-  dplyr::summarise(impact = mean(Density_100m2)) 
+  dplyr::summarise(impact = mean(Density_100m2), .groups = 'drop') %>%
+  complete(Species, Year, fill = list(impact = 0))
 
 dat_pv <- control %>%
   left_join(impact) %>%
@@ -250,18 +248,14 @@ Delta_PVR_all <- rbind(`Delta_PVR_Mesocentrotus franciscanus`,
                        `Delta_PVR_Patiria miniata`, 
                        `Delta_PVR_Pisaster giganteus`,
                        `Delta_PVR_Pisaster ochraceus`,
-                       `Delta_PVR_Strongylocentrotus purpuratus`)#, 
-                       #`Delta_PVR_Apostichopus parvimensis`,
-                       #`Delta_PVR_Apostichopus californicus`)
+                       `Delta_PVR_Strongylocentrotus purpuratus`, 
+                       `Delta_PVR_Apostichopus parvimensis`,
+                       `Delta_PVR_Apostichopus californicus`)
 
 Delta_PVR_all <- Delta_PVR_all %>%
                       dplyr::rename(., "Species" = "i") %>%
                       dplyr::rename(., "PVR_delta" = "delta")
 ```
-
-
-
-
 
 ```{r}
 ##### MPA BACIPS################################################################################
@@ -288,7 +282,7 @@ time.model <- c(0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11) # 0 = pre-impa
 
 #Set control and impact and bind to time.true and time.model
 control <- data_PV %>%
-  filter(Site %in% MPA_control_sites) %>%# Year != 2010) %>%
+  filter(Site %in% MPA_control_sites) %>%
   group_by(Species, Year) %>%
   dplyr::summarise(control = mean(Density_100m2)) 
 
