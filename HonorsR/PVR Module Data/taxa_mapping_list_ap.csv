@@ -1,8 +1,0 @@
-Taxa,Variable,Multiplier,Min,Max,Palette,Label
-Mesocentrotus franciscanus,Density,100,-0.5,63.5,Reds,**Red Sea**<br>**Urchin**<br>*Mesocentrotus*<br>*franciscanus*<br>(No./100 m<sup>2</sup>)
-Strongylocentrotus purpuratus,Density,,,,Purples,**Purple Sea**<br>**Urchin**<br>*Strongylocentrotus *<br>*purpuratus*<br>(No./100 m<sup>2</sup>)
-Pisaster giganteus,Density,100,-0.25,4.25,Blues,**Giant Spined**<br>**Sea Star**<br>*Pisaster*<br>*giganteus*<br>(No./100 m<sup>2</sup>)
-Pisaster ochraceus,Density,,,,Oranges,**Ochre**<br>**Sea Star**<br>*Pisaster*<br>*ochraceus*<br>(No./100 m<sup>2</sup>)
-Patiria miniata,Density,,,,YlOlBr,**Bat**<br>**Sea Star**<br>*Patiria*<br>*miniata*<br>(No./100 m<sup>2</sup>)
-Apostichopus parvimensis,Density,,,,Greens,**Warty**<br>**Sea Cucumber**<br>*Apostichopus*<br>*parvimensis*<br>(No./100 m<sup>2</sup>)
-Apostichopus californicus,Density,,,,YlOrRd,**California**<br>**Sea Cucumber**<br>*Apostichopus*<br>*californicus*<br>(No./100 m<sup>2</sup>)
