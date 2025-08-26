@@ -1,0 +1,1410 @@
+SampleDate,Site,BenthicReefSpecies,Latitude,Longitude,Density_m2,Category
+1-Aug-22,3 Palms East,Mesocentrotus franciscanus,33.719,-118.3318,0.05,PVR
+1-Aug-22,3 Palms East,Strongylocentrotus purpuratus,33.719,-118.3318,0.083333333,PVR
+1-Dec-16,Old 18th,Luidia armata,33.72096,-118.34545,0.05,PVR
+1-Dec-16,Old 18th,Mesocentrotus franciscanus,33.72309,-118.34377,0.016666667,PVR
+1-Dec-16,Old 18th,Patiria miniata,33.72153,-118.34498,0.033333333,PVR
+1-Dec-16,Old 18th,Strongylocentrotus purpuratus,33.723075,-118.343805,0.05,PVR
+1-Dec-17,Cape Point,Mesocentrotus franciscanus,33.71946,-118.34091,0.116666667,PVR
+1-Dec-17,Cape Point,Patiria miniata,33.718685,-118.3411975,0.133333333,PVR
+1-Jul-11,Bunker Point,Mesocentrotus franciscanus,33.72551667,-118.3531067,0.866666667,PVR
+1-Jul-11,Bunker Point,Patiria miniata,33.72540333,-118.3533533,0.05,PVR
+1-Jul-11,Bunker Point,Pisaster giganteus,33.72546,-118.35323,0.5,PVR
+1-Jul-11,Bunker Point,Pisaster ochraceus,33.72563,-118.35286,0.033333333,PVR
+1-Jul-11,Bunker Point,Strongylocentrotus purpuratus,33.725562,-118.353008,7.4,PVR
+1-Jul-22,Rocky Point North,Centrostephanus coronatus,33.78149,-118.43324,0.033333333,
+1-Jul-22,Rocky Point North,Henricia sp,33.78120111,-118.4319467,0.233333333,
+1-Jul-22,Rocky Point North,Linckia columbiae,33.78084,-118.43033,0.066666667,
+1-Jul-22,Rocky Point North,Mesocentrotus franciscanus,33.78088857,-118.4311143,2.233333333,
+1-Jul-22,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.083333333,
+1-Jul-22,Rocky Point North,Pisaster giganteus,33.78149,-118.43324,0.016666667,
+1-Jul-22,Rocky Point North,Strongylocentrotus purpuratus,33.78039889,-118.4296178,0.583333333,
+2-Aug-19,Cape Point,Mesocentrotus franciscanus,33.72164,-118.34029,0.066666667,PVR
+2-Aug-19,Cape Point,Strongylocentrotus purpuratus,33.72164,-118.34029,0.133333333,PVR
+2-Aug-19,3 Palms West,Astropecten armatus,33.71594,-118.33688,0.016666667,PVR
+2-Aug-19,3 Palms West,Centrostephanus coronatus,33.71802,-118.33533,0.016666667,PVR
+2-Aug-19,3 Palms West,Lytechinus pictus,33.71594,-118.33688,1.283333333,PVR
+2-Aug-19,3 Palms West,Mesocentrotus franciscanus,33.717772,-118.335778,0.233333333,PVR
+2-Aug-19,3 Palms West,Patiria miniata,33.71628667,-118.3366217,0.183333333,PVR
+2-Aug-19,3 Palms West,Sclerasterias heteropaes,33.71594,-118.33688,0.016666667,PVR
+2-Aug-19,3 Palms West,Strongylocentrotus purpuratus,33.71875,-118.335115,0.1,PVR
+2-Jul-10,Rocky Point South,Mesocentrotus franciscanus,33.7767,-118.43029,0.066666667,
+2-Jul-10,Rocky Point South,Pisaster giganteus,33.7767,-118.43029,0.1,
+2-Jul-10,Rocky Point South,Strongylocentrotus purpuratus,33.7767,-118.43029,0.083333333,
+2-Jul-13,Rocky Point North,Henricia sp,33.78084,-118.43033,0.083333333,
+2-Jul-13,Rocky Point North,Linckia columbiae,33.78084,-118.43033,0.016666667,
+2-Jul-13,Rocky Point North,Mesocentrotus franciscanus,33.78042,-118.4294867,0.65,
+2-Jul-13,Rocky Point North,Pisaster giganteus,33.780525,-118.4296975,0.233333333,
+2-Jul-13,Rocky Point North,Strongylocentrotus purpuratus,33.7803,-118.4292457,0.383333333,
+2-Jul-14,Honeymoon Cove,Centrostephanus coronatus,33.76394,-118.42582,0.033333333,
+2-Jul-14,Honeymoon Cove,Henricia sp,33.76394,-118.42582,0.033333333,
+2-Jul-14,Honeymoon Cove,Mesocentrotus franciscanus,33.76437214,-118.4244057,1.9,
+2-Jul-14,Honeymoon Cove,Patiria miniata,33.764056,-118.425204,0.85,
+2-Jul-14,Honeymoon Cove,Strongylocentrotus purpuratus,33.76443786,-118.4242329,9.583333333,
+2-Jul-20,Rocky Point North,Henricia sp,33.78130429,-118.4324086,0.166666667,
+2-Jul-20,Rocky Point North,Linckia columbiae,33.780665,-118.429975,0.133333333,
+2-Jul-20,Rocky Point North,Mesocentrotus franciscanus,33.78094455,-118.4312655,1.016666667,
+2-Jul-20,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.05,
+2-Jul-20,Rocky Point North,Strongylocentrotus purpuratus,33.78047091,-118.4295836,0.666666667,
+2-May-08,Rocky Point North,Henricia sp,33.78149,-118.43324,0.066666667,
+2-May-08,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.1,
+2-May-08,Rocky Point North,Pisaster giganteus,33.78149,-118.43324,0.033333333,
+2-May-08,Rocky Point South,Astrometis sertulifera,33.77727,-118.43464,0.016666667,
+2-May-08,Rocky Point South,Patiria miniata,33.77727,-118.43464,0.366666667,
+2-May-08,Rocky Point South,Pisaster giganteus,33.77727,-118.43464,0.016666667,
+2-Nov-18,KOU Rock,Centrostephanus coronatus,33.71771,-118.33913,0.016666667,PVR
+2-Nov-18,KOU Rock,Mesocentrotus franciscanus,33.718064,-118.338848,0.183333333,PVR
+2-Nov-18,KOU Rock,Patiria miniata,33.717455,-118.339205,0.216666667,PVR
+2-Nov-18,KOU Rock,Strongylocentrotus purpuratus,33.7209,-118.33718,0.1,PVR
+2-Nov-21,Bunker Point,Mesocentrotus franciscanus,33.72529,-118.3536,0.45,PVR
+2-Nov-21,Bunker Point,Patiria miniata,33.72529,-118.3536,0.033333333,PVR
+2-Nov-21,Bunker Point,Strongylocentrotus purpuratus,33.72529,-118.3536,1.033333333,PVR
+2-Nov-21,3 Palms East,Centrostephanus coronatus,33.719,-118.3318,0.016666667,PVR
+2-Nov-21,3 Palms East,Dermasterias imbricata,33.71668,-118.33309,0.016666667,PVR
+2-Nov-21,3 Palms East,Mesocentrotus franciscanus,33.7177575,-118.33242,1.15,PVR
+2-Nov-21,3 Palms East,Patiria miniata,33.71668,-118.33309,0.033333333,PVR
+2-Nov-21,3 Palms East,Strongylocentrotus purpuratus,33.717973,-118.332286,2.4,PVR
+2-Oct-13,KOU Rock,Lovenia cordiformis,33.71893,-118.33867,0.016666667,PVR
+2-Oct-13,KOU Rock,Mesocentrotus franciscanus,33.72023833,-118.3376283,0.55,PVR
+2-Oct-13,KOU Rock,Patiria miniata,33.71919167,-118.3384617,0.333333333,PVR
+2-Oct-13,KOU Rock,Pisaster giganteus,33.7201075,-118.3377325,0.133333333,PVR
+2-Oct-13,KOU Rock,Strongylocentrotus purpuratus,33.71997667,-118.3378367,0.116666667,PVR
+2-Oct-20,Bunker Point,Centrostephanus coronatus,33.72529,-118.3536,0.016666667,PVR
+2-Oct-20,Bunker Point,Mesocentrotus franciscanus,33.72546,-118.35323,0.05,PVR
+2-Oct-20,Bunker Point,Strongylocentrotus purpuratus,33.72563,-118.35286,0.016666667,PVR
+2-Oct-20,KOU Rock,Strongylocentrotus purpuratus,33.7213,-118.33694,0.083333333,PVR
+2-Sep-08,Point Vicente West,Mesocentrotus franciscanus,33.74043,-118.41367,1.05,
+2-Sep-08,Point Vicente West,Patiria miniata,33.74043,-118.41367,1.116666667,
+2-Sep-08,Point Vicente West,Pisaster giganteus,33.74043,-118.41367,1.116666667,
+2-Sep-08,Point Vicente West,Pisaster ochraceus,33.74043,-118.41367,0.366666667,
+2-Sep-08,Point Vicente West,Pycnopodia helianthoides,33.74043,-118.41367,0.016666667,
+2-Sep-08,Point Vicente West,Strongylocentrotus purpuratus,33.74043,-118.41367,7.25,
+2-Sep-15,Rocky Point North,Mesocentrotus franciscanus,33.78014,-118.42891,0.05,
+2-Sep-15,Rocky Point North,Strongylocentrotus purpuratus,33.78014,-118.42891,0.133333333,
+3-Dec-15,Cape Point,Mesocentrotus franciscanus,33.72036,-118.34066,0.55,PVR
+3-Dec-15,Cape Point,Patiria miniata,33.72008,-118.34068,0.033333333,PVR
+3-Dec-15,Cape Point,Strongylocentrotus purpuratus,33.72148,-118.34017,0.083333333,PVR
+3-Nov-09,Point Vicente West,Mesocentrotus franciscanus,33.74082,-118.41278,0.65,
+3-Nov-09,Point Vicente West,Pisaster giganteus,33.74082,-118.41278,0.716666667,
+3-Nov-09,Point Vicente West,Pisaster ochraceus,33.74082,-118.41278,0.9,
+3-Nov-09,Point Vicente West,Pycnopodia helianthoides,33.74082,-118.41278,0.016666667,
+3-Nov-09,Point Vicente West,Strongylocentrotus purpuratus,33.74082,-118.41278,14.58333333,
+3-Nov-09,3 Palms East,Mesocentrotus franciscanus,33.71801,-118.3315,0.816666667,PVR
+3-Nov-09,3 Palms East,Patiria miniata,33.71801,-118.3315,0.016666667,PVR
+3-Nov-09,3 Palms East,Pisaster giganteus,33.71801,-118.3315,0.2,PVR
+3-Nov-09,3 Palms East,Pisaster ochraceus,33.71801,-118.3315,0.016666667,PVR
+3-Nov-09,3 Palms East,Strongylocentrotus purpuratus,33.71801,-118.3315,0.516666667,PVR
+3-Nov-21,3 Palms West,Mesocentrotus franciscanus,33.71698,-118.336105,0.2,PVR
+3-Nov-21,3 Palms West,Patiria miniata,33.71594,-118.33688,0.133333333,PVR
+3-Nov-21,3 Palms West,Strongylocentrotus purpuratus,33.71802,-118.33533,0.116666667,PVR
+3-Oct-12,KOU Rock,Lytechinus pictus,33.71893,-118.33867,0.016666667,PVR
+3-Oct-12,KOU Rock,Mesocentrotus franciscanus,33.720352,-118.337632,0.2,PVR
+3-Oct-12,KOU Rock,Patiria miniata,33.71893,-118.33867,0.566666667,PVR
+3-Oct-12,KOU Rock,Pisaster giganteus,33.71972,-118.3380933,0.2,PVR
+3-Oct-12,KOU Rock,Pisaster ochraceus,33.7213,-118.33694,0.033333333,PVR
+3-Oct-12,KOU Rock,Strongylocentrotus purpuratus,33.7207075,-118.3373725,0.983333333,PVR
+3-Sep-21,Rocky Point South,Henricia sp,33.7767,-118.43029,0.033333333,
+3-Sep-21,Rocky Point South,Mesocentrotus franciscanus,33.7767,-118.43029,0.066666667,
+3-Sep-21,Rocky Point South,Pisaster giganteus,33.7767,-118.43029,0.016666667,
+3-Sep-21,Rocky Point South,Strongylocentrotus purpuratus,33.77617,-118.42954,0.316666667,
+3-Sep-21,Hawthorne Reef,Centrostephanus coronatus,33.74698,-118.41738,0.066666667,
+3-Sep-21,Hawthorne Reef,Mesocentrotus franciscanus,33.74707833,-118.4165033,0.35,
+3-Sep-21,Hawthorne Reef,Patiria miniata,33.74698,-118.41738,0.016666667,
+3-Sep-21,Hawthorne Reef,Pisaster giganteus,33.74711,-118.41632,0.033333333,
+3-Sep-21,Hawthorne Reef,Strongylocentrotus purpuratus,33.74706125,-118.4167175,0.85,
+4-Apr-14,Point Vicente West,Mesocentrotus franciscanus,33.73901143,-118.4142686,1.766666667,
+4-Apr-14,Point Vicente West,Patiria miniata,33.73879,-118.41449,3.316666667,
+4-Apr-14,Point Vicente West,Strongylocentrotus purpuratus,33.7391,-118.41418,0.8,
+4-Jun-10,Rocky Point South,Henricia sp,33.77667714,-118.4333257,0.15,
+4-Jun-10,Rocky Point South,Linckia columbiae,33.77644,-118.4328,0.016666667,
+4-Jun-10,Rocky Point South,Mesocentrotus franciscanus,33.77675125,-118.43349,0.283333333,
+4-Jun-10,Rocky Point South,Patiria miniata,33.776772,-118.433536,1.433333333,
+4-Jun-10,Rocky Point South,Pisaster giganteus,33.77655857,-118.4330629,0.216666667,
+4-Mar-11,Hawthorne Reef,Mesocentrotus franciscanus,33.74711,-118.41632,2.75,
+4-Mar-11,Hawthorne Reef,Patiria miniata,33.74711,-118.41632,0.633333333,
+4-Mar-11,Hawthorne Reef,Pisaster brevispinus,33.74711,-118.41632,0.266666667,
+4-Mar-11,Hawthorne Reef,Pisaster giganteus,33.74711,-118.41632,1.1,
+4-Mar-11,Hawthorne Reef,Pisaster ochraceus,33.74711,-118.41632,0.1,
+4-Mar-11,Hawthorne Reef,Pycnopodia helianthoides,33.74711,-118.41632,0.05,
+4-Mar-11,Hawthorne Reef,Strongylocentrotus purpuratus,33.74711,-118.41632,20.41666667,
+4-Nov-20,KOU Rock,Centrostephanus coronatus,33.719105,-118.338275,0.05,PVR
+4-Nov-20,KOU Rock,Henricia sp,33.7172,-118.33928,0.016666667,PVR
+4-Nov-20,KOU Rock,Mesocentrotus franciscanus,33.71858545,-118.3385491,0.8,PVR
+4-Nov-20,KOU Rock,Patiria miniata,33.71748333,-118.3391967,0.5,PVR
+4-Nov-20,KOU Rock,Sclerasterias heteropaes,33.7172,-118.33928,0.016666667,PVR
+4-Nov-20,KOU Rock,Strongylocentrotus purpuratus,33.7205,-118.33742,0.116666667,PVR
+4-Oct-13,KOU Rock,Astrometis sertulifera,33.7172,-118.33928,0.016666667,PVR
+4-Oct-13,KOU Rock,Lytechinus pictus,33.7172,-118.33928,0.016666667,PVR
+4-Oct-13,KOU Rock,Mesocentrotus franciscanus,33.7172,-118.33928,0.033333333,PVR
+4-Oct-13,KOU Rock,Patiria miniata,33.7172,-118.33928,0.233333333,PVR
+4-Oct-13,KOU Rock,Pisaster brevispinus,33.7172,-118.33928,0.016666667,PVR
+4-Oct-13,KOU Rock,Pisaster giganteus,33.7172,-118.33928,0.133333333,PVR
+4-Oct-13,3 Palms West,Lytechinus pictus,33.71594,-118.33688,0.383333333,PVR
+4-Oct-13,3 Palms West,Mesocentrotus franciscanus,33.71709556,-118.3360189,0.383333333,PVR
+4-Oct-13,3 Palms West,Patiria miniata,33.71709556,-118.3360189,0.666666667,PVR
+4-Oct-13,3 Palms West,Pisaster giganteus,33.716356,-118.33657,0.116666667,PVR
+4-Oct-13,3 Palms West,Strongylocentrotus purpuratus,33.71802,-118.33533,0.333333333,PVR
+4-Sep-15,Rocky Point North,Linckia columbiae,33.78084,-118.43033,0.05,
+4-Sep-15,Rocky Point North,Mesocentrotus franciscanus,33.78127333,-118.43227,0.333333333,
+4-Sep-15,Rocky Point North,Strongylocentrotus purpuratus,33.78084,-118.43033,0.183333333,
+4-Sep-19,Lunada Bay,Centrostephanus coronatus,33.77109,-118.4333767,0.05,
+4-Sep-19,Lunada Bay,Henricia sp,33.77134,-118.43431,0.133333333,
+4-Sep-19,Lunada Bay,Mesocentrotus franciscanus,33.77137733,-118.432634,0.933333333,
+4-Sep-19,Lunada Bay,Patiria miniata,33.77134,-118.43431,0.083333333,
+4-Sep-19,Lunada Bay,Strongylocentrotus purpuratus,33.77133667,-118.4310044,0.383333333,
+5-Aug-22,Cape Point,Mesocentrotus franciscanus,33.72164,-118.34029,1.133333333,PVR
+5-Aug-22,Cape Point,Patiria miniata,33.7221,-118.339855,0.083333333,PVR
+5-Aug-22,Cape Point,Pisaster giganteus,33.72164,-118.34029,0.016666667,PVR
+5-Aug-22,Cape Point,Strongylocentrotus purpuratus,33.72164,-118.34029,1.083333333,PVR
+5-Aug-22,3 Palms East,Astrometis sertulifera,33.7142,-118.33394,0.016666667,PVR
+5-Aug-22,3 Palms East,Henricia sp,33.71544,-118.333515,0.033333333,PVR
+5-Aug-22,3 Palms East,Linckia columbiae,33.7142,-118.33394,0.016666667,PVR
+5-Aug-22,3 Palms East,Lytechinus pictus,33.7142,-118.33394,0.683333333,PVR
+5-Aug-22,3 Palms East,Mesocentrotus franciscanus,33.716075,-118.3331083,1.983333333,PVR
+5-Aug-22,3 Palms East,Patiria miniata,33.715192,-118.3336,0.416666667,PVR
+5-Aug-22,3 Palms East,Pisaster giganteus,33.71668,-118.33309,0.05,PVR
+5-Aug-22,3 Palms East,Strongylocentrotus purpuratus,33.71670571,-118.3327571,2.033333333,PVR
+5-Jan-10,Point Vicente West,Henricia sp,33.73848,-118.4148,0.016666667,
+5-Jan-10,Point Vicente West,Mesocentrotus franciscanus,33.73848,-118.4148,0.416666667,
+5-Jan-10,Point Vicente West,Orthasterias koehleri,33.73848,-118.4148,0.016666667,
+5-Jan-10,Point Vicente West,Patiria miniata,33.73848,-118.4148,0.533333333,
+5-Jan-10,Point Vicente West,Pisaster giganteus,33.73848,-118.4148,0.216666667,
+5-Jan-10,Point Vicente West,Strongylocentrotus purpuratus,33.73848,-118.4148,0.016666667,
+5-Jan-10,KOU Rock,Mesocentrotus franciscanus,33.71771,-118.33913,0.15,PVR
+5-Jan-10,KOU Rock,Patiria miniata,33.71771,-118.33913,0.083333333,PVR
+5-Jan-10,KOU Rock,Pisaster giganteus,33.71771,-118.33913,0.283333333,PVR
+6-Aug-21,Rocky Point South,Centrostephanus coronatus,33.77644,-118.4328,0.033333333,
+6-Aug-21,Rocky Point South,Henricia sp,33.776938,-118.433904,0.116666667,
+6-Aug-21,Rocky Point South,Linckia columbiae,33.77644,-118.4328,0.033333333,
+6-Aug-21,Rocky Point South,Mesocentrotus franciscanus,33.776855,-118.43372,0.8,
+6-Aug-21,Rocky Point South,Patiria miniata,33.77644,-118.4328,0.016666667,
+6-Aug-21,Rocky Point South,Pisaster giganteus,33.77727,-118.43464,0.016666667,
+6-Aug-21,Rocky Point South,Strongylocentrotus purpuratus,33.77657833,-118.4331067,0.65,
+6-Aug-21,Hawthorne Reef,Henricia sp,33.74674,-118.41981,0.066666667,
+6-Aug-21,Hawthorne Reef,Mesocentrotus franciscanus,33.74674,-118.41981,0.033333333,
+6-Aug-21,Hawthorne Reef,Patiria miniata,33.74674,-118.41981,0.75,
+6-Aug-21,Hawthorne Reef,Sclerasterias heteropaes,33.74674,-118.41981,0.1,
+6-Jan-15,Bunker Point,Mesocentrotus franciscanus,33.72529,-118.3536,0.15,PVR
+6-Jan-15,Bunker Point,Strongylocentrotus purpuratus,33.72538714,-118.3533886,0.383333333,PVR
+6-Jan-15,3 Palms West,Mesocentrotus franciscanus,33.71948,-118.3349,0.233333333,PVR
+6-Jan-15,3 Palms West,Patiria miniata,33.71948,-118.3349,0.016666667,PVR
+6-Jan-15,3 Palms West,Strongylocentrotus purpuratus,33.7199225,-118.3345588,0.6,PVR
+6-Jan-15,3 Palms East,Mesocentrotus franciscanus,33.71801,-118.3315,0.283333333,PVR
+6-Jan-15,3 Palms East,Strongylocentrotus purpuratus,33.7187525,-118.331725,0.116666667,PVR
+6-Jul-12,Rocky Point North,Mesocentrotus franciscanus,33.78149,-118.43324,0.2,
+6-Jul-12,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.2,
+6-Jul-12,Hawthorne Reef,Astropecten armatus,33.74698,-118.41738,0.016666667,
+6-Jul-12,Hawthorne Reef,Henricia sp,33.74698,-118.41738,0.016666667,
+6-Jul-12,Hawthorne Reef,Mesocentrotus franciscanus,33.74713,-118.41582,2.45,
+6-Jul-12,Hawthorne Reef,Patiria miniata,33.74706,-118.416548,2.333333333,
+6-Jul-12,Hawthorne Reef,Pisaster brevispinus,33.74698,-118.41738,0.05,
+6-Jul-12,Hawthorne Reef,Pisaster giganteus,33.74711333,-118.4159933,0.366666667,
+6-Jul-12,Hawthorne Reef,Pisaster ochraceus,33.74718,-118.4153,0.683333333,
+6-Jul-12,Hawthorne Reef,Pycnopodia helianthoides,33.74698,-118.41738,0.066666667,
+6-Jul-12,Hawthorne Reef,Strongylocentrotus purpuratus,33.74718,-118.4153,20.9,
+6-Jul-18,Rocky Point North,Henricia sp,33.78149,-118.43324,0.033333333,
+6-Jul-18,Rocky Point North,Mesocentrotus franciscanus,33.78149,-118.43324,0.116666667,
+6-Jul-18,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.016666667,
+6-Jul-18,Rocky Point North,Strongylocentrotus purpuratus,33.78149,-118.43324,0.033333333,
+6-Jun-08,Rocky Point North,Linckia columbiae,33.78084,-118.43033,0.033333333,
+6-Jun-08,Rocky Point North,Mesocentrotus franciscanus,33.78084,-118.43033,0.1,
+6-Jun-08,Rocky Point North,Patiria miniata,33.78084,-118.43033,0.016666667,
+6-Jun-08,Rocky Point North,Pisaster giganteus,33.78084,-118.43033,0.216666667,
+6-May-08,Point Vicente West,Centrostephanus coronatus,33.7391,-118.41418,1.116666667,
+6-May-08,Point Vicente West,Mesocentrotus franciscanus,33.7391,-118.41418,1.216666667,
+6-May-08,Point Vicente West,Patiria miniata,33.7391,-118.41418,3.083333333,
+6-May-08,Point Vicente West,Pisaster giganteus,33.7391,-118.41418,1.566666667,
+6-May-08,Point Vicente West,Pisaster ochraceus,33.7391,-118.41418,0.083333333,
+6-May-08,Point Vicente West,Strongylocentrotus purpuratus,33.7391,-118.41418,1.583333333,
+6-May-08,Bunker Point,Centrostephanus coronatus,33.72491,-118.35365,0.033333333,PVR
+6-May-08,Bunker Point,Mesocentrotus franciscanus,33.72530286,-118.35335,4.583333333,PVR
+6-May-08,Bunker Point,Ophioplocus esmarki,33.72529,-118.3536,0.016666667,PVR
+6-May-08,Bunker Point,Patiria miniata,33.725005,-118.3536375,0.183333333,PVR
+6-May-08,Bunker Point,Pisaster brevispinus,33.72529,-118.3536,0.033333333,PVR
+6-May-08,Bunker Point,Pisaster giganteus,33.72532714,-118.3532971,0.933333333,PVR
+6-May-08,Bunker Point,Pisaster ochraceus,33.725342,-118.353176,0.166666667,PVR
+6-May-08,Bunker Point,Strongylocentrotus purpuratus,33.725494,-118.353156,7.2,PVR
+6-Nov-20,Bunker Point,Centrostephanus coronatus,33.72491,-118.35365,0.016666667,PVR
+6-Nov-20,Bunker Point,Mesocentrotus franciscanus,33.72491,-118.35365,0.1,PVR
+6-Nov-20,Bunker Point,Patiria miniata,33.7243,-118.35386,0.133333333,PVR
+6-Nov-20,Bunker Point,Strongylocentrotus purpuratus,33.72491,-118.35365,0.033333333,PVR
+6-Oct-17,KOU Rock,Lytechinus pictus,33.7172,-118.33928,0.033333333,PVR
+6-Oct-17,KOU Rock,Mesocentrotus franciscanus,33.71828,-118.33874,0.116666667,PVR
+6-Oct-17,KOU Rock,Patiria miniata,33.71742667,-118.3392133,0.3,PVR
+6-Oct-17,KOU Rock,Pisaster giganteus,33.71771,-118.33913,0.016666667,PVR
+6-Oct-17,KOU Rock,Strongylocentrotus purpuratus,33.71771,-118.33913,0.033333333,PVR
+6-Sep-19,Rocky Point South,Centrostephanus coronatus,33.77644,-118.4328,0.016666667,
+6-Sep-19,Rocky Point South,Henricia sp,33.77699333,-118.4340267,0.133333333,
+6-Sep-19,Rocky Point South,Linckia columbiae,33.77657,-118.431545,0.033333333,
+6-Sep-19,Rocky Point South,Mesocentrotus franciscanus,33.77652588,-118.4317629,1.783333333,
+6-Sep-19,Rocky Point South,Patiria miniata,33.77680333,-118.4325767,0.083333333,
+6-Sep-19,Rocky Point South,Strongylocentrotus purpuratus,33.77625308,-118.4305431,1.216666667,
+7-Aug-19,Old 18th,Astropecten armatus,33.72096,-118.34545,0.2,PVR
+7-Aug-19,Old 18th,Luidia armata,33.72096,-118.34545,0.05,PVR
+7-Aug-19,Old 18th,Mesocentrotus franciscanus,33.7221,-118.34451,0.016666667,PVR
+7-Aug-19,Old 18th,Strongylocentrotus purpuratus,33.7221,-118.34451,0.016666667,PVR
+7-Aug-19,Cape Point,Mesocentrotus franciscanus,33.719336,-118.340956,0.25,PVR
+7-Aug-19,Cape Point,Patiria miniata,33.718592,-118.341232,0.216666667,PVR
+7-Dec-16,Bunker Point,Patiria miniata,33.7243,-118.35386,0.066666667,PVR
+7-Dec-16,Burial Grounds,Patiria miniata,33.72206,-118.34868,0.216666667,PVR
+7-Jul-22,Hawthorne Reef,Centrostephanus coronatus,33.747045,-118.41685,0.066666667,
+7-Jul-22,Hawthorne Reef,Dermasterias imbricata,33.74674,-118.41981,0.016666667,
+7-Jul-22,Hawthorne Reef,Linckia columbiae,33.74674,-118.41981,0.033333333,
+7-Jul-22,Hawthorne Reef,Mesocentrotus franciscanus,33.747005,-118.417255,0.716666667,
+7-Jul-22,Hawthorne Reef,Patiria miniata,33.74683444,-118.4188822,1.616666667,
+7-Jul-22,Hawthorne Reef,Pisaster giganteus,33.74711,-118.41632,0.016666667,
+7-Jul-22,Hawthorne Reef,Strongylocentrotus purpuratus,33.74706125,-118.4167175,0.933333333,
+7-Oct-08,Resort Point,Astropecten armatus,33.76599,-118.42944,0.016666667,
+7-Oct-08,Resort Point,Henricia sp,33.76599,-118.42944,0.016666667,
+7-Oct-08,Resort Point,Lytechinus pictus,33.76599,-118.42944,0.033333333,
+7-Oct-08,Resort Point,Mesocentrotus franciscanus,33.76633,-118.428935,0.516666667,
+7-Oct-08,Resort Point,Orthasterias koehleri,33.76599,-118.42944,0.016666667,
+7-Oct-08,Resort Point,Patiria miniata,33.76629909,-118.4289809,1.25,
+7-Oct-08,Resort Point,Pisaster brevispinus,33.76667,-118.42843,0.033333333,
+7-Oct-08,Resort Point,Pisaster giganteus,33.766398,-118.428834,0.566666667,
+7-Oct-08,Resort Point,Pisaster ochraceus,33.76667,-118.42843,0.016666667,
+7-Oct-08,Resort Point,Strongylocentrotus purpuratus,33.76644333,-118.4287667,0.2,
+7-Oct-15,Point Vicente West,Centrostephanus coronatus,33.7391,-118.41418,0.033333333,
+7-Oct-15,Point Vicente West,Mesocentrotus franciscanus,33.738852,-118.414428,1.016666667,
+7-Oct-15,Point Vicente West,Patiria miniata,33.73848,-118.4148,0.133333333,
+7-Oct-15,Point Vicente West,Strongylocentrotus purpuratus,33.7391,-118.41418,0.383333333,
+8-Aug-19,Burial Grounds,Centrostephanus coronatus,33.72333,-118.34777,0.016666667,PVR
+8-Aug-19,Burial Grounds,Mesocentrotus franciscanus,33.72402333,-118.34752,0.166666667,PVR
+8-Aug-19,Burial Grounds,Patiria miniata,33.72206,-118.34868,0.366666667,PVR
+8-Aug-19,Burial Grounds,Strongylocentrotus purpuratus,33.72398,-118.3475575,0.716666667,PVR
+8-Jan-15,KOU Rock,Mesocentrotus franciscanus,33.719105,-118.338275,0.283333333,PVR
+8-Jan-15,KOU Rock,Patiria miniata,33.717506,-118.33919,0.15,PVR
+8-Jan-15,KOU Rock,Strongylocentrotus purpuratus,33.72098,-118.337132,0.316666667,PVR
+8-Jul-08,3 Palms East,Mesocentrotus franciscanus,33.71801,-118.3315,2.316666667,PVR
+8-Jul-08,3 Palms East,Patiria miniata,33.71801,-118.3315,0.033333333,PVR
+8-Jul-08,3 Palms East,Pisaster brevispinus,33.71801,-118.3315,0.066666667,PVR
+8-Jul-08,3 Palms East,Pisaster giganteus,33.71801,-118.3315,0.95,PVR
+8-Jul-08,3 Palms East,Pisaster ochraceus,33.71801,-118.3315,0.05,PVR
+8-Jul-08,3 Palms East,Strongylocentrotus purpuratus,33.71801,-118.3315,0.016666667,PVR
+8-Jun-16,Rocky Point North,Centrostephanus coronatus,33.78014,-118.42891,0.016666667,
+8-Jun-16,Rocky Point North,Linckia columbiae,33.78014,-118.42891,0.033333333,
+8-Jun-16,Rocky Point North,Mesocentrotus franciscanus,33.78014,-118.42891,0.083333333,
+8-Jun-16,Rocky Point North,Strongylocentrotus purpuratus,33.78014,-118.42891,0.116666667,
+8-Jun-16,Rocky Point South,Mesocentrotus franciscanus,33.7767,-118.43029,0.066666667,
+8-Jun-16,Rocky Point South,Strongylocentrotus purpuratus,33.7767,-118.43029,0.383333333,
+8-Nov-17,Burial Grounds,Centrostephanus coronatus,33.72206,-118.34868,0.016666667,PVR
+8-Nov-17,Burial Grounds,Lytechinus pictus,33.72206,-118.34868,0.033333333,PVR
+8-Nov-17,Burial Grounds,Patiria miniata,33.72206,-118.34868,0.3,PVR
+8-Sep-21,Lunada Bay,Henricia sp,33.77149,-118.43487,0.133333333,
+8-Sep-21,Lunada Bay,Mesocentrotus franciscanus,33.771558,-118.433138,0.466666667,
+8-Sep-21,Lunada Bay,Patiria miniata,33.77149,-118.43487,0.016666667,
+8-Sep-21,Lunada Bay,Strongylocentrotus purpuratus,33.77181,-118.4311,0.45,
+9-Aug-13,Resort Point,Mesocentrotus franciscanus,33.766685,-118.4273543,3.266666667,
+9-Aug-13,Resort Point,Patiria miniata,33.76668,-118.427765,2.866666667,
+9-Aug-13,Resort Point,Pisaster giganteus,33.76669125,-118.4267888,0.233333333,
+9-Aug-13,Resort Point,Pisaster ochraceus,33.76669667,-118.4264133,0.05,
+9-Aug-13,Resort Point,Pycnopodia helianthoides,33.76667,-118.42843,0.016666667,
+9-Aug-13,Resort Point,Sclerasterias heteropaes,33.76667,-118.42843,0.033333333,
+9-Aug-13,Resort Point,Strongylocentrotus purpuratus,33.76668875,-118.4270463,7.483333333,
+9-Nov-21,Bunker Point,Mesocentrotus franciscanus,33.72563,-118.35286,0.566666667,PVR
+9-Nov-21,Bunker Point,Strongylocentrotus purpuratus,33.72563,-118.35286,2.966666667,PVR
+9-Nov-21,Burial Grounds,Centrostephanus coronatus,33.72437,-118.34743,0.016666667,PVR
+9-Nov-21,Burial Grounds,Mesocentrotus franciscanus,33.72437,-118.34743,0.4,PVR
+9-Nov-21,Burial Grounds,Strongylocentrotus purpuratus,33.72437,-118.34743,0.566666667,PVR
+9-Nov-21,3 Palms West,Mesocentrotus franciscanus,33.719952,-118.334536,0.316666667,PVR
+9-Nov-21,3 Palms West,Strongylocentrotus purpuratus,33.71998571,-118.33451,0.65,PVR
+9-Oct-08,Resort Point,Mesocentrotus franciscanus,33.766695,-118.426585,2.733333333,
+9-Oct-08,Resort Point,Patiria miniata,33.76669444,-118.4266422,0.966666667,
+9-Oct-08,Resort Point,Pisaster giganteus,33.76669667,-118.4264133,0.316666667,
+9-Oct-08,Resort Point,Pisaster ochraceus,33.76669857,-118.4262171,0.183333333,
+9-Oct-08,Resort Point,Strongylocentrotus purpuratus,33.76669545,-118.4265382,4.066666667,
+9-Oct-15,Resort Point,Mesocentrotus franciscanus,33.76669,-118.4271,1.133333333,
+9-Oct-15,Resort Point,Strongylocentrotus purpuratus,33.76669,-118.4271,2.5,
+9-Oct-18,Hawthorne Reef,Centrostephanus coronatus,33.74702875,-118.4169825,0.35,
+9-Oct-18,Hawthorne Reef,Mesocentrotus franciscanus,33.74703909,-118.4168982,0.9,
+9-Oct-18,Hawthorne Reef,Pisaster giganteus,33.74711,-118.41632,0.016666667,
+9-Oct-18,Hawthorne Reef,Strongylocentrotus purpuratus,33.74705091,-118.4168018,3.983333333,
+9-Oct-18,Burial Grounds,Patiria miniata,33.72206,-118.34868,0.05,PVR
+9-Oct-18,3 Palms East,Centrostephanus coronatus,33.7142,-118.33394,0.033333333,PVR
+9-Oct-18,3 Palms East,Lytechinus pictus,33.7142,-118.33394,0.5,PVR
+9-Oct-18,3 Palms East,Mesocentrotus franciscanus,33.7142,-118.33394,0.216666667,PVR
+9-Oct-18,3 Palms East,Patiria miniata,33.7142,-118.33394,0.066666667,PVR
+9-Sep-16,Bunker Point,Centrostephanus coronatus,33.72529,-118.3536,0.016666667,PVR
+9-Sep-16,Bunker Point,Mesocentrotus franciscanus,33.72528,-118.3534275,0.066666667,PVR
+9-Sep-16,Bunker Point,Strongylocentrotus purpuratus,33.72527,-118.353255,0.033333333,PVR
+10-Aug-11,Bunker Point,Mesocentrotus franciscanus,33.72491,-118.35365,1.3,PVR
+10-Aug-11,Bunker Point,Patiria miniata,33.72491,-118.35365,0.366666667,PVR
+10-Aug-11,Bunker Point,Pisaster giganteus,33.72491,-118.35365,0.183333333,PVR
+10-Aug-11,Bunker Point,Pycnopodia helianthoides,33.72491,-118.35365,0.016666667,PVR
+10-Aug-11,Bunker Point,Strongylocentrotus purpuratus,33.72491,-118.35365,0.2,PVR
+10-Aug-12,Point Vicente West,Henricia sp,33.73879,-118.41449,0.05,
+10-Aug-12,Point Vicente West,Linckia columbiae,33.7391,-118.41418,0.016666667,
+10-Aug-12,Point Vicente West,Lytechinus pictus,33.73848,-118.4148,0.05,
+10-Aug-12,Point Vicente West,Mesocentrotus franciscanus,33.73985333,-118.4137524,4.066666667,
+10-Aug-12,Point Vicente West,Patiria miniata,33.7392,-118.414285,5.666666667,
+10-Aug-12,Point Vicente West,Pisaster brevispinus,33.7391,-118.41418,0.016666667,
+10-Aug-12,Point Vicente West,Pisaster giganteus,33.73971238,-118.4138781,1.016666667,
+10-Aug-12,Point Vicente West,Pisaster ochraceus,33.74040538,-118.4133377,0.5,
+10-Aug-12,Point Vicente West,Pycnopodia helianthoides,33.73848,-118.4148,0.016666667,
+10-Aug-12,Point Vicente West,Strongylocentrotus purpuratus,33.74011714,-118.4136057,13.1,
+10-Feb-05,Point Vicente West,Centrostephanus coronatus,33.74011667,-118.4135433,2.866666667,
+10-Feb-05,Point Vicente West,Dermasterias imbricata,33.73998667,-118.41384,0.266666667,
+10-Feb-05,Point Vicente West,Mesocentrotus franciscanus,33.739976,-118.413696,0.333333333,
+10-Feb-05,Point Vicente West,Patiria miniata,33.73996,-118.41348,0.366666667,
+10-Feb-05,Point Vicente West,Pisaster brevispinus,33.7402925,-118.4133525,0.516666667,
+10-Feb-05,Point Vicente West,Pisaster giganteus,33.74011667,-118.4135433,1.05,
+10-Feb-05,Point Vicente West,Pisaster ochraceus,33.7402925,-118.4133525,0.216666667,
+10-Feb-05,Point Vicente West,Pycnopodia helianthoides,33.7391,-118.41418,0.016666667,
+10-Feb-05,Point Vicente West,Strongylocentrotus purpuratus,33.74011667,-118.4135433,38.71666667,
+10-Feb-16,Rocky Point North,Strongylocentrotus purpuratus,33.77958,-118.4278,0.016666667,
+10-Feb-16,Honeymoon Cove,Mesocentrotus franciscanus,33.76486,-118.4234,0.05,
+10-Feb-16,Honeymoon Cove,Strongylocentrotus purpuratus,33.76486,-118.4234,0.133333333,
+10-Feb-16,Point Vicente West,Mesocentrotus franciscanus,33.74082,-118.41278,0.016666667,
+10-Feb-16,Point Vicente West,Strongylocentrotus purpuratus,33.74082,-118.41278,0.383333333,
+10-Jul-12,Bunker Point,Mesocentrotus franciscanus,33.72539667,-118.3532383,1.233333333,PVR
+10-Jul-12,Bunker Point,Patiria miniata,33.72508273,-118.3536273,0.65,PVR
+10-Jul-12,Bunker Point,Pisaster giganteus,33.725302,-118.3533667,0.6,PVR
+10-Jul-12,Bunker Point,Pisaster ochraceus,33.725562,-118.353008,0.1,PVR
+10-Jul-12,Bunker Point,Strongylocentrotus purpuratus,33.72539667,-118.3532383,6.283333333,PVR
+10-Jun-11,Hawthorne Reef,Linckia columbiae,33.74698,-118.41738,0.016666667,
+10-Jun-11,Hawthorne Reef,Mesocentrotus franciscanus,33.74698,-118.41738,0.833333333,
+10-Jun-11,Hawthorne Reef,Orthasterias koehleri,33.74698,-118.41738,0.016666667,
+10-Jun-11,Hawthorne Reef,Patiria miniata,33.74698,-118.41738,2.45,
+10-Jun-11,Hawthorne Reef,Pisaster brevispinus,33.74698,-118.41738,0.083333333,
+10-Jun-11,Hawthorne Reef,Pisaster giganteus,33.74698,-118.41738,0.2,
+10-Jun-11,Hawthorne Reef,Pycnopodia helianthoides,33.74698,-118.41738,0.35,
+10-Jun-11,Hawthorne Reef,Strongylocentrotus purpuratus,33.74698,-118.41738,0.033333333,
+10-Jun-11,KOU Rock,Mesocentrotus franciscanus,33.7209,-118.33718,1.883333333,PVR
+10-Jun-11,KOU Rock,Patiria miniata,33.7207,-118.3373,0.566666667,PVR
+10-Jun-11,KOU Rock,Pisaster giganteus,33.7209,-118.33718,1.033333333,PVR
+10-Jun-11,KOU Rock,Pisaster ochraceus,33.72103333,-118.3371,0.05,PVR
+10-Jun-11,KOU Rock,Strongylocentrotus purpuratus,33.72093636,-118.3371582,2.833333333,PVR
+10-Jun-16,Rocky Point North,Henricia sp,33.78084,-118.43033,0.016666667,
+10-Jun-16,Rocky Point North,Mesocentrotus franciscanus,33.78084,-118.43033,0.383333333,
+10-Jun-16,Rocky Point North,Strongylocentrotus purpuratus,33.78084,-118.43033,0.05,
+10-Jun-16,Rocky Point South,Henricia sp,33.77644,-118.4328,0.05,
+10-Jun-16,Rocky Point South,Mesocentrotus franciscanus,33.77625,-118.43212,0.366666667,
+10-Jun-16,Rocky Point South,Patiria miniata,33.77644,-118.4328,0.366666667,
+10-Jun-16,Rocky Point South,Strongylocentrotus purpuratus,33.776174,-118.431848,0.233333333,
+10-Nov-21,Burial Grounds,Mesocentrotus franciscanus,33.72333,-118.34777,0.116666667,PVR
+10-Nov-21,Burial Grounds,Patiria miniata,33.72206,-118.34868,0.35,PVR
+10-Nov-21,Burial Grounds,Strongylocentrotus purpuratus,33.72333,-118.34777,0.066666667,PVR
+10-Nov-21,Cape Point,Mesocentrotus franciscanus,33.72008,-118.34068,0.05,PVR
+10-Nov-21,Cape Point,Strongylocentrotus purpuratus,33.72008,-118.34068,0.066666667,PVR
+10-Oct-18,Lunada Bay,Centrostephanus coronatus,33.77089,-118.43263,0.116666667,
+10-Oct-18,Lunada Bay,Mesocentrotus franciscanus,33.77119667,-118.43212,0.333333333,
+10-Oct-18,Lunada Bay,Pisaster giganteus,33.77135,-118.431865,0.033333333,
+10-Oct-18,Lunada Bay,Strongylocentrotus purpuratus,33.77150333,-118.43161,1.233333333,
+10-Oct-18,Old 18th,Astropecten armatus,33.72096,-118.34545,0.05,PVR
+10-Oct-18,Old 18th,Luidia armata,33.72096,-118.34545,0.016666667,PVR
+10-Oct-18,Old 18th,Patiria miniata,33.72096,-118.34545,0.1,PVR
+10-Oct-18,Cape Point,Lytechinus pictus,33.71822,-118.34137,0.05,PVR
+10-Oct-18,Cape Point,Patiria miniata,33.71822,-118.34137,0.1,PVR
+11-Aug-22,Rocky Point South,Strongylocentrotus purpuratus,33.77511,-118.42804,0.1,
+11-Aug-22,Old 18th,Patiria miniata,33.7221,-118.34451,0.033333333,PVR
+11-Aug-22,Old 18th,Pisaster giganteus,33.7221,-118.34451,0.016666667,PVR
+11-Aug-22,Cape Point,Henricia sp,33.71822,-118.34137,0.016666667,PVR
+11-Aug-22,Cape Point,Mesocentrotus franciscanus,33.71875143,-118.3411729,1.016666667,PVR
+11-Aug-22,Cape Point,Patiria miniata,33.71915,-118.341025,0.1,PVR
+11-Aug-22,Cape Point,Strongylocentrotus purpuratus,33.71946,-118.34091,0.133333333,PVR
+11-Jul-14,Rocky Point North,Mesocentrotus franciscanus,33.77995333,-118.42854,0.15,
+11-Jul-14,Rocky Point North,Strongylocentrotus purpuratus,33.77986,-118.428355,0.133333333,
+11-Jul-14,Honeymoon Cove,Henricia sp,33.76396,-118.42692,0.033333333,
+11-Jul-14,Honeymoon Cove,Mesocentrotus franciscanus,33.76396,-118.42692,0.25,
+11-Jul-14,Honeymoon Cove,Patiria miniata,33.76396,-118.42692,0.383333333,
+11-Jul-14,Honeymoon Cove,Strongylocentrotus purpuratus,33.76396,-118.42692,0.016666667,
+11-Jun-13,Point Vicente West,Mesocentrotus franciscanus,33.73848,-118.4148,0.35,
+11-Jun-13,Point Vicente West,Patiria miniata,33.73848,-118.4148,0.75,
+11-Jun-13,Point Vicente West,Pisaster brevispinus,33.73848,-118.4148,0.016666667,
+11-Jun-13,Point Vicente West,Pisaster giganteus,33.73848,-118.4148,0.166666667,
+11-Jun-13,Point Vicente West,Pycnopodia helianthoides,33.73848,-118.4148,0.016666667,
+11-Jun-21,Rocky Point North,Henricia sp,33.78084,-118.43033,0.033333333,
+11-Jun-21,Rocky Point North,Linckia columbiae,33.78084,-118.43033,0.066666667,
+11-Jun-21,Rocky Point North,Mesocentrotus franciscanus,33.78056,-118.429762,0.216666667,
+11-Jun-21,Rocky Point North,Strongylocentrotus purpuratus,33.78049,-118.42962,0.6,
+11-Nov-22,Old 18th,Strongylocentrotus purpuratus,33.72405,-118.3431,0.066666667,PVR
+11-Oct-17,Lunada Bay,Astrometis sertulifera,33.77149,-118.43487,0.033333333,
+11-Oct-17,Lunada Bay,Centrostephanus coronatus,33.77149,-118.43487,0.016666667,
+11-Oct-17,Lunada Bay,Henricia sp,33.77129,-118.4341233,0.066666667,
+11-Oct-17,Lunada Bay,Mesocentrotus franciscanus,33.77125889,-118.4334556,0.5,
+11-Oct-17,Lunada Bay,Strongylocentrotus purpuratus,33.77130167,-118.4312833,0.133333333,
+11-Sep-09,3 Palms East,Lytechinus pictus,33.7142,-118.33394,7.133333333,PVR
+11-Sep-09,3 Palms East,Mesocentrotus franciscanus,33.7174,-118.3325133,0.216666667,PVR
+11-Sep-09,3 Palms East,Patiria miniata,33.7142,-118.33394,0.166666667,PVR
+11-Sep-09,3 Palms East,Pisaster brevispinus,33.719,-118.3318,0.016666667,PVR
+11-Sep-09,3 Palms East,Pisaster giganteus,33.71686667,-118.3327511,0.316666667,PVR
+11-Sep-09,3 Palms East,Pisaster ochraceus,33.719,-118.3318,0.116666667,PVR
+11-Sep-09,3 Palms East,Strongylocentrotus purpuratus,33.719,-118.3318,0.633333333,PVR
+12-Aug-14,Resort Point,Centrostephanus coronatus,33.76667,-118.42843,0.016666667,
+12-Aug-14,Resort Point,Lytechinus pictus,33.76667,-118.42843,0.016666667,
+12-Aug-14,Resort Point,Mesocentrotus franciscanus,33.76659067,-118.427738,2.216666667,
+12-Aug-14,Resort Point,Patiria miniata,33.76639,-118.4286292,0.766666667,
+12-Aug-14,Resort Point,Strongylocentrotus purpuratus,33.76661111,-118.4273122,14.18333333,
+12-Aug-16,Point Vicente West,Centrostephanus coronatus,33.7391,-118.41418,0.166666667,
+12-Aug-16,Point Vicente West,Mesocentrotus franciscanus,33.7391,-118.41418,1.316666667,
+12-Aug-16,Point Vicente West,Patiria miniata,33.7391,-118.41418,0.083333333,
+12-Aug-16,Point Vicente West,Strongylocentrotus purpuratus,33.7391,-118.41418,0.333333333,
+12-Jun-13,Honeymoon Cove,Mesocentrotus franciscanus,33.76396,-118.42692,0.083333333,
+12-Jun-13,Honeymoon Cove,Patiria miniata,33.76396,-118.42692,0.716666667,
+12-Jun-13,Honeymoon Cove,Pisaster giganteus,33.76396,-118.42692,0.016666667,
+12-Jun-19,Honeymoon Cove,Linckia columbiae,33.76486,-118.4234,0.016666667,
+12-Jun-19,Honeymoon Cove,Mesocentrotus franciscanus,33.76486,-118.4234,0.083333333,
+12-Jun-19,Honeymoon Cove,Strongylocentrotus purpuratus,33.76486,-118.4234,0.533333333,
+12-Nov-21,Old 18th,Patiria miniata,33.72405,-118.3431,0.016666667,PVR
+12-Nov-21,Old 18th,Strongylocentrotus purpuratus,33.72405,-118.3431,0.05,PVR
+12-Nov-21,Cape Point,Mesocentrotus franciscanus,33.72164,-118.34029,0.083333333,PVR
+12-Nov-21,Cape Point,Patiria miniata,33.72164,-118.34029,0.033333333,PVR
+12-Nov-21,Cape Point,Strongylocentrotus purpuratus,33.72164,-118.34029,0.05,PVR
+12-Oct-11,Rocky Point South,Mesocentrotus franciscanus,33.77511,-118.42804,0.033333333,
+12-Oct-11,Rocky Point South,Pisaster ochraceus,33.77511,-118.42804,0.033333333,
+12-Oct-11,Rocky Point South,Strongylocentrotus purpuratus,33.77511,-118.42804,0.433333333,
+12-Oct-11,Point Vicente West,Mesocentrotus franciscanus,33.74064273,-118.4131845,1.316666667,
+12-Oct-11,Point Vicente West,Patiria miniata,33.74043,-118.41367,3.416666667,
+12-Oct-11,Point Vicente West,Pisaster giganteus,33.74064273,-118.4131845,0.783333333,
+12-Oct-11,Point Vicente West,Pisaster ochraceus,33.740664,-118.413136,0.566666667,
+12-Oct-11,Point Vicente West,Pycnopodia helianthoides,33.74043,-118.41367,0.083333333,
+12-Oct-11,Point Vicente West,Strongylocentrotus purpuratus,33.74064273,-118.4131845,6.416666667,
+12-Oct-16,Burial Grounds,Mesocentrotus franciscanus,33.72402333,-118.3475433,0.05,PVR
+12-Oct-16,Burial Grounds,Strongylocentrotus purpuratus,33.72471667,-118.34727,0.066666667,PVR
+13-Aug-07,Rocky Point North,Centrostephanus coronatus,33.78084,-118.43033,0.35,
+13-Aug-07,Rocky Point North,Henricia sp,33.78084,-118.43033,0.05,
+13-Aug-07,Rocky Point North,Pisaster giganteus,33.78072333,-118.4300933,1.033333333,
+13-Jul-12,Hawthorne Reef,Patiria miniata,33.74674,-118.41981,1.3,
+13-Jul-12,Hawthorne Reef,Pisaster giganteus,33.74674,-118.41981,0.1,
+13-Jul-18,Honeymoon Cove,Mesocentrotus franciscanus,33.76423,-118.42428,0.3,
+13-Jul-18,Honeymoon Cove,Pisaster ochraceus,33.76423,-118.42428,0.016666667,
+13-Jul-18,Honeymoon Cove,Strongylocentrotus purpuratus,33.76423,-118.42428,0.383333333,
+13-Jul-22,Hawthorne Reef,Mesocentrotus franciscanus,33.74718,-118.4153,0.95,
+13-Jul-22,Hawthorne Reef,Patiria miniata,33.74718,-118.4153,0.016666667,
+13-Jul-22,Hawthorne Reef,Strongylocentrotus purpuratus,33.74718,-118.4153,0.95,
+13-Jun-18,Honeymoon Cove,Centrostephanus coronatus,33.76394,-118.42582,0.016666667,
+13-Jun-18,Honeymoon Cove,Henricia sp,33.76394,-118.42582,0.083333333,
+13-Jun-18,Honeymoon Cove,Linckia columbiae,33.76394,-118.42582,0.016666667,
+13-Jun-18,Honeymoon Cove,Mesocentrotus franciscanus,33.76394,-118.42582,0.833333333,
+13-Jun-18,Honeymoon Cove,Patiria miniata,33.76394,-118.42582,0.25,
+13-Jun-18,Honeymoon Cove,Strongylocentrotus purpuratus,33.76394,-118.42582,1.016666667,
+13-Mar-12,Honeymoon Cove,Mesocentrotus franciscanus,33.76437294,-118.4247459,1.733333333,
+13-Mar-12,Honeymoon Cove,Patiria miniata,33.76432,-118.4249529,2.166666667,
+13-Mar-12,Honeymoon Cove,Pisaster giganteus,33.76426857,-118.4250343,0.35,
+13-Mar-12,Honeymoon Cove,Pisaster ochraceus,33.764608,-118.423752,0.1,
+13-Mar-12,Honeymoon Cove,Pycnopodia helianthoides,33.76396,-118.42692,0.016666667,
+13-Mar-12,Honeymoon Cove,Strongylocentrotus purpuratus,33.76446143,-118.42428,37.43333333,
+13-May-11,Lunada Bay,Mesocentrotus franciscanus,33.771665,-118.429355,5.383333333,
+13-May-11,Lunada Bay,Patiria miniata,33.77181,-118.4311,0.25,
+13-May-11,Lunada Bay,Pisaster brevispinus,33.77181,-118.4311,0.016666667,
+13-May-11,Lunada Bay,Pisaster giganteus,33.77176857,-118.4306014,0.466666667,
+13-May-11,Lunada Bay,Pisaster ochraceus,33.7715925,-118.4284825,0.1,
+13-May-11,Lunada Bay,Strongylocentrotus purpuratus,33.771665,-118.429355,9.416666667,
+13-May-11,Hawthorne Reef,Mesocentrotus franciscanus,33.74718,-118.4153,1.316666667,
+13-May-11,Hawthorne Reef,Patiria miniata,33.74718,-118.4153,0.333333333,
+13-May-11,Hawthorne Reef,Pisaster giganteus,33.74718,-118.4153,0.283333333,
+13-May-11,Hawthorne Reef,Pisaster ochraceus,33.74718,-118.4153,0.516666667,
+13-May-11,Hawthorne Reef,Strongylocentrotus purpuratus,33.74718,-118.4153,47,
+13-Nov-15,KOU Rock,Mesocentrotus franciscanus,33.7213,-118.33694,0.016666667,PVR
+13-Nov-15,KOU Rock,Strongylocentrotus purpuratus,33.7213,-118.33694,0.1,PVR
+13-Nov-21,Old 18th,Patiria miniata,33.72096,-118.34545,0.05,PVR
+13-Nov-21,Old 18th,Pisaster giganteus,33.7221,-118.34451,0.016666667,PVR
+13-Nov-21,Cape Point,Astropecten armatus,33.71822,-118.34137,0.016666667,PVR
+13-Nov-21,Cape Point,Patiria miniata,33.71822,-118.34137,0.05,PVR
+13-Oct-15,KOU Rock,Patiria miniata,33.7172,-118.33928,0.016666667,PVR
+13-Oct-17,3 Palms East,Lytechinus pictus,33.7142,-118.33394,0.05,PVR
+13-Oct-17,3 Palms East,Mesocentrotus franciscanus,33.71629667,-118.3328433,0.1,PVR
+13-Oct-17,3 Palms East,Patiria miniata,33.7142,-118.33394,0.1,PVR
+13-Oct-17,3 Palms East,Sclerasterias heteropaes,33.7142,-118.33394,0.016666667,PVR
+13-Oct-17,3 Palms East,Strongylocentrotus purpuratus,33.71668,-118.33309,0.016666667,PVR
+13-Sep-19,KOU Rock,Centrostephanus coronatus,33.71771,-118.33913,0.033333333,PVR
+13-Sep-19,KOU Rock,Mesocentrotus franciscanus,33.71923143,-118.3381743,0.266666667,PVR
+13-Sep-19,KOU Rock,Patiria miniata,33.717404,-118.33922,0.733333333,PVR
+13-Sep-19,KOU Rock,Strongylocentrotus purpuratus,33.72021571,-118.3375957,0.35,PVR
+14-Aug-19,Bunker Point,Centrostephanus coronatus,33.7243,-118.35386,0.016666667,PVR
+14-Aug-19,Bunker Point,Mesocentrotus franciscanus,33.724605,-118.353755,0.116666667,PVR
+14-Aug-19,Bunker Point,Patiria miniata,33.7243,-118.35386,0.15,PVR
+14-Aug-19,Bunker Point,Strongylocentrotus purpuratus,33.72491,-118.35365,0.016666667,PVR
+14-Aug-20,Hawthorne Reef,Mesocentrotus franciscanus,33.74718,-118.4153,0.05,
+14-Aug-20,Hawthorne Reef,Pisaster ochraceus,33.74718,-118.4153,0.016666667,
+14-Aug-20,Hawthorne Reef,Strongylocentrotus purpuratus,33.74718,-118.4153,0.433333333,
+14-Aug-20,Point Vicente West,Centrostephanus coronatus,33.73945333,-118.4140167,0.3,
+14-Aug-20,Point Vicente West,Mesocentrotus franciscanus,33.73938,-118.4141178,2.183333333,
+14-Aug-20,Point Vicente West,Patiria miniata,33.738635,-118.414645,1.266666667,
+14-Aug-20,Point Vicente West,Pisaster giganteus,33.7391,-118.41418,0.066666667,
+14-Aug-20,Point Vicente West,Strongylocentrotus purpuratus,33.739976,-118.413696,1.333333333,
+14-Jun-19,Point Vicente West,Centrostephanus coronatus,33.74082,-118.41278,0.016666667,
+14-Jun-19,Point Vicente West,Mesocentrotus franciscanus,33.74082,-118.41278,0.1,
+14-Jun-19,Point Vicente West,Strongylocentrotus purpuratus,33.74082,-118.41278,0.5,
+14-Nov-18,Bunker Point,Patiria miniata,33.7243,-118.35386,0.05,PVR
+14-Oct-15,Rocky Point South,Mesocentrotus franciscanus,33.7767,-118.43029,0.066666667,
+14-Oct-15,Rocky Point South,Strongylocentrotus purpuratus,33.7767,-118.43029,0.216666667,
+14-Oct-15,Resort Point,Strongylocentrotus purpuratus,33.7667,-118.42607,0.733333333,
+14-Oct-16,3 Palms West,Mesocentrotus franciscanus,33.71594,-118.33688,0.033333333,PVR
+14-Oct-16,3 Palms West,Patiria miniata,33.71594,-118.33688,0.033333333,PVR
+14-Oct-16,3 Palms East,Henricia sp,33.7142,-118.33394,0.016666667,PVR
+14-Oct-16,3 Palms East,Linckia columbiae,33.7142,-118.33394,0.05,PVR
+14-Oct-16,3 Palms East,Mesocentrotus franciscanus,33.71585333,-118.3333733,0.1,PVR
+14-Oct-16,3 Palms East,Patiria miniata,33.7142,-118.33394,0.166666667,PVR
+14-Oct-16,3 Palms East,Pisaster giganteus,33.71668,-118.33309,0.016666667,PVR
+14-Oct-16,3 Palms East,Strongylocentrotus purpuratus,33.71668,-118.33309,0.083333333,PVR
+14-Sep-16,Lunada Bay,Mesocentrotus franciscanus,33.77181,-118.4311,0.033333333,
+14-Sep-16,Lunada Bay,Strongylocentrotus purpuratus,33.77181,-118.4311,0.05,
+14-Sep-18,3 Palms West,Lytechinus pictus,33.71594,-118.33688,1.233333333,PVR
+14-Sep-18,3 Palms West,Mesocentrotus franciscanus,33.71594,-118.33688,0.266666667,PVR
+14-Sep-18,3 Palms West,Patiria miniata,33.71594,-118.33688,0.066666667,PVR
+14-Sep-22,Rocky Point South,Henricia sp,33.77727,-118.43464,0.1,
+14-Sep-22,Rocky Point South,Linckia columbiae,33.7767,-118.43029,0.016666667,
+14-Sep-22,Rocky Point South,Mesocentrotus franciscanus,33.77701091,-118.4326627,1.283333333,
+14-Sep-22,Rocky Point South,Patiria miniata,33.77727,-118.43464,0.033333333,
+14-Sep-22,Rocky Point South,Pisaster giganteus,33.77727,-118.43464,0.016666667,
+14-Sep-22,Rocky Point South,Sclerasterias heteropaes,33.77727,-118.43464,0.016666667,
+14-Sep-22,Rocky Point South,Strongylocentrotus purpuratus,33.7767,-118.43029,0.316666667,
+15-Aug-18,Rocky Point South,Centrostephanus coronatus,33.77644,-118.4328,0.016666667,
+15-Aug-18,Rocky Point South,Henricia sp,33.77671667,-118.4334133,0.133333333,
+15-Aug-18,Rocky Point South,Linckia columbiae,33.77644,-118.4328,0.016666667,
+15-Aug-18,Rocky Point South,Mesocentrotus franciscanus,33.776772,-118.433536,0.466666667,
+15-Aug-18,Rocky Point South,Patiria miniata,33.77699333,-118.4340267,0.1,
+15-Aug-18,Rocky Point South,Pisaster giganteus,33.77644,-118.4328,0.016666667,
+15-Aug-18,Rocky Point South,Strongylocentrotus purpuratus,33.77644,-118.4328,3.2,
+15-Aug-18,Point Vicente West,Centrostephanus coronatus,33.74043,-118.41367,0.016666667,
+15-Aug-18,Point Vicente West,Mesocentrotus franciscanus,33.74043,-118.41367,0.933333333,
+15-Aug-18,Point Vicente West,Strongylocentrotus purpuratus,33.74043,-118.41367,1.516666667,
+15-Dec-17,Cape Point,Mesocentrotus franciscanus,33.72164,-118.34029,0.05,PVR
+15-Jul-20,Resort Point,Centrostephanus coronatus,33.76661,-118.427999,0.433333333,
+15-Jul-20,Resort Point,Henricia sp,33.76644333,-118.4287667,0.083333333,
+15-Jul-20,Resort Point,Mesocentrotus franciscanus,33.76646375,-118.42833,2.033333333,
+15-Jul-20,Resort Point,Patiria miniata,33.76633,-118.428935,0.883333333,
+15-Jul-20,Resort Point,Pisaster giganteus,33.766685,-118.4274325,0.066666667,
+15-Jul-20,Resort Point,Strongylocentrotus purpuratus,33.766542,-118.4281,3.316666667,
+15-Jul-22,Bunker Point,Centrostephanus coronatus,33.72529,-118.3536,0.016666667,PVR
+15-Jul-22,Bunker Point,Henricia sp,33.7243,-118.35386,0.016666667,PVR
+15-Jul-22,Bunker Point,Lytechinus pictus,33.7243,-118.35386,0.016666667,PVR
+15-Jul-22,Bunker Point,Mesocentrotus franciscanus,33.72522667,-118.3536083,0.35,PVR
+15-Jul-22,Bunker Point,Patiria miniata,33.7243,-118.35386,0.216666667,PVR
+15-Jul-22,Bunker Point,Strongylocentrotus purpuratus,33.72529,-118.3536,0.383333333,PVR
+15-Jul-22,Burial Grounds,Mesocentrotus franciscanus,33.72437,-118.34743,0.266666667,PVR
+15-Jul-22,Burial Grounds,Patiria miniata,33.72489,-118.34719,0.05,PVR
+15-Jul-22,Burial Grounds,Strongylocentrotus purpuratus,33.72437,-118.34743,0.433333333,PVR
+15-Jun-17,Rocky Point North,Henricia sp,33.78123,-118.432076,0.083333333,
+15-Jun-17,Rocky Point North,Linckia columbiae,33.78084,-118.43033,0.016666667,
+15-Jun-17,Rocky Point North,Mesocentrotus franciscanus,33.78112889,-118.4316233,0.45,
+15-Jun-17,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.066666667,
+15-Jun-17,Rocky Point North,Pisaster giganteus,33.78084,-118.43033,0.016666667,
+15-Jun-17,Rocky Point North,Strongylocentrotus purpuratus,33.78084,-118.43033,0.083333333,
+15-Jun-18,Honeymoon Cove,Henricia sp,33.76396,-118.42692,0.05,
+15-Jun-18,Honeymoon Cove,Mesocentrotus franciscanus,33.76396,-118.42692,0.25,
+15-Jun-18,Honeymoon Cove,Orthasterias koehleri,33.76396,-118.42692,0.033333333,
+15-Jun-18,Honeymoon Cove,Patiria miniata,33.76396,-118.42692,0.883333333,
+15-Jun-18,Honeymoon Cove,Strongylocentrotus purpuratus,33.76396,-118.42692,0.016666667,
+15-Nov-17,3 Palms West,Lytechinus pictus,33.71594,-118.33688,0.05,PVR
+15-Nov-17,3 Palms West,Mesocentrotus franciscanus,33.717345,-118.3359975,0.2,PVR
+15-Nov-17,3 Palms West,Patiria miniata,33.71594,-118.33688,0.133333333,PVR
+15-Oct-10,Hawthorne Reef,Linckia columbiae,33.74698,-118.41738,0.016666667,
+15-Oct-10,Hawthorne Reef,Mesocentrotus franciscanus,33.74706125,-118.4167175,1.5,
+15-Oct-10,Hawthorne Reef,Patiria miniata,33.747045,-118.41685,6.65,
+15-Oct-10,Hawthorne Reef,Pisaster brevispinus,33.74702333,-118.4170267,0.05,
+15-Oct-10,Hawthorne Reef,Pisaster giganteus,33.74705091,-118.4168018,0.55,
+15-Oct-10,Hawthorne Reef,Pisaster ochraceus,33.747045,-118.41685,0.033333333,
+15-Oct-10,Hawthorne Reef,Pycnopodia helianthoides,33.74706667,-118.4166733,0.066666667,
+15-Oct-10,Hawthorne Reef,Strongylocentrotus purpuratus,33.74711,-118.41632,2.683333333,
+15-Oct-20,Burial Grounds,Mesocentrotus franciscanus,33.72437,-118.34743,0.433333333,PVR
+15-Oct-20,Burial Grounds,Strongylocentrotus purpuratus,33.72437,-118.34743,0.233333333,PVR
+15-Oct-20,Old 18th,Strongylocentrotus purpuratus,33.72405,-118.3431,0.016666667,PVR
+15-Oct-21,Resort Point,Centrostephanus coronatus,33.76667,-118.42843,0.033333333,
+15-Oct-21,Resort Point,Henricia sp,33.76616,-118.4291875,0.133333333,
+15-Oct-21,Resort Point,Mesocentrotus franciscanus,33.766476,-118.427995,2.166666667,
+15-Oct-21,Resort Point,Patiria miniata,33.76629222,-118.4289911,0.3,
+15-Oct-21,Resort Point,Pisaster giganteus,33.76667,-118.42843,0.016666667,
+15-Oct-21,Resort Point,Sclerasterias heteropaes,33.76633,-118.428935,0.066666667,
+15-Oct-21,Resort Point,Strongylocentrotus purpuratus,33.766583,-118.4274745,2.833333333,
+15-Sep-10,Hawthorne Reef,Mesocentrotus franciscanus,33.74718,-118.4153,1.783333333,
+15-Sep-10,Hawthorne Reef,Pisaster giganteus,33.74718,-118.4153,0.45,
+15-Sep-10,Hawthorne Reef,Pisaster ochraceus,33.74718,-118.4153,0.35,
+15-Sep-10,Hawthorne Reef,Strongylocentrotus purpuratus,33.74718,-118.4153,10.25,
+15-Sep-10,Point Vicente West,Patiria miniata,33.73848,-118.4148,0.833333333,
+15-Sep-10,Point Vicente West,Pisaster brevispinus,33.73848,-118.4148,0.016666667,
+15-Sep-10,Point Vicente West,Pisaster giganteus,33.73848,-118.4148,0.05,
+15-Sep-10,Point Vicente West,Pycnopodia helianthoides,33.73848,-118.4148,0.033333333,
+15-Sep-17,Hawthorne Reef,Centrostephanus coronatus,33.74674,-118.41981,0.016666667,
+15-Sep-17,Hawthorne Reef,Lytechinus pictus,33.74674,-118.41981,0.066666667,
+15-Sep-17,Hawthorne Reef,Mesocentrotus franciscanus,33.74695308,-118.4177469,0.85,
+15-Sep-17,Hawthorne Reef,Patiria miniata,33.74674,-118.41981,1.85,
+15-Sep-17,Hawthorne Reef,Pisaster giganteus,33.74674,-118.41981,0.016666667,
+15-Sep-17,Hawthorne Reef,Strongylocentrotus purpuratus,33.74710231,-118.4161754,1.15,
+16-Aug-19,Bunker Point,Mesocentrotus franciscanus,33.72529,-118.3536,0.066666667,PVR
+16-Aug-19,Bunker Point,Strongylocentrotus purpuratus,33.725494,-118.353156,0.466666667,PVR
+16-Dec-11,Rocky Point South,Linckia columbiae,33.7767,-118.43029,0.066666667,
+16-Dec-11,Rocky Point South,Mesocentrotus franciscanus,33.7767,-118.43029,0.633333333,
+16-Dec-11,Rocky Point South,Pisaster giganteus,33.7767,-118.43029,0.15,
+16-Dec-11,Rocky Point South,Strongylocentrotus purpuratus,33.7767,-118.43029,0.916666667,
+16-Jul-10,Rocky Point South,Mesocentrotus franciscanus,33.77511,-118.42804,0.016666667,
+16-Jul-10,Rocky Point South,Strongylocentrotus purpuratus,33.77511,-118.42804,0.016666667,
+16-Jun-21,Rocky Point North,Henricia sp,33.78149,-118.43324,0.066666667,
+16-Jun-21,Rocky Point North,Mesocentrotus franciscanus,33.78149,-118.43324,0.333333333,
+16-Jun-21,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.016666667,
+16-Nov-18,Bunker Point,Pisaster giganteus,33.72529,-118.3536,0.016666667,PVR
+16-Nov-18,3 Palms East,Strongylocentrotus purpuratus,33.718604,-118.33168,0.1,PVR
+16-Nov-21,KOU Rock,Mesocentrotus franciscanus,33.7213,-118.33694,0.066666667,PVR
+16-Nov-21,KOU Rock,Strongylocentrotus purpuratus,33.7213,-118.33694,0.183333333,PVR
+16-Oct-13,Old 18th,Mesocentrotus franciscanus,33.72309,-118.34377,0.233333333,PVR
+16-Oct-13,Old 18th,Patiria miniata,33.72309,-118.34377,0.033333333,PVR
+16-Oct-13,Old 18th,Strongylocentrotus purpuratus,33.72309,-118.34377,0.016666667,PVR
+16-Oct-13,KOU Rock,Strongylocentrotus purpuratus,33.7213,-118.33694,0.583333333,PVR
+16-Oct-13,3 Palms West,Mesocentrotus franciscanus,33.72007,-118.334445,0.216666667,PVR
+16-Oct-13,3 Palms West,Patiria miniata,33.71948,-118.3349,0.05,PVR
+16-Oct-13,3 Palms West,Pisaster brevispinus,33.72066,-118.33399,0.033333333,PVR
+16-Oct-13,3 Palms West,Pisaster giganteus,33.719775,-118.3346725,0.083333333,PVR
+16-Oct-13,3 Palms West,Strongylocentrotus purpuratus,33.720365,-118.3342175,0.283333333,PVR
+16-Oct-15,3 Palms East,Mesocentrotus franciscanus,33.71801,-118.3315,0.083333333,PVR
+16-Oct-15,3 Palms East,Strongylocentrotus purpuratus,33.71801,-118.3315,0.033333333,PVR
+16-Sep-09,Hawthorne Reef,Mesocentrotus franciscanus,33.74695143,-118.4178157,3.1,
+16-Sep-09,Hawthorne Reef,Patiria miniata,33.746925,-118.418065,4.066666667,
+16-Sep-09,Hawthorne Reef,Pisaster brevispinus,33.746962,-118.417716,0.133333333,
+16-Sep-09,Hawthorne Reef,Pisaster giganteus,33.746925,-118.418065,0.583333333,
+16-Sep-09,Hawthorne Reef,Pycnopodia helianthoides,33.746925,-118.418065,0.033333333,
+16-Sep-09,Hawthorne Reef,Strongylocentrotus purpuratus,33.74711,-118.41632,5.85,
+16-Sep-16,Hawthorne Reef,Centrostephanus coronatus,33.74706667,-118.4166733,0.166666667,
+16-Sep-16,Hawthorne Reef,Henricia sp,33.74698,-118.41738,0.016666667,
+16-Sep-16,Hawthorne Reef,Mesocentrotus franciscanus,33.74699,-118.4173731,1.55,
+16-Sep-16,Hawthorne Reef,Patiria miniata,33.7468,-118.4192025,1.35,
+16-Sep-16,Hawthorne Reef,Pisaster giganteus,33.74674,-118.41981,0.016666667,
+16-Sep-16,Hawthorne Reef,Strongylocentrotus purpuratus,33.74709286,-118.4163314,3,
+17-Aug-16,Honeymoon Cove,Centrostephanus coronatus,33.76394667,-118.4261867,0.05,
+17-Aug-16,Honeymoon Cove,Dermasterias imbricata,33.76394,-118.42582,0.016666667,
+17-Aug-16,Honeymoon Cove,Henricia sp,33.76395333,-118.4265533,0.066666667,
+17-Aug-16,Honeymoon Cove,Mesocentrotus franciscanus,33.76395,-118.42637,0.966666667,
+17-Aug-16,Honeymoon Cove,Patiria miniata,33.76395111,-118.4264311,0.65,
+17-Aug-16,Honeymoon Cove,Pisaster giganteus,33.76394,-118.42582,0.016666667,
+17-Aug-16,Honeymoon Cove,Strongylocentrotus purpuratus,33.763945,-118.426095,0.566666667,
+17-Aug-16,Point Vicente West,Centrostephanus coronatus,33.73848,-118.4148,0.033333333,
+17-Aug-16,Point Vicente West,Mesocentrotus franciscanus,33.73848,-118.4148,0.466666667,
+17-Aug-16,Point Vicente West,Patiria miniata,33.73848,-118.4148,0.75,
+17-Aug-16,Point Vicente West,Strongylocentrotus purpuratus,33.73848,-118.4148,0.016666667,
+17-Dec-15,Burial Grounds,Mesocentrotus franciscanus,33.724578,-118.347306,0.1,PVR
+17-Dec-15,Burial Grounds,Strongylocentrotus purpuratus,33.72471667,-118.34727,0.133333333,PVR
+17-Feb-05,Point Vicente West,Centrostephanus coronatus,33.73954333,-118.41401,0.9,
+17-Feb-05,Point Vicente West,Dermasterias imbricata,33.7391,-118.41418,0.016666667,
+17-Feb-05,Point Vicente West,Mesocentrotus franciscanus,33.73954333,-118.41401,0.066666667,
+17-Feb-05,Point Vicente West,Patiria miniata,33.73954333,-118.41401,0.666666667,
+17-Feb-05,Point Vicente West,Pisaster giganteus,33.73954333,-118.41401,0.516666667,
+17-Feb-05,Point Vicente West,Strongylocentrotus purpuratus,33.73954333,-118.41401,12.4,
+17-Feb-16,Rocky Point North,Mesocentrotus franciscanus,33.78014,-118.42891,0.083333333,
+17-Feb-16,Rocky Point North,Strongylocentrotus purpuratus,33.78014,-118.42891,0.133333333,
+17-Feb-16,Honeymoon Cove,Mesocentrotus franciscanus,33.76423,-118.42428,0.316666667,
+17-Feb-16,Honeymoon Cove,Strongylocentrotus purpuratus,33.76423,-118.42428,0.6,
+17-Feb-16,Point Vicente West,Centrostephanus coronatus,33.74043,-118.41367,0.033333333,
+17-Feb-16,Point Vicente West,Mesocentrotus franciscanus,33.74043,-118.41367,0.783333333,
+17-Feb-16,Point Vicente West,Strongylocentrotus purpuratus,33.74043,-118.41367,1.016666667,
+17-Jun-11,Rocky Point North,Henricia sp,33.78149,-118.43324,0.016666667,
+17-Jun-11,Rocky Point North,Mesocentrotus franciscanus,33.78149,-118.43324,0.183333333,
+17-Jun-11,Rocky Point North,Orthasterias koehleri,33.78149,-118.43324,0.016666667,
+17-Jun-11,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.2,
+17-Jun-11,Rocky Point North,Pisaster giganteus,33.78149,-118.43324,0.15,
+17-May-12,Lunada Bay,Henricia sp,33.77149,-118.43487,0.033333333,
+17-May-12,Lunada Bay,Mesocentrotus franciscanus,33.77149,-118.43487,0.05,
+17-May-12,Lunada Bay,Patiria miniata,33.77149,-118.43487,0.083333333,
+17-May-12,Resort Point,Henricia sp,33.76667,-118.42843,0.016666667,
+17-May-12,Resort Point,Mesocentrotus franciscanus,33.76667,-118.42843,1.383333333,
+17-May-12,Resort Point,Patiria miniata,33.76667,-118.42843,3.566666667,
+17-May-12,Resort Point,Pisaster giganteus,33.76667,-118.42843,0.25,
+17-May-12,Resort Point,Pycnopodia helianthoides,33.76667,-118.42843,0.033333333,
+17-May-12,Resort Point,Sclerasterias heteropaes,33.76667,-118.42843,0.05,
+17-May-12,Resort Point,Strongylocentrotus purpuratus,33.76667,-118.42843,0.216666667,
+17-Nov-21,KOU Rock,Mesocentrotus franciscanus,33.7194,-118.33804,0.516666667,PVR
+17-Nov-21,KOU Rock,Patiria miniata,33.71767143,-118.3390143,0.5,PVR
+17-Nov-21,KOU Rock,Strongylocentrotus purpuratus,33.7205,-118.33742,0.266666667,PVR
+17-Oct-18,Old 18th,Mesocentrotus franciscanus,33.7221,-118.34451,0.033333333,PVR
+17-Oct-18,Old 18th,Patiria miniata,33.7221,-118.34451,0.016666667,PVR
+17-Oct-18,Old 18th,Strongylocentrotus purpuratus,33.7221,-118.34451,0.016666667,PVR
+18-Apr-08,Point Vicente West,Mesocentrotus franciscanus,33.73917333,-118.4143244,1.966666667,
+18-Apr-08,Point Vicente West,Patiria miniata,33.739299,-118.414259,1.583333333,
+18-Apr-08,Point Vicente West,Pisaster brevispinus,33.73848,-118.4148,0.016666667,
+18-Apr-08,Point Vicente West,Pisaster giganteus,33.739533,-118.414057,0.683333333,
+18-Apr-08,Point Vicente West,Pisaster ochraceus,33.73991,-118.41375,0.55,
+18-Apr-08,Point Vicente West,Pycnopodia helianthoides,33.73848,-118.4148,0.033333333,
+18-Apr-08,Point Vicente West,Strongylocentrotus purpuratus,33.7395525,-118.4140125,18.05,
+18-Apr-08,Point Vicente West,Stylasterias forreri,33.73848,-118.4148,0.016666667,
+18-Apr-14,Point Vicente West,Mesocentrotus franciscanus,33.74064667,-118.4131756,2.05,
+18-Apr-14,Point Vicente West,Patiria miniata,33.740508,-118.413492,0.316666667,
+18-Apr-14,Point Vicente West,Strongylocentrotus purpuratus,33.74064273,-118.4131845,5.333333333,
+18-Aug-09,Rocky Point North,Henricia sp,33.781265,-118.4325183,0.216666667,
+18-Aug-09,Rocky Point North,Mesocentrotus franciscanus,33.78059,-118.4303533,0.533333333,
+18-Aug-09,Rocky Point North,Patiria miniata,33.78149,-118.43324,1.05,
+18-Aug-09,Rocky Point North,Pisaster giganteus,33.78071857,-118.4307657,0.216666667,
+18-Aug-09,Rocky Point North,Strongylocentrotus purpuratus,33.78014,-118.42891,0.3,
+18-Aug-22,Rocky Point South,Centrostephanus coronatus,33.77644,-118.4328,0.05,
+18-Aug-22,Rocky Point South,Henricia sp,33.77644,-118.4328,0.05,
+18-Aug-22,Rocky Point South,Mesocentrotus franciscanus,33.77644,-118.4328,0.55,
+18-Aug-22,Rocky Point South,Patiria miniata,33.77644,-118.4328,0.016666667,
+18-Aug-22,Rocky Point South,Strongylocentrotus purpuratus,33.77644,-118.4328,0.216666667,
+18-Aug-22,Old 18th,Luidia foliolata,33.72096,-118.34545,0.016666667,PVR
+18-Aug-22,Old 18th,Mesocentrotus franciscanus,33.72096,-118.34545,0.1,PVR
+18-Dec-17,Cape Point,Strongylocentrotus purpuratus,33.72256,-118.33942,0.016666667,PVR
+18-Jan-08,3 Palms West,Mesocentrotus franciscanus,33.71958,-118.3347456,1.266666667,PVR
+18-Jan-08,3 Palms West,Patiria miniata,33.7189325,-118.3350613,0.416666667,PVR
+18-Jan-08,3 Palms West,Pisaster brevispinus,33.71802,-118.33533,0.033333333,PVR
+18-Jan-08,3 Palms West,Pisaster giganteus,33.71927091,-118.3348082,0.4,PVR
+18-Jan-08,3 Palms West,Pisaster ochraceus,33.71948,-118.3349,0.033333333,PVR
+18-Jan-08,3 Palms West,Strongylocentrotus purpuratus,33.719806,-118.334579,1.083333333,PVR
+18-Jan-08,3 Palms East,Mesocentrotus franciscanus,33.71784,-118.332445,1,PVR
+18-Jan-08,3 Palms East,Patiria miniata,33.71751,-118.332345,0.316666667,PVR
+18-Jan-08,3 Palms East,Pisaster brevispinus,33.71668,-118.33309,0.05,PVR
+18-Jan-08,3 Palms East,Pisaster giganteus,33.71779636,-118.33216,0.55,PVR
+18-Jan-08,3 Palms East,Pisaster ochraceus,33.71842,-118.3321225,0.083333333,PVR
+18-Jan-08,3 Palms East,Strongylocentrotus purpuratus,33.71815444,-118.3319867,0.683333333,PVR
+18-Jul-17,Honeymoon Cove,Centrostephanus coronatus,33.76423,-118.42428,0.016666667,
+18-Jul-17,Honeymoon Cove,Mesocentrotus franciscanus,33.7643875,-118.42406,0.3,
+18-Jul-17,Honeymoon Cove,Strongylocentrotus purpuratus,33.76444,-118.4239867,0.55,
+18-Jul-18,Point Vicente West,Centrostephanus coronatus,33.74082,-118.41278,0.016666667,
+18-Jul-18,Point Vicente West,Strongylocentrotus purpuratus,33.74082,-118.41278,0.116666667,
+18-Jun-08,Rocky Point North,Henricia sp,33.78149,-118.43324,0.05,
+18-Jun-08,Rocky Point North,Mesocentrotus franciscanus,33.78071857,-118.4307657,0.85,
+18-Jun-08,Rocky Point North,Orthasterias koehleri,33.78149,-118.43324,0.016666667,
+18-Jun-08,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.316666667,
+18-Jun-08,Rocky Point North,Pisaster giganteus,33.780815,-118.431075,0.166666667,
+18-Jun-08,Rocky Point North,Strongylocentrotus purpuratus,33.78041,-118.429776,0.333333333,
+18-Jun-13,Hawthorne Reef,Astrometis sertulifera,33.74674,-118.41981,0.016666667,
+18-Jun-13,Hawthorne Reef,Centrostephanus coronatus,33.74698,-118.41738,0.016666667,
+18-Jun-13,Hawthorne Reef,Mesocentrotus franciscanus,33.747096,-118.416286,6.516666667,
+18-Jun-13,Hawthorne Reef,Patiria miniata,33.74694333,-118.4178367,3.533333333,
+18-Jun-13,Hawthorne Reef,Pisaster brevispinus,33.74718,-118.4153,0.083333333,
+18-Jun-13,Hawthorne Reef,Pisaster giganteus,33.74704647,-118.4167629,1.033333333,
+18-Jun-13,Hawthorne Reef,Pisaster ochraceus,33.74715667,-118.41564,0.066666667,
+18-Jun-13,Hawthorne Reef,Pycnopodia helianthoides,33.7469,-118.41819,0.05,
+18-Jun-13,Hawthorne Reef,Strongylocentrotus purpuratus,33.74713231,-118.4159308,48.4,
+18-Jun-21,Rocky Point North,Strongylocentrotus purpuratus,33.77958,-118.4278,0.116666667,
+18-Mar-16,Rocky Point North,Henricia sp,33.78084,-118.43033,0.033333333,
+18-Mar-16,Rocky Point North,Linckia columbiae,33.78084,-118.43033,0.05,
+18-Mar-16,Rocky Point North,Mesocentrotus franciscanus,33.78084,-118.43033,0.583333333,
+18-Mar-16,Rocky Point North,Strongylocentrotus purpuratus,33.78084,-118.43033,0.616666667,
+18-Mar-16,Point Vicente West,Centrostephanus coronatus,33.738945,-118.414335,0.433333333,
+18-Mar-16,Point Vicente West,Henricia sp,33.73848,-118.4148,0.066666667,
+18-Mar-16,Point Vicente West,Mesocentrotus franciscanus,33.73881818,-118.4144618,1.783333333,
+18-Mar-16,Point Vicente West,Patiria miniata,33.738635,-118.414645,0.55,
+18-Mar-16,Point Vicente West,Strongylocentrotus purpuratus,33.7391,-118.41418,0.35,
+18-Nov-15,Lunada Bay,Henricia sp,33.77149,-118.43487,0.016666667,
+18-Nov-15,Lunada Bay,Mesocentrotus franciscanus,33.77163556,-118.4323878,0.95,
+18-Nov-15,Lunada Bay,Patiria miniata,33.77149,-118.43487,0.033333333,
+18-Nov-15,Lunada Bay,Strongylocentrotus purpuratus,33.77176857,-118.4306014,0.916666667,
+18-Oct-13,Bunker Point,Mesocentrotus franciscanus,33.725254,-118.3534193,2.033333333,PVR
+18-Oct-13,Bunker Point,Patiria miniata,33.72503667,-118.3536333,0.216666667,PVR
+18-Oct-13,Bunker Point,Pisaster giganteus,33.72535,-118.353314,0.266666667,PVR
+18-Oct-13,Bunker Point,Pisaster ochraceus,33.72563,-118.35286,0.033333333,PVR
+18-Oct-13,Bunker Point,Strongylocentrotus purpuratus,33.725494,-118.353156,4.233333333,PVR
+18-Sep-15,Hawthorne Reef,Centrostephanus coronatus,33.74698,-118.41738,0.05,
+18-Sep-15,Hawthorne Reef,Mesocentrotus franciscanus,33.74694,-118.417785,1.166666667,
+18-Sep-15,Hawthorne Reef,Patiria miniata,33.74677429,-118.4194629,0.65,
+18-Sep-15,Hawthorne Reef,Strongylocentrotus purpuratus,33.74698,-118.41738,1.5,
+19-Aug-09,Rocky Point North,Henricia sp,33.78084,-118.43033,0.016666667,
+19-Aug-09,Rocky Point North,Mesocentrotus franciscanus,33.7803675,-118.4293813,0.583333333,
+19-Aug-09,Rocky Point North,Patiria miniata,33.78084,-118.43033,0.533333333,
+19-Aug-09,Rocky Point North,Pisaster giganteus,33.78084,-118.43033,0.1,
+19-Aug-09,Rocky Point North,Strongylocentrotus purpuratus,33.77958,-118.4278,1.783333333,
+19-Aug-10,Point Vicente West,Mesocentrotus franciscanus,33.7391,-118.41418,0.233333333,
+19-Aug-10,Point Vicente West,Patiria miniata,33.7391,-118.41418,2.05,
+19-Aug-10,Point Vicente West,Pisaster giganteus,33.7391,-118.41418,0.1,
+19-Aug-10,Point Vicente West,Pycnopodia helianthoides,33.7391,-118.41418,0.016666667,
+19-Aug-10,Point Vicente West,Strongylocentrotus purpuratus,33.7391,-118.41418,0.033333333,
+19-Aug-15,Honeymoon Cove,Mesocentrotus franciscanus,33.76486,-118.4234,0.15,
+19-Aug-15,Honeymoon Cove,Strongylocentrotus purpuratus,33.76486,-118.4234,0.183333333,
+19-Aug-16,Resort Point,Henricia sp,33.76599,-118.42944,0.016666667,
+19-Aug-16,Resort Point,Linckia columbiae,33.76667,-118.42843,0.033333333,
+19-Aug-16,Resort Point,Mesocentrotus franciscanus,33.76645267,-118.4280973,0.866666667,
+19-Aug-16,Resort Point,Patiria miniata,33.76633,-118.428935,0.5,
+19-Aug-16,Resort Point,Pisaster giganteus,33.76669,-118.4271,0.016666667,
+19-Aug-16,Resort Point,Strongylocentrotus purpuratus,33.76668692,-118.4271923,1.133333333,
+19-Dec-14,3 Palms West,Mesocentrotus franciscanus,33.71594,-118.33688,0.05,PVR
+19-Dec-14,3 Palms West,Patiria miniata,33.71646,-118.3364925,0.083333333,PVR
+19-Dec-14,3 Palms East,Lytechinus pictus,33.7142,-118.33394,0.016666667,PVR
+19-Dec-14,3 Palms East,Mesocentrotus franciscanus,33.71502667,-118.3336567,0.3,PVR
+19-Dec-14,3 Palms East,Patiria miniata,33.71502667,-118.3336567,0.066666667,PVR
+19-Jun-12,Rocky Point North,Centrostephanus coronatus,33.78084,-118.43033,0.016666667,
+19-Jun-12,Rocky Point North,Henricia sp,33.78084,-118.43033,0.066666667,
+19-Jun-12,Rocky Point North,Linckia columbiae,33.78049,-118.42962,0.033333333,
+19-Jun-12,Rocky Point North,Mesocentrotus franciscanus,33.78049,-118.42962,0.766666667,
+19-Jun-12,Rocky Point North,Patiria miniata,33.78084,-118.43033,0.05,
+19-Jun-12,Rocky Point North,Pisaster giganteus,33.78060667,-118.4298567,0.383333333,
+19-Jun-12,Rocky Point North,Strongylocentrotus purpuratus,33.78044,-118.4295186,1.283333333,
+19-Jun-14,Hawthorne Reef,Mesocentrotus franciscanus,33.74714818,-118.4157636,1.933333333,
+19-Jun-14,Hawthorne Reef,Patiria miniata,33.7471275,-118.416065,0.066666667,
+19-Jun-14,Hawthorne Reef,Strongylocentrotus purpuratus,33.74714818,-118.4157636,28.8,
+19-Jun-19,Rocky Point North,Mesocentrotus franciscanus,33.78014,-118.42891,0.05,
+19-Jun-19,Rocky Point North,Strongylocentrotus purpuratus,33.78014,-118.42891,0.116666667,
+19-Jun-19,Hawthorne Reef,Centrostephanus coronatus,33.74711,-118.41632,0.033333333,
+19-Jun-19,Hawthorne Reef,Mesocentrotus franciscanus,33.7471275,-118.416065,0.766666667,
+19-Jun-19,Hawthorne Reef,Patiria miniata,33.74711,-118.41632,0.033333333,
+19-Jun-19,Hawthorne Reef,Pisaster giganteus,33.74711,-118.41632,0.033333333,
+19-Jun-19,Hawthorne Reef,Strongylocentrotus purpuratus,33.747145,-118.41581,7.783333333,
+19-Nov-21,KOU Rock,Centrostephanus coronatus,33.71771,-118.33913,0.066666667,PVR
+19-Nov-21,KOU Rock,Henricia sp,33.71771,-118.33913,0.016666667,PVR
+19-Nov-21,KOU Rock,Mesocentrotus franciscanus,33.71771,-118.33913,0.3,PVR
+19-Nov-21,KOU Rock,Patiria miniata,33.71771,-118.33913,0.283333333,PVR
+19-Nov-21,KOU Rock,Pisaster giganteus,33.71771,-118.33913,0.016666667,PVR
+19-Nov-21,KOU Rock,Strongylocentrotus purpuratus,33.71771,-118.33913,0.066666667,PVR
+19-Oct-18,Cape Point,Centrostephanus coronatus,33.72164,-118.34029,0.05,PVR
+19-Oct-18,Cape Point,Mesocentrotus franciscanus,33.72086,-118.340485,0.2,PVR
+19-Oct-18,Cape Point,Pisaster giganteus,33.72008,-118.34068,0.016666667,PVR
+19-Oct-18,Cape Point,Strongylocentrotus purpuratus,33.721016,-118.340446,0.133333333,PVR
+19-Oct-18,3 Palms East,Mesocentrotus franciscanus,33.71668,-118.33309,0.116666667,PVR
+19-Oct-18,3 Palms East,Patiria miniata,33.71668,-118.33309,0.033333333,PVR
+19-Oct-18,3 Palms East,Strongylocentrotus purpuratus,33.71668,-118.33309,0.066666667,PVR
+19-Sep-12,KOU Rock,Henricia sp,33.7172,-118.33928,0.016666667,PVR
+19-Sep-12,KOU Rock,Mesocentrotus franciscanus,33.718724,-118.338476,0.316666667,PVR
+19-Sep-12,KOU Rock,Patiria miniata,33.718064,-118.338848,1.216666667,PVR
+19-Sep-12,KOU Rock,Pisaster brevispinus,33.7172,-118.33928,0.016666667,PVR
+19-Sep-12,KOU Rock,Pisaster giganteus,33.71833182,-118.3387045,0.383333333,PVR
+19-Sep-12,KOU Rock,Pisaster ochraceus,33.7205,-118.33742,0.033333333,PVR
+19-Sep-12,KOU Rock,Strongylocentrotus purpuratus,33.7205,-118.33742,0.033333333,PVR
+20-Aug-20,Hawthorne Reef,Centrostephanus coronatus,33.74698,-118.41738,0.033333333,
+20-Aug-20,Hawthorne Reef,Mesocentrotus franciscanus,33.747045,-118.41685,0.233333333,
+20-Aug-20,Hawthorne Reef,Strongylocentrotus purpuratus,33.74703778,-118.4169089,0.533333333,
+20-Jun-19,Rocky Point North,Centrostephanus coronatus,33.78084,-118.43033,0.083333333,
+20-Jun-19,Rocky Point North,Henricia sp,33.7811,-118.431494,0.1,
+20-Jun-19,Rocky Point North,Linckia columbiae,33.78097,-118.430912,0.2,
+20-Jun-19,Rocky Point North,Mesocentrotus franciscanus,33.7810025,-118.4310575,0.266666667,
+20-Jun-19,Rocky Point North,Pisaster giganteus,33.78084,-118.43033,0.016666667,
+20-Jun-19,Rocky Point North,Sclerasterias heteropaes,33.78149,-118.43324,0.016666667,
+20-Jun-19,Rocky Point North,Strongylocentrotus purpuratus,33.78097,-118.430912,0.166666667,
+20-May-11,Lunada Bay,Mesocentrotus franciscanus,33.77149,-118.43487,0.083333333,
+20-May-11,Lunada Bay,Patiria miniata,33.77149,-118.43487,0.1,
+20-May-11,Lunada Bay,Pisaster giganteus,33.77149,-118.43487,0.05,
+20-May-11,Hawthorne Reef,Patiria miniata,33.74674,-118.41981,0.9,
+20-May-11,Hawthorne Reef,Pisaster giganteus,33.74674,-118.41981,0.1,
+20-Nov-07,Point Vicente West,Mesocentrotus franciscanus,33.740625,-118.413225,0.9,
+20-Nov-07,Point Vicente West,Patiria miniata,33.740625,-118.413225,0.866666667,
+20-Nov-07,Point Vicente West,Pisaster brevispinus,33.74043,-118.41367,0.016666667,
+20-Nov-07,Point Vicente West,Pisaster giganteus,33.740625,-118.413225,0.25,
+20-Nov-07,Point Vicente West,Pisaster ochraceus,33.74082,-118.41278,0.266666667,
+20-Nov-07,Point Vicente West,Pycnopodia helianthoides,33.740625,-118.413225,0.033333333,
+20-Nov-07,Point Vicente West,Strongylocentrotus purpuratus,33.740625,-118.413225,3,
+20-Nov-18,Bunker Point,Strongylocentrotus purpuratus,33.72563,-118.35286,0.016666667,PVR
+20-Nov-18,Burial Grounds,Strongylocentrotus purpuratus,33.72541,-118.34695,0.016666667,PVR
+20-Sep-17,Bunker Point,Astropecten armatus,33.7243,-118.35386,0.016666667,PVR
+20-Sep-17,Bunker Point,Mesocentrotus franciscanus,33.72491,-118.35365,0.016666667,PVR
+20-Sep-17,Bunker Point,Patiria miniata,33.7244525,-118.3538075,0.283333333,PVR
+20-Sep-18,Lunada Bay,Henricia sp,33.77149,-118.43487,0.016666667,
+20-Sep-18,Lunada Bay,Mesocentrotus franciscanus,33.77149,-118.43487,0.083333333,
+20-Sep-18,Lunada Bay,Patiria miniata,33.77149,-118.43487,0.05,
+21-Aug-12,Rocky Point South,Henricia sp,33.77644,-118.4328,0.05,
+21-Aug-12,Rocky Point South,Linckia columbiae,33.77511,-118.42804,0.066666667,
+21-Aug-12,Rocky Point South,Mesocentrotus franciscanus,33.775908,-118.430896,1.466666667,
+21-Aug-12,Rocky Point South,Patiria miniata,33.77644,-118.4328,1.916666667,
+21-Aug-12,Rocky Point South,Pisaster giganteus,33.77584889,-118.4306844,0.3,
+21-Aug-12,Rocky Point South,Strongylocentrotus purpuratus,33.77571455,-118.4302036,3.266666667,
+21-Jul-10,Rocky Point South,Mesocentrotus franciscanus,33.7767,-118.43029,0.283333333,
+21-Jul-10,Rocky Point South,Pisaster giganteus,33.7767,-118.43029,0.05,
+21-Jul-10,Rocky Point South,Strongylocentrotus purpuratus,33.7767,-118.43029,0.166666667,
+21-Jul-17,Honeymoon Cove,Centrostephanus coronatus,33.76394667,-118.4261867,0.083333333,
+21-Jul-17,Honeymoon Cove,Henricia sp,33.76395,-118.42637,0.066666667,
+21-Jul-17,Honeymoon Cove,Mesocentrotus franciscanus,33.763948,-118.42626,0.8,
+21-Jul-17,Honeymoon Cove,Orthasterias koehleri,33.76396,-118.42692,0.016666667,
+21-Jul-17,Honeymoon Cove,Patiria miniata,33.76395714,-118.4267629,0.716666667,
+21-Jul-17,Honeymoon Cove,Pisaster giganteus,33.76395333,-118.4265533,0.05,
+21-Jul-17,Honeymoon Cove,Strongylocentrotus purpuratus,33.76394667,-118.4261867,0.616666667,
+21-Jul-17,Point Vicente West,Strongylocentrotus purpuratus,33.74082,-118.41278,0.3,
+21-Oct-16,3 Palms West,Mesocentrotus franciscanus,33.71948,-118.3349,0.083333333,PVR
+21-Oct-16,3 Palms West,Strongylocentrotus purpuratus,33.71948,-118.3349,0.083333333,PVR
+21-Oct-16,3 Palms East,Strongylocentrotus purpuratus,33.719,-118.3318,0.116666667,PVR
+21-Oct-20,Cape Point,Centrostephanus coronatus,33.72008,-118.34068,0.016666667,PVR
+21-Oct-20,Cape Point,Mesocentrotus franciscanus,33.7199675,-118.3407925,0.516666667,PVR
+21-Oct-20,Cape Point,Strongylocentrotus purpuratus,33.72086,-118.340485,0.066666667,PVR
+21-Oct-21,Bunker Point,Mesocentrotus franciscanus,33.7243,-118.35386,0.016666667,PVR
+21-Oct-21,Bunker Point,Patiria miniata,33.7243,-118.35386,0.033333333,PVR
+21-Oct-21,3 Palms East,Centrostephanus coronatus,33.7142,-118.33394,0.05,PVR
+21-Oct-21,3 Palms East,Henricia sp,33.7142,-118.33394,0.033333333,PVR
+21-Oct-21,3 Palms East,Mesocentrotus franciscanus,33.7142,-118.33394,0.05,PVR
+21-Oct-21,3 Palms East,Patiria miniata,33.7142,-118.33394,0.083333333,PVR
+22-Apr-11,KOU Rock,Mesocentrotus franciscanus,33.71771,-118.33913,0.033333333,PVR
+22-Apr-11,KOU Rock,Patiria miniata,33.717821,-118.339067,0.466666667,PVR
+22-Apr-11,KOU Rock,Pisaster brevispinus,33.7172,-118.33928,0.016666667,PVR
+22-Apr-11,KOU Rock,Pisaster giganteus,33.71786167,-118.3390517,0.233333333,PVR
+22-Aug-08,Point Vicente West,Mesocentrotus franciscanus,33.73988182,-118.4135436,3.25,
+22-Aug-08,Point Vicente West,Patiria miniata,33.73983714,-118.41358,0.566666667,
+22-Aug-08,Point Vicente West,Pisaster brevispinus,33.7391,-118.41418,0.016666667,
+22-Aug-08,Point Vicente West,Pisaster giganteus,33.73988182,-118.4135436,3.083333333,
+22-Aug-08,Point Vicente West,Pisaster ochraceus,33.740132,-118.41334,0.883333333,
+22-Aug-08,Point Vicente West,Strongylocentrotus purpuratus,33.73996,-118.41348,23.15,
+22-Aug-12,Rocky Point South,Henricia sp,33.77727,-118.43464,0.083333333,
+22-Aug-12,Rocky Point South,Linckia columbiae,33.7768425,-118.4313775,0.083333333,
+22-Aug-12,Rocky Point South,Mesocentrotus franciscanus,33.776928,-118.43203,0.55,
+22-Aug-12,Rocky Point South,Patiria miniata,33.77727,-118.43464,0.1,
+22-Aug-12,Rocky Point South,Pisaster giganteus,33.776814,-118.43116,0.15,
+22-Aug-12,Rocky Point South,Strongylocentrotus purpuratus,33.7767,-118.43029,1.05,
+22-Jun-16,Honeymoon Cove,Centrostephanus coronatus,33.76423,-118.42428,0.05,
+22-Jun-16,Honeymoon Cove,Mesocentrotus franciscanus,33.76423,-118.42428,0.616666667,
+22-Jun-16,Honeymoon Cove,Strongylocentrotus purpuratus,33.76444,-118.4239867,0.95,
+22-Jun-16,Point Vicente West,Centrostephanus coronatus,33.74043,-118.41367,0.016666667,
+22-Jun-16,Point Vicente West,Mesocentrotus franciscanus,33.74056,-118.4133733,0.633333333,
+22-Jun-16,Point Vicente West,Strongylocentrotus purpuratus,33.740586,-118.413314,1.166666667,
+22-Jun-18,Honeymoon Cove,Mesocentrotus franciscanus,33.76486,-118.4234,0.083333333,
+22-Jun-18,Honeymoon Cove,Strongylocentrotus purpuratus,33.76486,-118.4234,0.2,
+22-Jun-18,Hawthorne Reef,Centrostephanus coronatus,33.74718,-118.4153,0.016666667,
+22-Jun-18,Hawthorne Reef,Mesocentrotus franciscanus,33.74718,-118.4153,0.083333333,
+22-Jun-18,Hawthorne Reef,Strongylocentrotus purpuratus,33.74718,-118.4153,0.683333333,
+22-May-12,Lunada Bay,Henricia sp,33.77089,-118.43263,0.05,
+22-May-12,Lunada Bay,Mesocentrotus franciscanus,33.771442,-118.431712,1.533333333,
+22-May-12,Lunada Bay,Patiria miniata,33.77130818,-118.4319345,1.333333333,
+22-May-12,Lunada Bay,Pisaster giganteus,33.771442,-118.431712,0.833333333,
+22-May-12,Lunada Bay,Pisaster ochraceus,33.77181,-118.4311,0.05,
+22-May-12,Lunada Bay,Strongylocentrotus purpuratus,33.77158,-118.4314825,4.133333333,
+22-May-12,Resort Point,Mesocentrotus franciscanus,33.76669,-118.4271,2.1,
+22-May-12,Resort Point,Patiria miniata,33.76669,-118.4271,1.566666667,
+22-May-12,Resort Point,Pisaster giganteus,33.76669,-118.4271,0.25,
+22-May-12,Resort Point,Pisaster ochraceus,33.76669,-118.4271,0.066666667,
+22-May-12,Resort Point,Strongylocentrotus purpuratus,33.76669,-118.4271,5.383333333,
+22-Oct-08,3 Palms East,Mesocentrotus franciscanus,33.719,-118.3318,0.016666667,PVR
+22-Oct-08,3 Palms East,Strongylocentrotus purpuratus,33.719,-118.3318,0.55,PVR
+22-Oct-15,3 Palms West,Mesocentrotus franciscanus,33.71948,-118.3349,0.3,PVR
+22-Oct-15,3 Palms West,Strongylocentrotus purpuratus,33.72026667,-118.3342933,0.283333333,PVR
+22-Oct-15,3 Palms East,Lytechinus pictus,33.7142,-118.33394,0.15,PVR
+22-Oct-15,3 Palms East,Mesocentrotus franciscanus,33.71585333,-118.3333733,0.6,PVR
+22-Oct-15,3 Palms East,Patiria miniata,33.7142,-118.33394,0.15,PVR
+22-Oct-15,3 Palms East,Strongylocentrotus purpuratus,33.71668,-118.33309,0.266666667,PVR
+23-Aug-13,Resort Point,Astrometis sertulifera,33.76599,-118.42944,0.016666667,
+23-Aug-13,Resort Point,Henricia sp,33.76599,-118.42944,0.05,
+23-Aug-13,Resort Point,Mesocentrotus franciscanus,33.76599,-118.42944,0.016666667,
+23-Aug-13,Resort Point,Patiria miniata,33.76599,-118.42944,0.383333333,
+23-Aug-13,Resort Point,Pisaster giganteus,33.76599,-118.42944,0.05,
+23-Aug-13,Resort Point,Pycnopodia helianthoides,33.76599,-118.42944,0.016666667,
+23-Dec-14,Bunker Point,Mesocentrotus franciscanus,33.72491,-118.35365,0.1,PVR
+23-Jul-04,Rocky Point North,Centrostephanus coronatus,33.78018667,-118.4290133,4.083333333,
+23-Jul-04,Rocky Point North,Henricia sp,33.78014,-118.42891,0.016666667,
+23-Jul-04,Rocky Point North,Mesocentrotus franciscanus,33.78035,-118.4293425,0.55,
+23-Jul-04,Rocky Point North,Pisaster giganteus,33.78018667,-118.4290133,0.1,
+23-Jul-04,Rocky Point North,Strongylocentrotus purpuratus,33.780056,-118.42875,3.366666667,
+23-Jul-20,Rocky Point South,Mesocentrotus franciscanus,33.77511,-118.42804,0.066666667,
+23-Jul-20,Rocky Point South,Strongylocentrotus purpuratus,33.77511,-118.42804,0.333333333,
+23-Jul-20,Resort Point,Strongylocentrotus purpuratus,33.7667,-118.42607,0.116666667,
+23-Jun-08,Rocky Point North,Mesocentrotus franciscanus,33.77958,-118.4278,0.1,
+23-Jun-08,Rocky Point North,Strongylocentrotus purpuratus,33.77958,-118.4278,0.233333333,
+23-Jun-22,Honeymoon Cove,Centrostephanus coronatus,33.76396,-118.42692,0.016666667,
+23-Jun-22,Honeymoon Cove,Linckia columbiae,33.76396,-118.42692,0.016666667,
+23-Jun-22,Honeymoon Cove,Mesocentrotus franciscanus,33.76395,-118.42637,0.866666667,
+23-Jun-22,Honeymoon Cove,Orthasterias koehleri,33.76396,-118.42692,0.016666667,
+23-Jun-22,Honeymoon Cove,Patiria miniata,33.76395667,-118.4267367,0.316666667,
+23-Jun-22,Honeymoon Cove,Pisaster giganteus,33.76395,-118.42637,0.033333333,
+23-Jun-22,Honeymoon Cove,Strongylocentrotus purpuratus,33.76394,-118.42582,0.85,
+23-Mar-12,Resort Point,Henricia sp,33.76599,-118.42944,0.016666667,
+23-Mar-12,Resort Point,Mesocentrotus franciscanus,33.76599,-118.42944,0.85,
+23-Mar-12,Resort Point,Orthasterias koehleri,33.76599,-118.42944,0.05,
+23-Mar-12,Resort Point,Patiria miniata,33.76599,-118.42944,1.316666667,
+23-Mar-12,Resort Point,Pisaster giganteus,33.76599,-118.42944,0.05,
+23-Mar-12,Resort Point,Strongylocentrotus purpuratus,33.76599,-118.42944,0.016666667,
+23-Mar-12,Honeymoon Cove,Lytechinus pictus,33.76394,-118.42582,0.616666667,
+23-Mar-12,Honeymoon Cove,Mesocentrotus franciscanus,33.76394,-118.42582,0.2,
+23-Mar-12,Honeymoon Cove,Patiria miniata,33.76394,-118.42582,1.333333333,
+23-Mar-12,Honeymoon Cove,Pisaster giganteus,33.76394,-118.42582,0.1,
+23-Mar-12,Honeymoon Cove,Strongylocentrotus purpuratus,33.76394,-118.42582,1.35,
+23-Oct-15,Bunker Point,Centrostephanus coronatus,33.72491,-118.35365,0.016666667,PVR
+23-Oct-15,Bunker Point,Mesocentrotus franciscanus,33.72528,-118.3534275,0.15,PVR
+23-Oct-15,Bunker Point,Strongylocentrotus purpuratus,33.72534091,-118.3532773,0.966666667,PVR
+23-Oct-20,Burial Grounds,Mesocentrotus franciscanus,33.72333,-118.34777,0.033333333,PVR
+23-Oct-20,Burial Grounds,Patiria miniata,33.72206,-118.34868,0.216666667,PVR
+23-Oct-20,Old 18th,Astropecten armatus,33.72096,-118.34545,0.033333333,PVR
+23-Oct-20,Old 18th,Luidia armata,33.72096,-118.34545,0.016666667,PVR
+23-Oct-20,Old 18th,Lytechinus pictus,33.72096,-118.34545,0.05,PVR
+23-Sep-15,Hawthorne Reef,Mesocentrotus franciscanus,33.74718,-118.4153,0.2,
+23-Sep-15,Hawthorne Reef,Strongylocentrotus purpuratus,33.74718,-118.4153,1.566666667,
+23-Sep-15,Point Vicente West,Mesocentrotus franciscanus,33.74082,-118.41278,0.05,
+23-Sep-15,Point Vicente West,Strongylocentrotus purpuratus,33.74082,-118.41278,0.333333333,
+24-Apr-13,Point Vicente West,Mesocentrotus franciscanus,33.74016063,-118.4134956,1.633333333,
+24-Apr-13,Point Vicente West,Patiria miniata,33.73984615,-118.4138369,1.283333333,
+24-Apr-13,Point Vicente West,Pisaster giganteus,33.74017647,-118.4135059,0.75,
+24-Apr-13,Point Vicente West,Pisaster ochraceus,33.740625,-118.413225,0.2,
+24-Apr-13,Point Vicente West,Pycnopodia helianthoides,33.7400975,-118.4137975,0.1,
+24-Apr-13,Point Vicente West,Strongylocentrotus purpuratus,33.74050769,-118.4132985,12.96666667,
+24-Feb-16,Rocky Point North,Centrostephanus coronatus,33.78149,-118.43324,0.033333333,
+24-Feb-16,Rocky Point North,Henricia sp,33.78149,-118.43324,0.05,
+24-Feb-16,Rocky Point North,Linckia columbiae,33.78149,-118.43324,0.05,
+24-Feb-16,Rocky Point North,Mesocentrotus franciscanus,33.78149,-118.43324,0.766666667,
+24-Feb-16,Rocky Point North,Ophioplocus esmarki,33.78149,-118.43324,0.016666667,
+24-Feb-16,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.133333333,
+24-Feb-16,Honeymoon Cove,Centrostephanus coronatus,33.763948,-118.42626,0.35,
+24-Feb-16,Honeymoon Cove,Henricia sp,33.76395,-118.42637,0.05,
+24-Feb-16,Honeymoon Cove,Linckia columbiae,33.76394,-118.42582,0.016666667,
+24-Feb-16,Honeymoon Cove,Mesocentrotus franciscanus,33.76395,-118.42637,3.333333333,
+24-Feb-16,Honeymoon Cove,Patiria miniata,33.76395,-118.42637,1.316666667,
+24-Feb-16,Honeymoon Cove,Sclerasterias heteropaes,33.76396,-118.42692,0.016666667,
+24-Feb-16,Honeymoon Cove,Strongylocentrotus purpuratus,33.76394909,-118.42632,1.9,
+24-Jul-07,Rocky Point South,Henricia sp,33.77727,-118.43464,0.016666667,
+24-Jul-07,Rocky Point South,Mesocentrotus franciscanus,33.775542,-118.42936,0.216666667,
+24-Jul-07,Rocky Point South,Patiria miniata,33.77592,-118.430515,0.683333333,
+24-Jul-07,Rocky Point South,Pisaster brevispinus,33.77727,-118.43464,0.016666667,
+24-Jul-07,Rocky Point South,Pisaster giganteus,33.77727,-118.43464,0.066666667,
+24-Jul-07,Rocky Point South,Strongylocentrotus purpuratus,33.77511,-118.42804,2.233333333,
+24-Jul-13,Lunada Bay,Centrostephanus coronatus,33.77181,-118.4311,0.016666667,
+24-Jul-13,Lunada Bay,Henricia sp,33.77089,-118.43263,0.033333333,
+24-Jul-13,Lunada Bay,Linckia columbiae,33.77152,-118.42761,0.016666667,
+24-Jul-13,Lunada Bay,Mesocentrotus franciscanus,33.77150929,-118.4301814,1.7,
+24-Jul-13,Lunada Bay,Patiria miniata,33.77112,-118.4322475,0.916666667,
+24-Jul-13,Lunada Bay,Pisaster giganteus,33.7713925,-118.4308013,0.266666667,
+24-Jul-13,Lunada Bay,Pisaster ochraceus,33.771665,-118.429355,0.05,
+24-Jul-13,Lunada Bay,Strongylocentrotus purpuratus,33.77158833,-118.4294825,5.283333333,
+24-Jul-20,Lunada Bay,Centrostephanus coronatus,33.77112,-118.4322475,0.1,
+24-Jul-20,Lunada Bay,Henricia sp,33.77137,-118.434422,0.183333333,
+24-Jul-20,Lunada Bay,Mesocentrotus franciscanus,33.77145786,-118.4320957,0.6,
+24-Jul-20,Lunada Bay,Patiria miniata,33.77129,-118.4341233,0.233333333,
+24-Jul-20,Lunada Bay,Pisaster giganteus,33.77089,-118.43263,0.016666667,
+24-Jul-20,Lunada Bay,Strongylocentrotus purpuratus,33.771413,-118.431363,0.9,
+24-Jun-11,Rocky Point North,Mesocentrotus franciscanus,33.78037692,-118.4293946,1.633333333,
+24-Jun-11,Rocky Point North,Pisaster giganteus,33.78046667,-118.4295756,0.35,
+24-Jun-11,Rocky Point North,Pisaster ochraceus,33.78084,-118.43033,0.016666667,
+24-Jun-11,Rocky Point North,Strongylocentrotus purpuratus,33.78005,-118.4287386,1.6,
+24-Jun-16,Rocky Point North,Centrostephanus coronatus,33.78149,-118.43324,0.016666667,
+24-Jun-16,Rocky Point North,Henricia sp,33.78149,-118.43324,0.033333333,
+24-Jun-16,Rocky Point North,Mesocentrotus franciscanus,33.78149,-118.43324,0.183333333,
+24-Jun-16,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.016666667,
+24-Jun-16,Rocky Point South,Henricia sp,33.77727,-118.43464,0.116666667,
+24-Jun-16,Rocky Point South,Linckia columbiae,33.77727,-118.43464,0.016666667,
+24-Jun-16,Rocky Point South,Mesocentrotus franciscanus,33.77727,-118.43464,0.5,
+24-Jun-16,Rocky Point South,Patiria miniata,33.77727,-118.43464,0.166666667,
+24-Jun-20,Honeymoon Cove,Centrostephanus coronatus,33.76398833,-118.4255633,0.333333333,
+24-Jun-20,Honeymoon Cove,Henricia sp,33.76394667,-118.4261867,0.066666667,
+24-Jun-20,Honeymoon Cove,Mesocentrotus franciscanus,33.76415063,-118.4253113,0.9,
+24-Jun-20,Honeymoon Cove,Patiria miniata,33.763981,-118.426326,0.5,
+24-Jun-20,Honeymoon Cove,Pisaster ochraceus,33.76423,-118.42428,0.016666667,
+24-Jun-20,Honeymoon Cove,Sclerasterias heteropaes,33.76395,-118.42637,0.033333333,
+24-Jun-20,Honeymoon Cove,Strongylocentrotus purpuratus,33.76443273,-118.4241,1.383333333,
+24-Jun-22,Honeymoon Cove,Mesocentrotus franciscanus,33.764545,-118.42384,0.916666667,
+24-Jun-22,Honeymoon Cove,Strongylocentrotus purpuratus,33.764545,-118.42384,2.533333333,
+24-Oct-14,Rocky Point South,Centrostephanus coronatus,33.77644,-118.4328,0.016666667,
+24-Oct-14,Rocky Point South,Henricia sp,33.77727,-118.43464,0.033333333,
+24-Oct-14,Rocky Point South,Mesocentrotus franciscanus,33.77664563,-118.4321781,1.3,
+24-Oct-14,Rocky Point South,Patiria miniata,33.77644,-118.4328,0.033333333,
+24-Oct-14,Rocky Point South,Strongylocentrotus purpuratus,33.77637125,-118.4312638,0.416666667,
+25-Aug-16,Lunada Bay,Henricia sp,33.77139,-118.4344967,0.116666667,
+25-Aug-16,Lunada Bay,Mesocentrotus franciscanus,33.77113,-118.433526,0.183333333,
+25-Aug-16,Lunada Bay,Patiria miniata,33.77125,-118.433974,0.116666667,
+25-Aug-16,Lunada Bay,Pisaster giganteus,33.77089,-118.43263,0.016666667,
+25-Aug-16,Lunada Bay,Strongylocentrotus purpuratus,33.77089,-118.43263,0.033333333,
+25-Jul-07,Rocky Point South,Centrostephanus coronatus,33.77644,-118.4328,0.033333333,
+25-Jul-07,Rocky Point South,Mesocentrotus franciscanus,33.776596,-118.431294,0.766666667,
+25-Jul-07,Rocky Point South,Patiria miniata,33.77644,-118.4328,0.016666667,
+25-Jul-07,Rocky Point South,Pisaster giganteus,33.776635,-118.4309175,0.083333333,
+25-Jul-07,Rocky Point South,Strongylocentrotus purpuratus,33.77661333,-118.4311267,0.633333333,
+25-Jul-14,Rocky Point North,Centrostephanus coronatus,33.78084,-118.43033,0.016666667,
+25-Jul-14,Rocky Point North,Linckia columbiae,33.78084,-118.43033,0.083333333,
+25-Jul-14,Rocky Point North,Mesocentrotus franciscanus,33.78105667,-118.4313,1.2,
+25-Jul-14,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.083333333,
+25-Jul-14,Rocky Point North,Strongylocentrotus purpuratus,33.78084,-118.43033,0.666666667,
+25-Jul-17,Point Vicente West,Centrostephanus coronatus,33.73954333,-118.41401,0.083333333,
+25-Jul-17,Point Vicente West,Mesocentrotus franciscanus,33.739378,-118.4141753,1.816666667,
+25-Jul-17,Point Vicente West,Patiria miniata,33.73856857,-118.4147114,0.8,
+25-Jul-17,Point Vicente West,Pisaster giganteus,33.7391,-118.41418,0.033333333,
+25-Jul-17,Point Vicente West,Strongylocentrotus purpuratus,33.73970455,-118.4139482,1.216666667,
+25-Jun-19,Honeymoon Cove,Centrostephanus coronatus,33.76423,-118.42428,0.016666667,
+25-Jun-19,Honeymoon Cove,Henricia sp,33.76396,-118.42692,0.083333333,
+25-Jun-19,Honeymoon Cove,Mesocentrotus franciscanus,33.76403813,-118.4257513,1,
+25-Jun-19,Honeymoon Cove,Patiria miniata,33.76398556,-118.4263822,0.516666667,
+25-Jun-19,Honeymoon Cove,Sclerasterias heteropaes,33.76396,-118.42692,0.016666667,
+25-Jun-19,Honeymoon Cove,Strongylocentrotus purpuratus,33.764042,-118.4256,3.133333333,
+25-May-11,Lunada Bay,Mesocentrotus franciscanus,33.77089,-118.43263,0.016666667,
+25-May-11,Lunada Bay,Patiria miniata,33.77089,-118.43263,0.183333333,
+25-May-11,Lunada Bay,Pisaster giganteus,33.77089,-118.43263,0.116666667,
+25-May-11,Hawthorne Reef,Lytechinus pictus,33.74698,-118.41738,0.016666667,
+25-May-11,Hawthorne Reef,Mesocentrotus franciscanus,33.74698,-118.41738,0.1,
+25-May-11,Hawthorne Reef,Patiria miniata,33.74698,-118.41738,2.966666667,
+25-May-11,Hawthorne Reef,Pisaster brevispinus,33.74698,-118.41738,0.033333333,
+25-May-11,Hawthorne Reef,Pisaster giganteus,33.74698,-118.41738,0.116666667,
+25-May-11,Hawthorne Reef,Pycnopodia helianthoides,33.74698,-118.41738,0.016666667,
+25-Nov-09,KOU Rock,Lytechinus pictus,33.7172,-118.33928,0.016666667,PVR
+25-Nov-09,KOU Rock,Mesocentrotus franciscanus,33.7205,-118.33742,0.583333333,PVR
+25-Nov-09,KOU Rock,Patiria miniata,33.71861429,-118.3384829,0.2,PVR
+25-Nov-09,KOU Rock,Pisaster giganteus,33.719675,-118.337885,0.4,PVR
+25-Nov-09,KOU Rock,Pisaster ochraceus,33.7205,-118.33742,0.033333333,PVR
+25-Nov-09,KOU Rock,Strongylocentrotus purpuratus,33.7205,-118.33742,0.166666667,PVR
+25-Sep-09,Hawthorne Reef,Mesocentrotus franciscanus,33.7471,-118.416132,2.2,
+25-Sep-09,Hawthorne Reef,Patiria miniata,33.74698,-118.41738,2.383333333,
+25-Sep-09,Hawthorne Reef,Pisaster giganteus,33.74708909,-118.4162455,0.416666667,
+25-Sep-09,Hawthorne Reef,Pisaster ochraceus,33.74718,-118.4153,0.366666667,
+25-Sep-09,Hawthorne Reef,Pycnopodia helianthoides,33.74698,-118.41738,0.016666667,
+25-Sep-09,Hawthorne Reef,Strongylocentrotus purpuratus,33.7471,-118.416132,30.1,
+25-Sep-09,Point Vicente West,Henricia sp,33.7391,-118.41418,0.033333333,
+25-Sep-09,Point Vicente West,Lytechinus pictus,33.7391,-118.41418,0.016666667,
+25-Sep-09,Point Vicente West,Mesocentrotus franciscanus,33.739765,-118.413925,2.116666667,
+25-Sep-09,Point Vicente West,Ophioplocus esmarki,33.7391,-118.41418,0.033333333,
+25-Sep-09,Point Vicente West,Patiria miniata,33.739765,-118.413925,4.216666667,
+25-Sep-09,Point Vicente West,Pisaster brevispinus,33.739765,-118.413925,0.033333333,
+25-Sep-09,Point Vicente West,Pisaster giganteus,33.73982545,-118.4139018,1.85,
+25-Sep-09,Point Vicente West,Pisaster ochraceus,33.73998667,-118.41384,0.766666667,
+25-Sep-09,Point Vicente West,Strongylocentrotus purpuratus,33.73993125,-118.4138613,2.083333333,
+25-Sep-13,KOU Rock,Mesocentrotus franciscanus,33.71771,-118.33913,0.166666667,PVR
+25-Sep-13,KOU Rock,Patiria miniata,33.71771,-118.33913,0.483333333,PVR
+25-Sep-13,KOU Rock,Pisaster giganteus,33.71771,-118.33913,0.183333333,PVR
+25-Sep-15,Rocky Point North,Strongylocentrotus purpuratus,33.77958,-118.4278,0.116666667,
+25-Sep-15,Hawthorne Reef,Mesocentrotus franciscanus,33.74711,-118.41632,1.783333333,
+25-Sep-15,Hawthorne Reef,Strongylocentrotus purpuratus,33.74711,-118.41632,3.6,
+25-Sep-15,Point Vicente West,Mesocentrotus franciscanus,33.74043,-118.41367,1.4,
+25-Sep-15,Point Vicente West,Strongylocentrotus purpuratus,33.74043,-118.41367,1.083333333,
+25-Sep-20,3 Palms West,Mesocentrotus franciscanus,33.71948,-118.3349,0.033333333,PVR
+25-Sep-20,3 Palms East,Dermasterias imbricata,33.71668,-118.33309,0.016666667,PVR
+25-Sep-20,3 Palms East,Mesocentrotus franciscanus,33.71668,-118.33309,0.55,PVR
+25-Sep-20,3 Palms East,Patiria miniata,33.71668,-118.33309,0.016666667,PVR
+25-Sep-20,3 Palms East,Pisaster giganteus,33.71668,-118.33309,0.016666667,PVR
+25-Sep-20,3 Palms East,Strongylocentrotus purpuratus,33.71668,-118.33309,0.366666667,PVR
+26-Aug-11,Point Vicente West,Henricia sp,33.73848,-118.4148,0.033333333,
+26-Aug-11,Point Vicente West,Mesocentrotus franciscanus,33.73848,-118.4148,0.333333333,
+26-Aug-11,Point Vicente West,Patiria miniata,33.73848,-118.4148,0.9,
+26-Aug-11,Point Vicente West,Pisaster giganteus,33.73848,-118.4148,0.183333333,
+26-Jul-13,Lunada Bay,Henricia sp,33.77149,-118.43487,0.05,
+26-Jul-13,Lunada Bay,Mesocentrotus franciscanus,33.77149,-118.43487,0.033333333,
+26-Jul-13,Lunada Bay,Patiria miniata,33.77149,-118.43487,0.283333333,
+26-Jul-13,Lunada Bay,Pisaster giganteus,33.77149,-118.43487,0.033333333,
+26-Jun-13,Rocky Point South,Henricia sp,33.77648333,-118.4323817,0.133333333,
+26-Jun-13,Rocky Point South,Linckia columbiae,33.7767,-118.43029,0.05,
+26-Jun-13,Rocky Point South,Mesocentrotus franciscanus,33.776172,-118.430694,1.1,
+26-Jun-13,Rocky Point South,Patiria miniata,33.77644,-118.4328,1.35,
+26-Jun-13,Rocky Point South,Pisaster giganteus,33.77619417,-118.4307733,0.283333333,
+26-Jun-13,Rocky Point South,Strongylocentrotus purpuratus,33.77599467,-118.4300593,1.3,
+26-Jun-19,Point Vicente West,Centrostephanus coronatus,33.73961,-118.41408,0.15,
+26-Jun-19,Point Vicente West,Henricia sp,33.73848,-118.4148,0.033333333,
+26-Jun-19,Point Vicente West,Mesocentrotus franciscanus,33.739118,-118.414326,2.433333333,
+26-Jun-19,Point Vicente West,Patiria miniata,33.73868667,-118.4145933,1.516666667,
+26-Jun-19,Point Vicente West,Pisaster giganteus,33.7394325,-118.4140525,0.066666667,
+26-Jun-19,Point Vicente West,Strongylocentrotus purpuratus,33.73966615,-118.4139923,1.983333333,
+26-May-17,Resort Point,Centrostephanus coronatus,33.766538,-118.428366,0.116666667,
+26-May-17,Resort Point,Henricia sp,33.76667,-118.42843,0.016666667,
+26-May-17,Resort Point,Linckia columbiae,33.76599,-118.42944,0.016666667,
+26-May-17,Resort Point,Mesocentrotus franciscanus,33.76647706,-118.4282576,1.616666667,
+26-May-17,Resort Point,Patiria miniata,33.76633167,-118.4288242,1.066666667,
+26-May-17,Resort Point,Pisaster giganteus,33.76667,-118.42843,0.066666667,
+26-May-17,Resort Point,Strongylocentrotus purpuratus,33.766542,-118.4281,2.2,
+26-Sep-18,3 Palms West,Mesocentrotus franciscanus,33.71802,-118.33533,0.1,PVR
+26-Sep-18,3 Palms West,Strongylocentrotus purpuratus,33.719716,-118.334718,0.233333333,PVR
+27-Aug-09,3 Palms East,Lytechinus pictus,33.71668,-118.33309,0.016666667,PVR
+27-Aug-09,3 Palms East,Mesocentrotus franciscanus,33.71668,-118.33309,0.066666667,PVR
+27-Aug-09,3 Palms East,Patiria miniata,33.71668,-118.33309,0.216666667,PVR
+27-Aug-09,3 Palms East,Pisaster giganteus,33.71668,-118.33309,0.066666667,PVR
+27-Jul-07,Rocky Point North,Centrostephanus coronatus,33.77985286,-118.4285771,0.266666667,
+27-Jul-07,Rocky Point North,Henricia sp,33.78149,-118.43324,0.066666667,
+27-Jul-07,Rocky Point North,Mesocentrotus franciscanus,33.77958,-118.4278,0.066666667,
+27-Jul-07,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.183333333,
+27-Jul-07,Rocky Point North,Pisaster giganteus,33.78149,-118.43324,0.016666667,
+27-Jul-07,Rocky Point North,Strongylocentrotus purpuratus,33.77958,-118.4278,1.45,
+27-Jul-10,Point Vicente West,Mesocentrotus franciscanus,33.74064273,-118.4131845,3.266666667,
+27-Jul-10,Point Vicente West,Patiria miniata,33.74056,-118.4133733,0.933333333,
+27-Jul-10,Point Vicente West,Pisaster giganteus,33.740625,-118.413225,1.583333333,
+27-Jul-10,Point Vicente West,Pisaster ochraceus,33.74060727,-118.4132655,0.833333333,
+27-Jul-10,Point Vicente West,Pycnopodia helianthoides,33.740508,-118.413492,0.083333333,
+27-Jul-10,Point Vicente West,Strongylocentrotus purpuratus,33.740625,-118.413225,7.1,
+27-Jul-22,Bunker Point,Mesocentrotus franciscanus,33.72563,-118.35286,0.116666667,PVR
+27-Jul-22,Bunker Point,Patiria miniata,33.72563,-118.35286,0.066666667,PVR
+27-Jul-22,Bunker Point,Strongylocentrotus purpuratus,33.72563,-118.35286,0.333333333,PVR
+27-Jul-22,3 Palms West,Strongylocentrotus purpuratus,33.72066,-118.33399,0.116666667,PVR
+27-Jun-14,Hawthorne Reef,Henricia sp,33.74698,-118.41738,0.016666667,
+27-Jun-14,Hawthorne Reef,Lytechinus pictus,33.74674,-118.41981,0.016666667,
+27-Jun-14,Hawthorne Reef,Mesocentrotus franciscanus,33.746932,-118.417866,0.233333333,
+27-Jun-14,Hawthorne Reef,Patiria miniata,33.74684909,-118.4187055,1.65,
+27-Jun-14,Hawthorne Reef,Pisaster giganteus,33.74674,-118.41981,0.016666667,
+27-Jun-14,Hawthorne Reef,Strongylocentrotus purpuratus,33.74698,-118.41738,0.25,
+27-Oct-15,KOU Rock,Mesocentrotus franciscanus,33.718175,-118.338845,0.3,PVR
+27-Oct-15,KOU Rock,Patiria miniata,33.719105,-118.338275,0.083333333,PVR
+27-Oct-15,KOU Rock,Strongylocentrotus purpuratus,33.719105,-118.338275,0.183333333,PVR
+27-Oct-15,3 Palms West,Mesocentrotus franciscanus,33.71802,-118.33533,0.1,PVR
+28-Aug-15,Honeymoon Cove,Henricia sp,33.76396,-118.42692,0.033333333,
+28-Aug-15,Honeymoon Cove,Mesocentrotus franciscanus,33.76407846,-118.4253631,1,
+28-Aug-15,Honeymoon Cove,Patiria miniata,33.76395429,-118.4266057,0.25,
+28-Aug-15,Honeymoon Cove,Strongylocentrotus purpuratus,33.764056,-118.425204,1.016666667,
+28-Aug-19,Resort Point,Centrostephanus coronatus,33.76633333,-118.4287133,0.15,
+28-Aug-19,Resort Point,Henricia sp,33.76633,-118.428935,0.066666667,
+28-Aug-19,Resort Point,Linckia columbiae,33.76599,-118.42944,0.033333333,
+28-Aug-19,Resort Point,Mesocentrotus franciscanus,33.76645,-118.4283233,1.566666667,
+28-Aug-19,Resort Point,Ophioplocus esmarki,33.76667,-118.42843,0.016666667,
+28-Aug-19,Resort Point,Patiria miniata,33.76633,-118.428935,0.283333333,
+28-Aug-19,Resort Point,Pisaster giganteus,33.76599,-118.42944,0.016666667,
+28-Aug-19,Resort Point,Sclerasterias heteropaes,33.76633,-118.428935,0.033333333,
+28-Aug-19,Resort Point,Strongylocentrotus purpuratus,33.76653222,-118.4276867,2.033333333,
+28-Jan-11,Honeymoon Cove,Mesocentrotus franciscanus,33.764608,-118.423752,1.85,
+28-Jan-11,Honeymoon Cove,Patiria miniata,33.76451636,-118.42388,1.983333333,
+28-Jan-11,Honeymoon Cove,Pisaster giganteus,33.764482,-118.423928,0.6,
+28-Jan-11,Honeymoon Cove,Pisaster ochraceus,33.76468,-118.4236514,0.216666667,
+28-Jan-11,Honeymoon Cove,Strongylocentrotus purpuratus,33.764545,-118.42384,51.58333333,
+28-Jul-21,Point Vicente West,Centrostephanus coronatus,33.7394325,-118.4140525,0.1,
+28-Jul-21,Point Vicente West,Henricia sp,33.73848,-118.4148,0.033333333,
+28-Jul-21,Point Vicente West,Mesocentrotus franciscanus,33.73946667,-118.4141044,1.716666667,
+28-Jul-21,Point Vicente West,Patiria miniata,33.73880125,-118.4145813,0.883333333,
+28-Jul-21,Point Vicente West,Pisaster giganteus,33.7391,-118.41418,0.05,
+28-Jul-21,Point Vicente West,Strongylocentrotus purpuratus,33.73998667,-118.41384,1.983333333,
+28-Jul-22,Point Vicente West,Centrostephanus coronatus,33.7391,-118.41418,0.15,
+28-Jul-22,Point Vicente West,Henricia sp,33.73879,-118.41449,0.033333333,
+28-Jul-22,Point Vicente West,Mesocentrotus franciscanus,33.73920667,-118.414292,1.55,
+28-Jul-22,Point Vicente West,Patiria miniata,33.73880125,-118.4145813,0.7,
+28-Jul-22,Point Vicente West,Pisaster giganteus,33.73998667,-118.41384,0.066666667,
+28-Jul-22,Point Vicente West,Strongylocentrotus purpuratus,33.74046,-118.4133462,2.366666667,
+28-Jun-13,Rocky Point North,Henricia sp,33.78149,-118.43324,0.033333333,
+28-Jun-13,Rocky Point North,Linckia columbiae,33.78014,-118.42891,0.016666667,
+28-Jun-13,Rocky Point North,Mesocentrotus franciscanus,33.78059,-118.4303533,0.6,
+28-Jun-13,Rocky Point North,Orthasterias koehleri,33.78149,-118.43324,0.016666667,
+28-Jun-13,Rocky Point North,Patiria miniata,33.78149,-118.43324,0.166666667,
+28-Jun-13,Rocky Point North,Pisaster giganteus,33.780365,-118.4296317,0.1,
+28-Jun-13,Rocky Point North,Strongylocentrotus purpuratus,33.78014,-118.42891,0.65,
+28-Jun-13,Rocky Point South,Henricia sp,33.77727,-118.43464,0.033333333,
+28-Jun-13,Rocky Point South,Mesocentrotus franciscanus,33.77727,-118.43464,0.116666667,
+28-Jun-13,Rocky Point South,Patiria miniata,33.77727,-118.43464,0.2,
+28-Jun-13,Rocky Point South,Pisaster giganteus,33.77727,-118.43464,0.05,
+28-Jun-13,Rocky Point South,Strongylocentrotus purpuratus,33.77727,-118.43464,0.05,
+28-Jun-19,Hawthorne Reef,Centrostephanus coronatus,33.746836,-118.418838,0.15,
+28-Jun-19,Hawthorne Reef,Henricia sp,33.74674,-118.41981,0.016666667,
+28-Jun-19,Hawthorne Reef,Mesocentrotus franciscanus,33.74686,-118.418595,1.033333333,
+28-Jun-19,Hawthorne Reef,Patiria miniata,33.74674,-118.41981,1.116666667,
+28-Jun-19,Hawthorne Reef,Sclerasterias heteropaes,33.74674,-118.41981,0.05,
+28-Jun-19,Hawthorne Reef,Strongylocentrotus purpuratus,33.74698,-118.41738,1.366666667,
+28-Oct-15,Lunada Bay,Henricia sp,33.77089,-118.43263,0.016666667,
+28-Oct-15,Lunada Bay,Mesocentrotus franciscanus,33.77089,-118.43263,0.083333333,
+28-Oct-15,Lunada Bay,Patiria miniata,33.77089,-118.43263,0.016666667,
+28-Oct-15,Lunada Bay,Strongylocentrotus purpuratus,33.77089,-118.43263,0.2,
+28-Oct-15,3 Palms West,Mesocentrotus franciscanus,33.71594,-118.33688,0.233333333,PVR
+28-Oct-15,3 Palms West,Patiria miniata,33.71594,-118.33688,0.083333333,PVR
+28-Sep-16,KOU Rock,Astropecten armatus,33.7172,-118.33928,0.1,PVR
+28-Sep-16,KOU Rock,Centrostephanus coronatus,33.71771,-118.33913,0.016666667,PVR
+28-Sep-16,KOU Rock,Mesocentrotus franciscanus,33.717455,-118.339205,0.116666667,PVR
+28-Sep-16,KOU Rock,Patiria miniata,33.717285,-118.339255,0.25,PVR
+28-Sep-18,Hawthorne Reef,Centrostephanus coronatus,33.74674,-118.41981,0.016666667,
+28-Sep-18,Hawthorne Reef,Henricia sp,33.74674,-118.41981,0.033333333,
+28-Sep-18,Hawthorne Reef,Lytechinus pictus,33.74674,-118.41981,0.6,
+28-Sep-18,Hawthorne Reef,Mesocentrotus franciscanus,33.74674,-118.41981,0.133333333,
+28-Sep-18,Hawthorne Reef,Patiria miniata,33.74674,-118.41981,0.666666667,
+28-Sep-18,Hawthorne Reef,Sclerasterias heteropaes,33.74674,-118.41981,0.033333333,
+28-Sep-18,Point Vicente West,Centrostephanus coronatus,33.7391,-118.41418,0.133333333,
+28-Sep-18,Point Vicente West,Henricia sp,33.73848,-118.4148,0.033333333,
+28-Sep-18,Point Vicente West,Mesocentrotus franciscanus,33.73879,-118.41449,1.5,
+28-Sep-18,Point Vicente West,Patiria miniata,33.73848,-118.4148,0.066666667,
+28-Sep-18,Point Vicente West,Strongylocentrotus purpuratus,33.7391,-118.41418,0.9,
+29-Aug-18,Resort Point,Centrostephanus coronatus,33.76667,-118.42843,0.016666667,
+29-Aug-18,Resort Point,Henricia sp,33.76667,-118.42843,0.066666667,
+29-Aug-18,Resort Point,Mesocentrotus franciscanus,33.76638429,-118.4284829,1.316666667,
+29-Aug-18,Resort Point,Patiria miniata,33.766534,-118.428632,0.183333333,
+29-Aug-18,Resort Point,Strongylocentrotus purpuratus,33.76663462,-118.42727,3.733333333,
+29-Jul-20,Hawthorne Reef,Centrostephanus coronatus,33.74674,-118.41981,0.033333333,
+29-Jul-20,Hawthorne Reef,Henricia sp,33.74674,-118.41981,0.016666667,
+29-Jul-20,Hawthorne Reef,Mesocentrotus franciscanus,33.74674,-118.41981,0.133333333,
+29-Jul-20,Hawthorne Reef,Patiria miniata,33.74674,-118.41981,1.133333333,
+29-Jul-22,Burial Grounds,Centrostephanus coronatus,33.72206,-118.34868,0.016666667,PVR
+29-Jul-22,Burial Grounds,Henricia sp,33.72206,-118.34868,0.133333333,PVR
+29-Jul-22,Burial Grounds,Mesocentrotus franciscanus,33.72248333,-118.3483767,0.25,PVR
+29-Jul-22,Burial Grounds,Patiria miniata,33.72224143,-118.34855,0.266666667,PVR
+29-Jul-22,Burial Grounds,Pisaster giganteus,33.72333,-118.34777,0.016666667,PVR
+29-Jul-22,Burial Grounds,Sclerasterias heteropaes,33.72206,-118.34868,0.016666667,PVR
+29-Jul-22,3 Palms West,Lytechinus pictus,33.71594,-118.33688,1.533333333,PVR
+29-Jul-22,3 Palms West,Mesocentrotus franciscanus,33.71751333,-118.336,1.466666667,PVR
+29-Jul-22,3 Palms West,Patiria miniata,33.71712,-118.33622,0.45,PVR
+29-Jul-22,3 Palms West,Strongylocentrotus purpuratus,33.71823,-118.3355025,0.266666667,PVR
+29-Jun-12,Rocky Point North,Mesocentrotus franciscanus,33.77958,-118.4278,0.183333333,
+29-Jun-12,Rocky Point North,Strongylocentrotus purpuratus,33.77958,-118.4278,0.616666667,
+29-Jun-12,Hawthorne Reef,Mesocentrotus franciscanus,33.74711,-118.41632,2.366666667,
+29-Jun-12,Hawthorne Reef,Patiria miniata,33.74711,-118.41632,1.05,
+29-Jun-12,Hawthorne Reef,Pisaster brevispinus,33.74711,-118.41632,0.016666667,
+29-Jun-12,Hawthorne Reef,Pisaster giganteus,33.74711,-118.41632,0.416666667,
+29-Jun-12,Hawthorne Reef,Pisaster ochraceus,33.74711,-118.41632,0.05,
+29-Jun-12,Hawthorne Reef,Strongylocentrotus purpuratus,33.74711,-118.41632,16.08333333,
+29-Jun-17,Rocky Point North,Strongylocentrotus purpuratus,33.77958,-118.4278,0.016666667,
+29-Jun-17,Resort Point,Mesocentrotus franciscanus,33.7667,-118.42607,0.1,
+29-Jun-17,Resort Point,Strongylocentrotus purpuratus,33.7667,-118.42607,0.166666667,
+29-Jun-18,Rocky Point North,Centrostephanus coronatus,33.78084,-118.43033,0.016666667,
+29-Jun-18,Rocky Point North,Henricia sp,33.78084,-118.43033,0.033333333,
+29-Jun-18,Rocky Point North,Linckia columbiae,33.78049,-118.42962,0.05,
+29-Jun-18,Rocky Point North,Mesocentrotus franciscanus,33.7807,-118.430046,0.183333333,
+29-Jun-18,Rocky Point North,Pisaster giganteus,33.78084,-118.43033,0.016666667,
+29-Jun-18,Rocky Point North,Strongylocentrotus purpuratus,33.78014,-118.42891,0.383333333,
+29-Jun-22,Resort Point,Centrostephanus coronatus,33.76633,-118.428935,0.033333333,
+29-Jun-22,Resort Point,Henricia sp,33.766126,-118.429238,0.166666667,
+29-Jun-22,Resort Point,Mesocentrotus franciscanus,33.76648619,-118.4279524,2.3,
+29-Jun-22,Resort Point,Patiria miniata,33.76636091,-118.4288891,0.6,
+29-Jun-22,Resort Point,Pisaster giganteus,33.76668333,-118.4275433,0.05,
+29-Jun-22,Resort Point,Sclerasterias heteropaes,33.76599,-118.42944,0.05,
+29-Jun-22,Resort Point,Strongylocentrotus purpuratus,33.766592,-118.4276493,1.216666667,
+29-May-12,Lunada Bay,Mesocentrotus franciscanus,33.77152,-118.42761,0.866666667,
+29-May-12,Lunada Bay,Pisaster giganteus,33.77152,-118.42761,0.2,
+29-May-12,Lunada Bay,Pisaster ochraceus,33.77152,-118.42761,0.133333333,
+29-May-12,Lunada Bay,Strongylocentrotus purpuratus,33.77152,-118.42761,3.75,
+29-May-12,Resort Point,Mesocentrotus franciscanus,33.7667,-118.42607,1.75,
+29-May-12,Resort Point,Patiria miniata,33.7667,-118.42607,0.033333333,
+29-May-12,Resort Point,Pisaster giganteus,33.7667,-118.42607,0.316666667,
+29-May-12,Resort Point,Pisaster ochraceus,33.7667,-118.42607,0.183333333,
+29-May-12,Resort Point,Strongylocentrotus purpuratus,33.7667,-118.42607,11.16666667,
+30-Aug-04,Rocky Point North,Centrostephanus coronatus,33.78018667,-118.4290133,3.5,
+30-Aug-04,Rocky Point North,Mesocentrotus franciscanus,33.78049,-118.42962,1.183333333,
+30-Aug-04,Rocky Point North,Pisaster giganteus,33.78018667,-118.4290133,0.083333333,
+30-Aug-04,Rocky Point North,Strongylocentrotus purpuratus,33.78018667,-118.4290133,7.383333333,
+30-Aug-10,Hawthorne Reef,Astropecten armatus,33.74674,-118.41981,0.033333333,
+30-Aug-10,Hawthorne Reef,Henricia sp,33.74674,-118.41981,0.016666667,
+30-Aug-10,Hawthorne Reef,Mesocentrotus franciscanus,33.74674,-118.41981,0.016666667,
+30-Aug-10,Hawthorne Reef,Orthasterias koehleri,33.74674,-118.41981,0.016666667,
+30-Aug-10,Hawthorne Reef,Patiria miniata,33.74674,-118.41981,1.533333333,
+30-Aug-10,Hawthorne Reef,Pisaster brevispinus,33.74674,-118.41981,0.016666667,
+30-Aug-10,Hawthorne Reef,Pisaster giganteus,33.74674,-118.41981,0.033333333,
+30-Aug-10,Hawthorne Reef,Pycnopodia helianthoides,33.74674,-118.41981,0.033333333,
+30-Jul-19,3 Palms East,Mesocentrotus franciscanus,33.716152,-118.333172,0.366666667,PVR
+30-Jul-19,3 Palms East,Patiria miniata,33.7142,-118.33394,0.3,PVR
+30-Jul-19,3 Palms East,Sclerasterias heteropaes,33.7142,-118.33394,0.05,PVR
+30-Jul-19,3 Palms East,Strongylocentrotus purpuratus,33.71806167,-118.33218,0.833333333,PVR
+30-Jun-17,Rocky Point South,Henricia sp,33.77644,-118.4328,0.016666667,
+30-Jun-17,Rocky Point South,Linckia columbiae,33.77727,-118.43464,0.1,
+30-Jun-17,Rocky Point South,Mesocentrotus franciscanus,33.776824,-118.433034,0.133333333,
+30-Jun-17,Rocky Point South,Patiria miniata,33.777042,-118.4329,0.133333333,
+30-Jun-17,Rocky Point South,Strongylocentrotus purpuratus,33.77670625,-118.4314613,0.5,
+30-Jun-20,Rocky Point South,Centrostephanus coronatus,33.77727,-118.43464,0.016666667,
+30-Jun-20,Rocky Point South,Henricia sp,33.77708,-118.43319,0.066666667,
+30-Jun-20,Rocky Point South,Linckia columbiae,33.7767,-118.43029,0.116666667,
+30-Jun-20,Rocky Point South,Mesocentrotus franciscanus,33.77685,-118.432783,0.95,
+30-Jun-20,Rocky Point South,Patiria miniata,33.777104,-118.434272,0.133333333,
+30-Jun-20,Rocky Point South,Pisaster giganteus,33.77644,-118.4328,0.016666667,
+30-Jun-20,Rocky Point South,Strongylocentrotus purpuratus,33.77667667,-118.43161,1.033333333,
+30-Jun-21,Honeymoon Cove,Centrostephanus coronatus,33.76394,-118.42582,0.1,
+30-Jun-21,Honeymoon Cove,Henricia sp,33.763952,-118.42648,0.116666667,
+30-Jun-21,Honeymoon Cove,Lytechinus pictus,33.76396,-118.42692,0.016666667,
+30-Jun-21,Honeymoon Cove,Mesocentrotus franciscanus,33.76413368,-118.4253684,1.616666667,
+30-Jun-21,Honeymoon Cove,Patiria miniata,33.763956,-118.4267,0.216666667,
+30-Jun-21,Honeymoon Cove,Strongylocentrotus purpuratus,33.76435846,-118.4244492,1.383333333,
+30-Jun-22,Lunada Bay,Centrostephanus coronatus,33.77089,-118.43263,0.016666667,
+30-Jun-22,Lunada Bay,Henricia sp,33.77119,-118.43375,0.083333333,
+30-Jun-22,Lunada Bay,Linckia columbiae,33.77089,-118.43263,0.016666667,
+30-Jun-22,Lunada Bay,Mesocentrotus franciscanus,33.77137867,-118.432318,1.9,
+30-Jun-22,Lunada Bay,Patiria miniata,33.77139,-118.4344967,0.216666667,
+30-Jun-22,Lunada Bay,Pisaster giganteus,33.77109,-118.4333767,0.05,
+30-Jun-22,Lunada Bay,Strongylocentrotus purpuratus,33.77136467,-118.4307813,3.5,
+30-Nov-16,Cape Point,Mesocentrotus franciscanus,33.72055,-118.3406,0.166666667,PVR
+30-Nov-16,Cape Point,Patiria miniata,33.71822,-118.34137,0.266666667,PVR
+30-Nov-16,Cape Point,Pisaster giganteus,33.72008,-118.34068,0.016666667,PVR
+30-Nov-16,Cape Point,Strongylocentrotus purpuratus,33.72086,-118.340485,0.033333333,PVR
+30-Oct-13,Old 18th,Mesocentrotus franciscanus,33.7221,-118.34451,0.033333333,PVR
+30-Oct-13,Old 18th,Patiria miniata,33.7221,-118.34451,0.183333333,PVR
+30-Oct-13,Old 18th,Pisaster giganteus,33.7221,-118.34451,0.033333333,PVR
+30-Sep-11,Rocky Point South,Centrostephanus coronatus,33.77644,-118.4328,0.033333333,
+30-Sep-11,Rocky Point South,Henricia sp,33.7770625,-118.43418,0.066666667,
+30-Sep-11,Rocky Point South,Linckia columbiae,33.77644,-118.4328,0.016666667,
+30-Sep-11,Rocky Point South,Lytechinus pictus,33.77644,-118.4328,0.016666667,
+30-Sep-11,Rocky Point South,Mesocentrotus franciscanus,33.77681727,-118.4336364,1.05,
+30-Sep-11,Rocky Point South,Orthasterias koehleri,33.77727,-118.43464,0.016666667,
+30-Sep-11,Rocky Point South,Patiria miniata,33.77671667,-118.4334133,1.6,
+30-Sep-11,Rocky Point South,Pisaster giganteus,33.776772,-118.433536,0.45,
+30-Sep-11,Rocky Point South,Strongylocentrotus purpuratus,33.77644,-118.4328,0.416666667,
+30-Sep-15,Rocky Point South,Henricia sp,33.77644,-118.4328,0.016666667,
+30-Sep-15,Rocky Point South,Mesocentrotus franciscanus,33.77675125,-118.43349,0.966666667,
+30-Sep-15,Rocky Point South,Strongylocentrotus purpuratus,33.77644,-118.4328,0.133333333,
+30-Sep-15,Resort Point,Centrostephanus coronatus,33.76633,-118.428935,0.033333333,
+30-Sep-15,Resort Point,Mesocentrotus franciscanus,33.76657286,-118.4285743,0.616666667,
+30-Sep-15,Resort Point,Patiria miniata,33.76621667,-118.4291033,0.1,
+30-Sep-15,Resort Point,Pisaster giganteus,33.76599,-118.42944,0.033333333,
+30-Sep-15,Resort Point,Strongylocentrotus purpuratus,33.766415,-118.4288088,0.483333333,
+30-Sep-20,3 Palms West,Mesocentrotus franciscanus,33.71594,-118.33688,0.266666667,PVR
+30-Sep-20,3 Palms West,Patiria miniata,33.71594,-118.33688,0.25,PVR
+30-Sep-20,3 Palms West,Strongylocentrotus purpuratus,33.71594,-118.33688,0.033333333,PVR
+30-Sep-20,3 Palms East,Henricia sp,33.7142,-118.33394,0.033333333,PVR
+30-Sep-20,3 Palms East,Mesocentrotus franciscanus,33.719,-118.3318,0.116666667,PVR
+30-Sep-20,3 Palms East,Patiria miniata,33.7142,-118.33394,0.1,PVR
+30-Sep-20,3 Palms East,Strongylocentrotus purpuratus,33.719,-118.3318,0.266666667,PVR
+31-Aug-11,Point Vicente West,Mesocentrotus franciscanus,33.7391,-118.41418,0.283333333,
+31-Aug-11,Point Vicente West,Patiria miniata,33.7391,-118.41418,2.7,
+31-Aug-11,Point Vicente West,Pisaster giganteus,33.7391,-118.41418,0.166666667,
+31-Aug-11,Point Vicente West,Pisaster ochraceus,33.7391,-118.41418,0.016666667,
+31-Aug-11,Point Vicente West,Pycnopodia helianthoides,33.7391,-118.41418,0.033333333,
+31-Aug-11,Point Vicente West,Strongylocentrotus purpuratus,33.7391,-118.41418,0.516666667,
+31-Aug-22,Old 18th,Mesocentrotus franciscanus,33.72309,-118.34377,0.133333333,PVR
+31-Aug-22,Old 18th,Patiria miniata,33.72309,-118.34377,0.033333333,PVR
+31-Aug-22,Old 18th,Strongylocentrotus purpuratus,33.72309,-118.34377,0.166666667,PVR
+31-Aug-22,KOU Rock,Astropecten armatus,33.7172,-118.33928,0.05,PVR
+31-Aug-22,KOU Rock,Centrostephanus coronatus,33.717455,-118.339205,0.05,PVR
+31-Aug-22,KOU Rock,Lytechinus pictus,33.7172,-118.33928,0.366666667,PVR
+31-Aug-22,KOU Rock,Mesocentrotus franciscanus,33.71885357,-118.338395,1.216666667,PVR
+31-Aug-22,KOU Rock,Patiria miniata,33.7176875,-118.3390625,1.883333333,PVR
+31-Aug-22,KOU Rock,Pisaster giganteus,33.71771,-118.33913,0.016666667,PVR
+31-Aug-22,KOU Rock,Sclerasterias heteropaes,33.7172,-118.33928,0.016666667,PVR
+31-Aug-22,KOU Rock,Strongylocentrotus purpuratus,33.72010231,-118.3376669,1.05,PVR
+31-May-13,Honeymoon Cove,Mesocentrotus franciscanus,33.76440467,-118.4243387,1.666666667,
+31-May-13,Honeymoon Cove,Patiria miniata,33.76434333,-118.4245,2.2,
+31-May-13,Honeymoon Cove,Pisaster giganteus,33.764315,-118.424445,0.216666667,
+31-May-13,Honeymoon Cove,Pisaster ochraceus,33.76465,-118.4236933,0.05,
+31-May-13,Honeymoon Cove,Sclerasterias heteropaes,33.76394,-118.42582,0.033333333,
+31-May-13,Honeymoon Cove,Strongylocentrotus purpuratus,33.76439375,-118.424335,39.61666667,
