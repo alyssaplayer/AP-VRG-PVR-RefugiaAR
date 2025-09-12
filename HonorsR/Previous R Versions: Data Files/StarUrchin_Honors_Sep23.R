@@ -1,0 +1,425 @@
+# CREATION DATE: July 3rd, 2023
+# AUTHOR: Alyssa Player (aplayer@oxy.edu)
+
+# PURPOSE: To do a Progressive-Change BACIPS on Sea Star and Urchin density along the Palos Verdes Peninsula to determine the role of artificial reefs in rehabilitation and recruiment of juvenile species.
+## This version is an expanded code for an analysis incorporating the MPA, Natural Reef, and PVR
+## For my honors project 
+
+# Set working directory
+setwd("/Users/alyssaplayer/Desktop/Honors/HonorsR")
+
+#(")
+
+# Require packages
+library("dplyr")
+library("plyr")
+library("tidyr")
+library("ggplot2")
+library("lubridate")
+
+
+#### Species Info ####
+# Read data set that contains means between replicates
+data_PV <- read.csv("PV_Stars_Urchins2023-09-20.csv", check.names = F)
+colnames(data_PV)[colnames(data_PV)=="BenthicReefSpecies"] <- "Species"
+
+
+# Add year and density per 100m2
+data_PV <- data_PV %>%
+  mutate(SampleDate = dmy(SampleDate),
+         Year = year(SampleDate),
+         Density_100m2 = 100*Density_m2) %>%
+  ungroup() %>% droplevels() %>%
+  complete(nesting(Site, Year, SampleDate), Species, fill = list(Density_m2=0, Density_100m2=0)) #Looks for grouped data of the nesting variables and if there is N/A, it inputs 0 for both density variables
+
+# Focal species list
+foc_spp <- c("Mesocentrotus franciscanus",
+             "Strongylocentrotus purpuratus",
+             "Patiria miniata", 
+             "Pisaster ochraceus", 
+             "Pisaster giganteus")
+
+data_PV <- data_PV %>%
+  filter(Species %in% foc_spp, Year >= 2008)
+
+
+# Create 'Before' and 'After' Dates for Construction of PVR and Wasting Disease
+data_PV <- data_PV %>%
+  mutate(Period = if_else(Year < 2020, "Before","After"),
+         Wasting = if_else(Year < 2013, "Pre-Wasting", "Wasting"))
+
+# Create a plot for Species density by year before and after SSWS
+ggsave(file="SpeciesDensity_Year.png", units = "in", width = 7, height = 4, res = 300)
+ggplot(data_PV, aes(x = Year, y = Density_100m2)) +
+  geom_point(position = position_dodge(width = 0.5)) +
+  geom_vline(xintercept = 2020, linetype = "dashed", color = "darkseagreen", alpha = 0.8) + #Adds dashed line indicating completed construction of PVR
+  theme_gray()+
+  theme(axis.line = element_line(colour = "black"),
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())+
+  xlab("Year")+
+  ylab("Density (per 100 m^2)")+
+  facet_wrap(~ Species, scales = "free_y")+
+  annotate("rect", xmin = 2013, xmax = 2016, ymin = 0, ymax = Inf,
+           alpha = .1,fill = "chocolate1") #Adds rectangle highlighting wasting event
+dev.off()
+
+#Used for poster figures 
+pisgig <- data_PV %>%
+  filter(Species=="Pisaster giganteus", Year >= 2008)
+
+
+#ggsave(file="MESFRA.png", units = "in", width = 7, height = 4, res = 300)
+ggplot(strpur, aes(x = Year, y = Density_100m2)) +
+  geom_point(position = position_dodge(width = 0.5)) +
+  geom_vline(xintercept = 2020, linetype = "dashed", color = "palegreen4", alpha = 0.8) + #Adds dashed line indicating completed construction of PVR
+  theme_gray()+
+  theme(axis.line = element_line(colour = "black"),
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())+
+  xlab("Year")+
+  ylab("Density (per 100 m^2)")+
+  facet_wrap(~ Species, scales = "free_y")+
+  annotate("rect", xmin = 2013, xmax = 2016, ymin = 0, ymax = Inf,
+           alpha = .3,fill = "chocolate1") #Adds rectangle highlighting wasting event
+#dev.off()
+
+############################################################################################################
+#Object: Perform a Progressive-Change BACIPS analysis using step, linear, asymptotic and sigmoid models	#
+#Authors: L. Thiault, L. Kernal??guen, C.W. Osenberg & J. Claudet												#
+############################################################################################################
+
+# Load packages
+require(minpack.lm) # Fitting non-linear models
+require(nls2) # Fitting non-linear models
+require(AICcmodavg) # calculate second order AIC (AICc)
+
+### The function requires 4 inputs of class integer with the same length (STEP 1) :
+# control: includes response variable measured in the Control site at each sampling time.model;
+# impact: includes response variable measured in the Impact site at each sampling time.model;
+# time.true: time corresponding to each sample;
+# time.model: surveys from the Before period are assigned time.model=0, and surveys from the After period are assigned time.models that represent the time since the intervention started.
+
+control_sites <- c("Hawthorne Reef",
+                   "Honeymoon Cove",
+                   "Lunada Bay",
+                   "Resort Point",  
+                   "Rocky Point South",
+                   "Rocky Point North",
+                   "Ridges North")
+pvr_impact_sites <- c("KOU Rock",
+                      "Old 18th",
+                      "Burial Grounds",
+                      "Cape Point",
+                      "3 Palms West",
+                      "3 Palms East",
+                      "Bunker Point")
+
+time.true <- c(2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022) #Sample Years
+time.model <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2) # 0 = pre-impact and impact, 2021 & 2022 are years post impact (1 & 2)
+
+#Set control and impact and bind to time.true and time.model
+control <- data_PV %>%
+  filter(Site %in% control_sites) %>%
+  group_by(Species, Year) %>%
+  dplyr::summarise(control = mean(Density_100m2)) 
+
+impact <-data_PV %>%
+  filter(Site %in% pvr_impact_sites) %>%
+  group_by(Species, Year) %>%
+  dplyr::summarise(impact = mean(Density_100m2)) 
+
+dat_pv <- control %>%
+  left_join(impact) %>%
+  dplyr::rename(time.true = Year) %>%
+  mutate(time.model = if_else(time.true < 2020, 0, time.true-2020))
+
+### Create the ProgressiveChangeBACIPS function
+ProgressiveChangeBACIPS <- function(control, impact, time.true, time.model) 
+{
+  ### STEP 2 - Calculate the delta at each sampling date
+  delta <- impact - control
+  
+  # Plot delta against time.true
+ # dev.new(width=10, height=5)
+  png(file = paste(i, "_plot.png", sep = ""))
+  par(mfrow=c(1,2))
+  plot(delta~time.true, type="n")
+  time.model.of.impact=max(which(time.model==0))
+  rect(time.model.of.impact, min(delta)-100, max(time.model)+10, max(delta)+100, col = "grey")
+  points(delta~time.true, pch=24, bg="white", cex=2)
+  
+  ### STEP 3 - Fit and compete models
+  ## Create a 'period' variable
+  period <- ifelse(time.model==0, "Before","After")
+  
+  ## Fit a step model
+  ## Step Model: The difference arises instantly and is constant through time
+  step.Model<-aov(delta ~ period)
+  
+  ## Fit a linear model
+  ## Linear Model: The difference increases through time at a constant rate
+  linear.Model<-lm(delta ~ time.model)
+  
+  ## Fit an asymptotic model
+  ## Asymptotic Model: The rate of change decreases monotonically to zero as time passes
+  # Create an asymptotic function
+  myASYfun<-function(delta, time.model)
+  {
+    funAsy<-function(parS, time.model)	(parS$M * time.model) / (parS$L + time.model) + parS$B
+    residFun<-function(p, observed, time.model) observed + funAsy(p,time.model)
+    parStart <- list(M=mean(delta[time.model.of.impact:length(time.true)]), B=mean(delta[1:time.model.of.impact]), L=1)
+    nls_ASY_out <- nls.lm(par=parStart, fn= residFun, observed=delta, time.model=time.model, control = nls.lm.control(maxfev = integer(), maxiter = 1000))
+    foAsy<-delta~(M * time.model) / (L + time.model) + B
+    startPar<-c(-coef(nls_ASY_out)[1], coef(nls_ASY_out)[2], coef(nls_ASY_out)[3])
+    asyFit<-nls2(foAsy, start=startPar, algorithm="brute-force") # nls2 enables to calculate AICc
+    asyFit
+  }
+  # Fit the asymptotic model
+  asymptotic.Model<-myASYfun(delta=delta,time.model=time.model)
+  
+  
+  ## Fit a sigmoid model
+  ## Sigmoid Model: The rate of change initially increases with time, but eventually decreases to zero.
+  ## Create a sigmoid function
+  mySIGfun<-function(delta, time.model)
+  {
+    funSIG<-function(parS, time.model)	(parS$M * (time.model/parS$L)^parS$K) / (1 + (time.model/parS$L) ^ parS$K) + parS$B
+    residFun<-function(p, observed, time.model) observed + funSIG(p,time.model)
+    parStart <- list(M=mean(delta[time.model.of.impact:length(time.true)]), B=mean(delta[1:time.model.of.impact]), L=mean(time.model), K=5)
+    nls_SIG_out <- nls.lm(par=parStart, fn= residFun, observed=delta, time.model=time.model, control = nls.lm.control(maxfev = integer(), maxiter = 1000))
+    foSIG<-delta~(M * (time.model/L) ^ K) / (1 + (time.model/L) ^ K) + B
+    startPar<-c(-coef(nls_SIG_out)[1],-coef(nls_SIG_out)[2],coef(nls_SIG_out)[3],coef(nls_SIG_out)[4])
+    sigFit<-nls2(foSIG, start=startPar, algorithm="brute-force") # nls2 enables to calculate AICc
+    sigFit
+  }
+  # Fit the sigmoid model
+  sigmoid.Model<-mySIGfun(delta=delta,time.model=time.model)
+  
+  
+  ## Compete models
+  # Perform AIC tests
+  #The Akaike Information Criterion is a measure used for model selection and comparison.
+  #It provides a balance between the goodness of fit of a model and its complexity, penalizing models with a larger number of parameters. 
+  #The lower the AIC value, the better the model is considered to fit the data.
+  AIC.test<-AIC(step.Model, linear.Model, asymptotic.Model, sigmoid.Model)
+  AICc.test<-as.data.frame(cbind(AIC.test[,1], c(AICc(step.Model), AICc(linear.Model), AICc(asymptotic.Model), AICc(sigmoid.Model))))
+  rownames(AICc.test)<-rownames(AIC.test)
+  names(AICc.test)<-names(AIC.test)
+  
+  # Calculate AICc weight and selected the best model
+  for(i in 1:dim(AICc.test)[1])
+  {
+    AICc.test$diff[i]<-AICc.test$AIC[i]-min(AICc.test$AIC)
+  }
+  AICc.test$RL<-exp(-0.5* AICc.test$diff)
+  RL_sum<-sum(AICc.test$RL)
+  AICc.test$aicWeights<-(AICc.test$RL/RL_sum)*100
+  w<-AICc.test$aicWeights
+  names(w)<-rownames(AICc.test)
+  
+  # Display AICc weights
+  print(w)
+  barplot(w, col="white", ylab="Relative likelihood (%)", cex.names = 0.9, names.arg =c("Step","Linear","Asymptotic","Sigmoid"))
+  best.Model<-which(w==max(w))
+  
+  ### STEP 4 - Derive inference based on the best model (i.e., with the higher AICc weight)
+  if(best.Model==1) {writeLines(paste("\n\nSTEP MODEL SELECTED - Likelihood = ", round(w[1],1), "%\n\n", sep=""))
+    print(summary(step.Model))}
+  if(best.Model==2) {writeLines(paste("\n\nLINEAR MODEL SELECTED - Likelihood = ", round(w[2],1), "%\n\n", sep=""))
+    print(summary(linear.Model))}
+  if(best.Model==3) {writeLines(paste("\n\nASYMPTOTIC MODEL SELECTED - Likelihood = ", round(w[3],1), "%\n\n", sep=""))
+    print(asymptotic.Model)}
+  if(best.Model==4) {writeLines(paste("\n\nSIGMOID MODEL SELECTED - Likelihood = ", round(w[4],1), "%\n\n", sep=""))
+    print(sigmoid.Model)}
+  
+  dev.off()
+}
+
+ProgressiveChangeBACIPS(control, impact, time.true, time.model)
+delta <- impact - control
+
+#Create a for loop to have s
+for (i in foc_spp) {
+  control <- dat_pv %>%
+    filter(Species == i) %>%
+    pull(control)
+  impact <- dat_pv %>%
+    filter(Species == i) %>%
+    pull(impact)
+  
+  print(ProgressiveChangeBACIPS(control,impact, time.true, time.model))
+  delta <- impact - control
+  #dev.off()
+}
+
+
+#####################################################################################
+#####################################################################################
+
+
+#### MPA vs PVR 
+control_sites <- c("Hawthorne Reef",
+                   "Honeymoon Cove",
+                   "Lunada Bay",
+                   "Resort Point",  
+                   "Rocky Point South",
+                   "Rocky Point North",
+                   "Ridges North")
+
+MPA_impact_sites <- c("120 Reef",
+                      "Abalone Cove Kelp West",
+                      "Long Point East",
+                      "Long Point West",
+                      "Old Marineland",                 
+                      "Point Vicente West",
+                      "Portuguese Point")
+
+time.true <- c(2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022) #Sample Years
+time.model <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2) # 0 = pre-impact and impact, 2021 & 2022 are years post impact (1 & 2)
+
+#Set control and impact and bind to time.true and time.model
+control <- data_PV %>%
+  filter(Site %in% control_sites) %>%
+  group_by(Species, Year) %>%
+  dplyr::summarise(control = mean(Density_100m2)) 
+
+impact <-data_PV %>%
+  filter(Site %in% MPA_impact_sites) %>%
+  group_by(Species, Year) %>%
+  dplyr::summarise(impact = mean(Density_100m2)) 
+
+dat_pv <- control %>%
+  left_join(impact) %>%
+  dplyr::rename(time.true = Year) %>%
+  mutate(time.model = if_else(time.true < 2020, 0, time.true-2020))
+
+### Create the ProgressiveChangeBACIPS function
+ProgressiveChangeBACIPS <- function(control, impact, time.true, time.model) 
+{
+  ### STEP 2 - Calculate the delta at each sampling date
+  delta <- impact - control
+  
+  # Plot delta against time.true
+  # dev.new(width=10, height=5)
+  png(file = paste(i, "_plot.png", sep = ""))
+  par(mfrow=c(1,2))
+  plot(delta~time.true, type="n")
+  time.model.of.impact=max(which(time.model==0))
+  rect(time.model.of.impact, min(delta)-100, max(time.model)+10, max(delta)+100, col = "grey")
+  points(delta~time.true, pch=24, bg="white", cex=2)
+  
+  ### STEP 3 - Fit and compete models
+  ## Create a 'period' variable
+  period <- ifelse(time.model==0, "Before","After")
+  
+  ## Fit a step model
+  ## Step Model: The difference arises instantly and is constant through time
+  step.Model<-aov(delta ~ period)
+  
+  ## Fit a linear model
+  ## Linear Model: The difference increases through time at a constant rate
+  linear.Model<-lm(delta ~ time.model)
+  
+  ## Fit an asymptotic model
+  ## Asymptotic Model: The rate of change decreases monotonically to zero as time passes
+  # Create an asymptotic function
+  myASYfun<-function(delta, time.model)
+  {
+    funAsy<-function(parS, time.model)	(parS$M * time.model) / (parS$L + time.model) + parS$B
+    residFun<-function(p, observed, time.model) observed + funAsy(p,time.model)
+    parStart <- list(M=mean(delta[time.model.of.impact:length(time.true)]), B=mean(delta[1:time.model.of.impact]), L=1)
+    nls_ASY_out <- nls.lm(par=parStart, fn= residFun, observed=delta, time.model=time.model, control = nls.lm.control(maxfev = integer(), maxiter = 1000))
+    foAsy<-delta~(M * time.model) / (L + time.model) + B
+    startPar<-c(-coef(nls_ASY_out)[1], coef(nls_ASY_out)[2], coef(nls_ASY_out)[3])
+    asyFit<-nls2(foAsy, start=startPar, algorithm="brute-force") # nls2 enables to calculate AICc
+    asyFit
+  }
+  # Fit the asymptotic model
+  asymptotic.Model<-myASYfun(delta=delta,time.model=time.model)
+  
+  
+  ## Fit a sigmoid model
+  ## Sigmoid Model: The rate of change initially increases with time, but eventually decreases to zero.
+  ## Create a sigmoid function
+  mySIGfun<-function(delta, time.model)
+  {
+    funSIG<-function(parS, time.model)	(parS$M * (time.model/parS$L)^parS$K) / (1 + (time.model/parS$L) ^ parS$K) + parS$B
+    residFun<-function(p, observed, time.model) observed + funSIG(p,time.model)
+    parStart <- list(M=mean(delta[time.model.of.impact:length(time.true)]), B=mean(delta[1:time.model.of.impact]), L=mean(time.model), K=5)
+    nls_SIG_out <- nls.lm(par=parStart, fn= residFun, observed=delta, time.model=time.model, control = nls.lm.control(maxfev = integer(), maxiter = 1000))
+    foSIG<-delta~(M * (time.model/L) ^ K) / (1 + (time.model/L) ^ K) + B
+    startPar<-c(-coef(nls_SIG_out)[1],-coef(nls_SIG_out)[2],coef(nls_SIG_out)[3],coef(nls_SIG_out)[4])
+    sigFit<-nls2(foSIG, start=startPar, algorithm="brute-force") # nls2 enables to calculate AICc
+    sigFit
+  }
+  # Fit the sigmoid model
+  sigmoid.Model<-mySIGfun(delta=delta,time.model=time.model)
+  
+  
+  ## Compete models
+  # Perform AIC tests
+  #The Akaike Information Criterion is a measure used for model selection and comparison.
+  #It provides a balance between the goodness of fit of a model and its complexity, penalizing models with a larger number of parameters. 
+  #The lower the AIC value, the better the model is considered to fit the data.
+  AIC.test<-AIC(step.Model, linear.Model, asymptotic.Model, sigmoid.Model)
+  AICc.test<-as.data.frame(cbind(AIC.test[,1], c(AICc(step.Model), AICc(linear.Model), AICc(asymptotic.Model), AICc(sigmoid.Model))))
+  rownames(AICc.test)<-rownames(AIC.test)
+  names(AICc.test)<-names(AIC.test)
+  
+  # Calculate AICc weight and selected the best model
+  for(i in 1:dim(AICc.test)[1])
+  {
+    AICc.test$diff[i]<-AICc.test$AIC[i]-min(AICc.test$AIC)
+  }
+  AICc.test$RL<-exp(-0.5* AICc.test$diff)
+  RL_sum<-sum(AICc.test$RL)
+  AICc.test$aicWeights<-(AICc.test$RL/RL_sum)*100
+  w<-AICc.test$aicWeights
+  names(w)<-rownames(AICc.test)
+  
+  # Display AICc weights
+  print(w)
+  barplot(w, col="white", ylab="Relative likelihood (%)", cex.names = 0.9, names.arg =c("Step","Linear","Asymptotic","Sigmoid"))
+  best.Model<-which(w==max(w))
+  
+  ### STEP 4 - Derive inference based on the best model (i.e., with the higher AICc weight)
+  if(best.Model==1) {writeLines(paste("\n\nSTEP MODEL SELECTED - Likelihood = ", round(w[1],1), "%\n\n", sep=""))
+    print(summary(step.Model))}
+  if(best.Model==2) {writeLines(paste("\n\nLINEAR MODEL SELECTED - Likelihood = ", round(w[2],1), "%\n\n", sep=""))
+    print(summary(linear.Model))}
+  if(best.Model==3) {writeLines(paste("\n\nASYMPTOTIC MODEL SELECTED - Likelihood = ", round(w[3],1), "%\n\n", sep=""))
+    print(asymptotic.Model)}
+  if(best.Model==4) {writeLines(paste("\n\nSIGMOID MODEL SELECTED - Likelihood = ", round(w[4],1), "%\n\n", sep=""))
+    print(sigmoid.Model)}
+  
+   dev.off()
+}
+
+ProgressiveChangeBACIPS(control, impact, time.true, time.model)
+delta <- impact - control
+
+#Create a for loop to have s
+for (i in foc_spp) {
+  control <- dat_pv %>%
+    filter(Species == i) %>%
+    pull(control)
+  impact <- dat_pv %>%
+    filter(Species == i) %>%
+    pull(impact)
+  
+  print(ProgressiveChangeBACIPS(control,impact, time.true, time.model))
+  delta <- impact - control
+  #dev.off()
+}
+
+
+
+
+
