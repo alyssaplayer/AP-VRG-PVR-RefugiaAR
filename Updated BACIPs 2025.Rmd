@@ -79,23 +79,22 @@ require(AICcmodavg) # calculate second order AIC (AICc)
 # time.true: time corresponding to each sample;
 # time.model: surveys from the Before period are assigned time.model=0, and surveys from the After period are assigned time.models that represent the time since the intervention started.
 
-pvr_control_sites <- c("Hawthorne Reef",
+pvr_control_sites <- c("Ridges North",
                    "Honeymoon Cove",
-                   "Lunada Bay",
                    "Resort Point",  
-                   "Rocky Point South",
                    "Rocky Point North",
-                   "Ridges North")
+                   "Rocky Point South",
+                   "Hawthorne Reef",
+                   "Lunada Bay")
 
-pvr_impact_sites <- c("KOU Rock",
-                      "Old 18th",
+pvr_impact_sites <- c("3 Palms East",
+                      "3 Palms West",
+                      "Bunker Point",
                       "Burial Grounds",
                       "Cape Point",
-                      "3 Palms West",
-                      "3 Palms East",
-                      "Bunker Point")
+                      "KOU Rock",
+                      "Old 18th")
 
-#can't use bunker point
 
 UniqueSiteYears <- data_PV %>%
   # 1. Group by Site and SampleYear to get one entry per site-year combination
@@ -107,6 +106,7 @@ UniqueSiteYears <- data_PV %>%
   dplyr::rename(Years_of_Data = n) %>%
   # 4. Filter for your sites of interest
   dplyr::filter(Site %in% pvr_control_sites | Site %in% pvr_impact_sites)
+
 
 
 
@@ -124,13 +124,24 @@ time.model <- c(0, 0, 0, 0, 0, 1, 2, 3, 4, 5)
  
 control <- data_PV %>%
   filter(Site %in% pvr_control_sites)%>% #, Year != 2010) %>%
+  group_by(Species, SampleYear, DepthZone) %>%
+  dplyr::summarise(mean_density = mean(Density_100m2)) %>%
   group_by(Species, SampleYear) %>%
-  dplyr::summarise(control = mean(Density_100m2)) 
+  dplyr::summarise(control = mean(mean_density))
+
+#original code
+# control1 <- data_PV %>%
+#   filter(Site %in% pvr_control_sites)%>% #, Year != 2010) %>%
+#   group_by(Species, SampleYear) %>%
+#   dplyr::summarise(mean_density = mean(Density_100m2)) 
 
 impact <-data_PV %>%
   filter(Site %in% pvr_impact_sites) %>%
   group_by(Species, SampleYear) %>%
-  dplyr::summarise(impact = mean(Density_100m2)) 
+  dplyr::summarise(mean_density_im = mean(Density_100m2))  %>%
+  group_by(Species, SampleYear) %>%
+  dplyr::summarise(impact = mean(mean_density_im))
+
 
 dat_pv <- control %>%
   left_join(impact) %>%
