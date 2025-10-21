@@ -33,9 +33,15 @@ foc_spp <- c("Mesocentrotus franciscanus",
   
 #used to have a. parvimensis, a. californicus but removed bc not relevant to findings
 
+
 data_PV <- data_PV %>%
   filter(Species %in% foc_spp, Year >= 2008) %>%
-  filter(DepthZone !="Outer Middle") #Removes outermiddle as a zone
+  filter(!DepthZone %in% c("Outer Middle", "Outer", "Deep"))#%>% #Removes outermiddle as a zone
+ # filter(DepthZone %in% c("Inner", "Middle", "ARM"))
+
+data_PV %>%
+  pull(Site) %>%
+  unique()
 
 data_PV <- data_PV %>%
   mutate(Era = case_when(
@@ -53,7 +59,7 @@ data_PV <- data_PV %>%
         Species %in% c("Patiria miniata", "Pisaster ochraceus", "Pisaster giganteus") ~ "Stars",
         Species %in% c("Mesocentrotus franciscanus", "Strongylocentrotus purpuratus") ~ "Urchins",
         TRUE ~ "Other"  # To catch any species not listed
-      ),
+        ),
       FunctionalGroup = factor(FunctionalGroup, levels = c("Stars", "Urchins")) #defining the functional groups 
     )
 
@@ -74,18 +80,23 @@ data_PV <- data_PV %>%
 
 #Statistical Tests:
 ##STASTICAL TEST
-leveneTest(Density_100m2 ~ DepthZone * Species, data = data_PV)
+leveneTest(Density_100m2 ~ Era * DepthZone * Species, data = data_PV)
 
 # 2. Fit the two-way ANOVA model
-anova_model <- aov(Density_100m2 ~ DepthZone * Species, data = data_PV)
+anova_model_era <- aov(Density_100m2 ~ Era* DepthZone * Species, data = data_PV)
 
 # Summary of ANOVA results
-summary(anova_model)
+summary(anova_model_era)
 
 # 3. Check normality of residuals (useful for assumptions)
 # Plotting residuals to inspect
 par(mfrow = c(1, 2))
 plot(anova_model, which = 1)  # R
+
+
+#new stats test: 
+TukeyHSD(anova_model_era, which = "Era")
+
 
 densitybydepth <- data_PV %>%
   group_by(DepthZone, Year, Species, Site, Era, Site_Category) %>%
@@ -104,10 +115,11 @@ densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(DZ_Densit
   theme_classic()+
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(x = "Site Type", # should i change this to Era
-       y = expression("Mean Density (100" * m^2 * " / yr)"))+
+       y = expression("log of Mean Density (100" * m^2 * " / yr)"))+
   facet_grid(rows = vars(Species), cols = vars(Site_Category), scales = "free_y", space = 'free') +
   scale_color_brewer(palette="Blues")+
   scale_fill_brewer(palette="Blues")
+
 
 print(densitybydepthplot_stars)
 
@@ -122,10 +134,11 @@ densitybydepthplot_urchins <- ggplot(density_urchins, aes(x = Era, y = log(DZ_De
            theme_classic()+
            theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
            labs(x = "Site Type", 
-                y = expression("Mean Density (100" * m^2 * " / yr)"))+
+                y = expression("Log of Mean Density (100" * m^2 * " / yr)"))+
            facet_grid(rows = vars(Species), cols = vars(Site_Category), scales = "free_y", space = 'free') +
            scale_color_brewer(palette="Oranges") +
            scale_fill_brewer(palette="Oranges")
          
+
 print(densitybydepthplot_urchins)
    
