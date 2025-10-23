@@ -36,8 +36,8 @@ foc_spp <- c("Mesocentrotus franciscanus",
 
 data_PV <- data_PV %>%
   filter(Species %in% foc_spp, Year >= 2008) %>%
-  filter(!DepthZone %in% c("Outer Middle", "Outer", "Deep"))#%>% #Removes outermiddle as a zone
- # filter(DepthZone %in% c("Inner", "Middle", "ARM"))
+  #filter(!DepthZone %in% c("Outer Middle", "Outer", "Deep"))#%>% #Removes outermiddle as a zone
+  filter(!DepthZone %in% c("Inner", "Middle"))
 
 data_PV %>%
   pull(Site) %>%
@@ -78,26 +78,6 @@ data_PV <- data_PV %>%
   ))
 
 
-#Statistical Tests:
-##STASTICAL TEST
-leveneTest(Density_100m2 ~ Era * DepthZone * Species, data = data_PV)
-
-# 2. Fit the two-way ANOVA model
-anova_model_era <- aov(Density_100m2 ~ Era* DepthZone * Species, data = data_PV)
-
-# Summary of ANOVA results
-summary(anova_model_era)
-
-# 3. Check normality of residuals (useful for assumptions)
-# Plotting residuals to inspect
-par(mfrow = c(1, 2))
-plot(anova_model, which = 1)  # R
-
-
-#new stats test: 
-TukeyHSD(anova_model_era, which = "Era")
-
-
 densitybydepth <- data_PV %>%
   group_by(DepthZone, Year, Species, Site, Era, Site_Category) %>%
   dplyr::summarise(DZ_Density_100m2=mean(Density_100m2)) %>%
@@ -106,7 +86,6 @@ densitybydepth <- data_PV %>%
 density_stars <- densitybydepth %>%
   filter(Species %in% c("Patiria miniata", "Pisaster ochraceus", "Pisaster giganteus"))
 
-
 densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(DZ_Density_100m2), color = Era)) +
   geom_boxplot(outlier.shape = NA, aes(fill=Era), alpha = 0.4) + # Set outlier.shape inside geom_boxplot(), alpha makes transparency so the data points are visible
   geom_point(aes(color = Era),
@@ -114,7 +93,7 @@ densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(DZ_Densit
              size = 0.7)+
   theme_classic()+
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "Site Type", # should i change this to Era
+  labs(x = "Site Type", 
        y = expression("log of Mean Density (100" * m^2 * " / yr)"))+
   facet_grid(rows = vars(Species), cols = vars(Site_Category), scales = "free_y", space = 'free') +
   scale_color_brewer(palette="Blues")+
@@ -141,4 +120,35 @@ densitybydepthplot_urchins <- ggplot(density_urchins, aes(x = Era, y = log(DZ_De
          
 
 print(densitybydepthplot_urchins)
-   
+
+
+#### STATISTICS ####
+#goal is test if the difference in means is significant between MPA, non-MPA and PVR post-wasting 
+
+postwaste_groups <- data_PV %>%
+  filter(Era == c("Post-Wasting Recovery"), Species == c("Mesocentrotus franciscanus")) %>%
+  group_by(Year, Species, Site, Site_Category) %>%
+  dplyr::summarise(DZ_Density_100m2=mean(Density_100m2))
+#do a for loop or pipe with group-by / mutate
+
+
+leveneTest(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
+#if the variance is equal between Era by DZ by Species
+
+# 2. Fit the two-way ANOVA model
+anova_model_era <- aov(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
+
+# Summary of ANOVA results
+summary(anova_model_era)
+
+
+# 3. Check normality of residuals (useful for assumptions)
+# Plotting residuals to inspect
+par(mfrow = c(1, 2))
+plot(anova_model_era, which = 1)  # R
+
+
+#new stats test: 
+TukeyHSD(anova_model_era, which = "Era")
+
+
