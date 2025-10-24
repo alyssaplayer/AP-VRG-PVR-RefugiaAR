@@ -36,8 +36,8 @@ foc_spp <- c("Mesocentrotus franciscanus",
 
 data_PV <- data_PV %>%
   filter(Species %in% foc_spp, Year >= 2008) %>%
-  #filter(!DepthZone %in% c("Outer Middle", "Outer", "Deep"))#%>% #Removes outermiddle as a zone
-  filter(!DepthZone %in% c("Inner", "Middle"))
+  filter(!DepthZone %in% c("Outer Middle", "Outer", "Deep"))#%>% #Removes outermiddle as a zone
+  #filter(!DepthZone %in% c("Inner", "Middle"))
 
 data_PV %>%
   pull(Site) %>%
