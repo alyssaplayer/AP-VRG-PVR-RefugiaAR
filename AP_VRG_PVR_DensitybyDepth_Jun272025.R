@@ -16,14 +16,20 @@ library("car")
 
 #### Species Info ####
 # Read data set that contains means between replicates
-data_PV <- read.csv("PV_Stars_Urchins2025-07-09.csv", check.names = F)
+data_PVR <- read.csv("PV_Stars_Urchins2025-07-09.csv", check.names = F)
+crane_data <-read.csv("PV_Stars_Urchins2025-11-05.csv", check.names = F)
+data_PVR <- data_PVR %>%
+  filter(DepthZone == "ARM")
+data_PV <- rbind(data_PVR, crane_data)
+  
 colnames(data_PV)[colnames(data_PV)=="BenthicReefSpecies"] <- "Species"
 colnames(data_PV)[colnames(data_PV)=="SampleYear"] <- "Year"
 
 data_PV <- data_PV %>%
   mutate(Density_100m2=100*Density_m2) #Create a column that is Density per 100m2
   complete(nesting(Site, Year), Species, fill = list(Density_m2=0, Density_100m2=0)) 
-  
+
+
 # Focal species list
 foc_spp <- c("Mesocentrotus franciscanus",
               "Strongylocentrotus purpuratus",
@@ -35,9 +41,8 @@ foc_spp <- c("Mesocentrotus franciscanus",
 
 
 data_PV <- data_PV %>%
-  filter(Species %in% foc_spp, Year >= 2008) %>%
-  filter(!DepthZone %in% c("Outer Middle", "Outer", "Deep"))#%>% #Removes outermiddle as a zone
-  #filter(!DepthZone %in% c("Inner", "Middle"))
+  filter(Species %in% foc_spp, Year >= 2011) %>%
+  filter(DepthZone %in% c("Outer", "Deep", "ARM"))
 
 data_PV %>%
   pull(Site) %>%
@@ -147,8 +152,17 @@ summary(anova_model_era)
 par(mfrow = c(1, 2))
 plot(anova_model_era, which = 1)  # R
 
+#non-parametric of one-way ANOVA
+kruskal.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
 
-#new stats test: 
-TukeyHSD(anova_model_era, which = "Era")
+#residuals will show any unexplained variance
+#try a qqplot - plotting quantiles against each other 
 
+# 
+# #new stats test: 
+# TukeyHSD(anova_model_era, which = "Era")
 
+# this function can run a one-way ANOVA with a Welch correction if variances not equal (like corrected version of 2 sample t-test)
+oneway.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
+
+#try my stats test
