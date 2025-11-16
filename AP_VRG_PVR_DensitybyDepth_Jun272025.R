@@ -129,40 +129,67 @@ print(densitybydepthplot_urchins)
 
 #### STATISTICS ####
 #goal is test if the difference in means is significant between MPA, non-MPA and PVR post-wasting 
-
-postwaste_groups <- data_PV %>%
-  filter(Era == c("Post-Wasting Recovery"), Species == c("Mesocentrotus franciscanus")) %>%
-  group_by(Year, Species, Site, Site_Category) %>%
-  dplyr::summarise(DZ_Density_100m2=mean(Density_100m2))
-#do a for loop or pipe with group-by / mutate
-
-
-leveneTest(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
-#if the variance is equal between Era by DZ by Species
-
-# 2. Fit the two-way ANOVA model
-anova_model_era <- aov(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
-
-# Summary of ANOVA results
-summary(anova_model_era)
-
-
-# 3. Check normality of residuals (useful for assumptions)
-# Plotting residuals to inspect
-par(mfrow = c(1, 2))
-plot(anova_model_era, which = 1)  # R
-
-#non-parametric of one-way ANOVA
-kruskal.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
-
-#residuals will show any unexplained variance
-#try a qqplot - plotting quantiles against each other 
-
 # 
-# #new stats test: 
-# TukeyHSD(anova_model_era, which = "Era")
+# postwaste_groups <- data_PV %>%
+#   filter(Era == c("Post-Wasting Recovery"), Species == c("Mesocentrotus franciscanus")) %>%
+#   group_by(Year, Species, Site, Site_Category) %>%
+#   dplyr::summarise(DZ_Density_100m2=mean(Density_100m2))
+# #do a for loop or pipe with group-by / mutate
+# 
+# 
+# leveneTest(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
+# #if the variance is equal between Era by DZ by Species
+# 
+# # 2. Fit the two-way ANOVA model
+# anova_model_era <- aov(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
+# 
+# # Summary of ANOVA results
+# summary(anova_model_era)
+# 
+# 
+# # 3. Check normality of residuals (useful for assumptions)
+# # Plotting residuals to inspect
+# par(mfrow = c(1, 2))
+# plot(anova_model_era, which = 1)  # R
+# 
+# #non-parametric of one-way ANOVA
+# kruskal.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
+# 
+# #residuals will show any unexplained variance
+# #try a qqplot - plotting quantiles against each other 
+# 
+# # 
+# # #new stats test: 
+# # TukeyHSD(anova_model_era, which = "Era")
+# 
+# # this function can run a one-way ANOVA with a Welch correction if variances not equal (like corrected version of 2 sample t-test)
+# oneway.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
+# 
+# #try my stats test
 
-# this function can run a one-way ANOVA with a Welch correction if variances not equal (like corrected version of 2 sample t-test)
-oneway.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
+### Stats test using Jeremy's script 
+require(dplyr)
+stats_test <- densitybydepth %>%
+  group_by(Era, Site_Category) %>% 
+  summarise (median_count=median(DZ_Density_100m2), mean_count = mean(DZ_Density_100m2), sd_count = sd(DZ_Density_100m2))
 
-#try my stats test
+
+# run levene's test of equal variances among groups using leveneTest function in car package
+library(car) # this will generate an error if "car" has not been installed
+leveneTest(y=dat$count, group=dat$spray)
+
+#########
+# display means
+tapply(densitybydepth$DZ_Density_100m2, densitybydepth$Era, mean)
+# summary function will show parameter estiamtes (group means in one-way ANOVA context)
+summary(lm_count_spray)
+# note estimates are relative to intercept value (arbitrarily the first level of categorical variable in data)
+# BUT, each test is typically not something of interest (i.e., do not use those results for one-way ANOVA)
+
+
+# Individual value plots + 95% CI for each group
+ggplot(dat, aes(y=count, x=spray, col = spray)) +
+  stat_summary(fun.data="mean_cl_normal", mapping = aes(group = spray), geom = "crossbar", width = 0.2, col="black", fill = "gray") +
+  geom_jitter(width=0.2, size = 2) +
+  theme_bw()
+  
