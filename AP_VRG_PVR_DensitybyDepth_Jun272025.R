@@ -168,15 +168,24 @@ print(densitybydepthplot_urchins)
 # #try my stats test
 
 ### Stats test using Jeremy's script 
-require(dplyr)
-stats_test <- densitybydepth %>%
+# ?tapply
+# tapply(dat$count, dat$spray, mean)
+# tapply(dat$count, dat$spray, sd)
+# tapply(dat$count, dat$spray, summary)
+
+
+dat <- densitybydepth %>%
   group_by(Era, Site_Category) %>% 
-  summarise (median_count=median(DZ_Density_100m2), mean_count = mean(DZ_Density_100m2), sd_count = sd(DZ_Density_100m2))
+  summarise (
+    median_count = median(DZ_Density_100m2, na.rm = TRUE), 
+    mean_count = mean(DZ_Density_100m2, na.rm = TRUE), 
+    sd_count = sd(DZ_Density_100m2, na.rm = TRUE)
+  )
 
 
 # run levene's test of equal variances among groups using leveneTest function in car package
 library(car) # this will generate an error if "car" has not been installed
-leveneTest(y=dat$count, group=dat$spray)
+leveneTest(y=dat$DZ_Density_100m2, group=dat$Site_Category)
 
 #########
 # display means
@@ -192,4 +201,34 @@ ggplot(dat, aes(y=count, x=spray, col = spray)) +
   stat_summary(fun.data="mean_cl_normal", mapping = aes(group = spray), geom = "crossbar", width = 0.2, col="black", fill = "gray") +
   geom_jitter(width=0.2, size = 2) +
   theme_bw()
+
+
+#test 11/17/2025
+postwaste_filtered <- densitybydepth %>%
+  filter(Era == "Post-Wasting Recovery") %>%
+  filter(Species == "Mesocentrotus franciscanus")
+
+anova_model <- aov(DZ_Density_100m2 ~ Site_Category, data = postwaste_filtered)
+plot(anova_model, which = 2) 
+shapiro_result <- shapiro.test(residuals(anova_model))
+print(shapiro_result)
+
+levene_result <- leveneTest(DZ_Density_100m2 ~ Site_Category, data = postwaste_filtered)
+print("Levene's Test (Variance):")
+print(levene_result)
+
+#good for testing specific species - but homogeneity of variances is too high and not normally distributed
+# welch_anova_result <- oneway.test(DZ_Density_100m2 ~ Site_Category, 
+#                                   data = postwaste_filtered, 
+#                                   var.equal = FALSE)
+# 
+# print("Welch's ANOVA Results (Corrected for Unequal Variance):")
+# print(welch_anova_result)
+
+#kruskal wallis is the answer 
+kruskal_result <- kruskal.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_filtered)
+
+print("Kruskal-Wallis Test Results (Final Recommendation):")
+print(kruskal_result)
   
+#
