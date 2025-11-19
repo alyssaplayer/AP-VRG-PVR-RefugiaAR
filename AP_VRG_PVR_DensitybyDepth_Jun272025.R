@@ -16,14 +16,20 @@ library("car")
 
 #### Species Info ####
 # Read data set that contains means between replicates
-data_PV <- read.csv("PV_Stars_Urchins2025-07-09.csv", check.names = F)
+data_PVR <- read.csv("PV_Stars_Urchins2025-07-09.csv", check.names = F)
+crane_data <-read.csv("PV_Stars_Urchins2025-11-05.csv", check.names = F)
+data_PVR <- data_PVR %>%
+  filter(DepthZone == "ARM")
+data_PV <- rbind(data_PVR, crane_data)
+  
 colnames(data_PV)[colnames(data_PV)=="BenthicReefSpecies"] <- "Species"
 colnames(data_PV)[colnames(data_PV)=="SampleYear"] <- "Year"
 
 data_PV <- data_PV %>%
   mutate(Density_100m2=100*Density_m2) #Create a column that is Density per 100m2
   complete(nesting(Site, Year), Species, fill = list(Density_m2=0, Density_100m2=0)) 
-  
+
+
 # Focal species list
 foc_spp <- c("Mesocentrotus franciscanus",
               "Strongylocentrotus purpuratus",
@@ -35,9 +41,8 @@ foc_spp <- c("Mesocentrotus franciscanus",
 
 
 data_PV <- data_PV %>%
-  filter(Species %in% foc_spp, Year >= 2008) %>%
-  filter(!DepthZone %in% c("Outer Middle", "Outer", "Deep"))#%>% #Removes outermiddle as a zone
-  #filter(!DepthZone %in% c("Inner", "Middle"))
+  filter(Species %in% foc_spp, Year >= 2011) %>%
+  filter(DepthZone %in% c("Outer", "Deep", "ARM"))
 
 data_PV %>%
   pull(Site) %>%
@@ -124,31 +129,106 @@ print(densitybydepthplot_urchins)
 
 #### STATISTICS ####
 #goal is test if the difference in means is significant between MPA, non-MPA and PVR post-wasting 
+# 
+# postwaste_groups <- data_PV %>%
+#   filter(Era == c("Post-Wasting Recovery"), Species == c("Mesocentrotus franciscanus")) %>%
+#   group_by(Year, Species, Site, Site_Category) %>%
+#   dplyr::summarise(DZ_Density_100m2=mean(Density_100m2))
+# #do a for loop or pipe with group-by / mutate
+# 
+# 
+# leveneTest(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
+# #if the variance is equal between Era by DZ by Species
+# 
+# # 2. Fit the two-way ANOVA model
+# anova_model_era <- aov(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
+# 
+# # Summary of ANOVA results
+# summary(anova_model_era)
+# 
+# 
+# # 3. Check normality of residuals (useful for assumptions)
+# # Plotting residuals to inspect
+# par(mfrow = c(1, 2))
+# plot(anova_model_era, which = 1)  # R
+# 
+# #non-parametric of one-way ANOVA
+# kruskal.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
+# 
+# #residuals will show any unexplained variance
+# #try a qqplot - plotting quantiles against each other 
+# 
+# # 
+# # #new stats test: 
+# # TukeyHSD(anova_model_era, which = "Era")
+# 
+# # this function can run a one-way ANOVA with a Welch correction if variances not equal (like corrected version of 2 sample t-test)
+# oneway.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
+# 
+# #try my stats test
 
-postwaste_groups <- data_PV %>%
-  filter(Era == c("Post-Wasting Recovery"), Species == c("Mesocentrotus franciscanus")) %>%
-  group_by(Year, Species, Site, Site_Category) %>%
-  dplyr::summarise(DZ_Density_100m2=mean(Density_100m2))
-#do a for loop or pipe with group-by / mutate
+### Stats test using Jeremy's script 
+# ?tapply
+# tapply(dat$count, dat$spray, mean)
+# tapply(dat$count, dat$spray, sd)
+# tapply(dat$count, dat$spray, summary)
 
 
-leveneTest(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
-#if the variance is equal between Era by DZ by Species
-
-# 2. Fit the two-way ANOVA model
-anova_model_era <- aov(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
-
-# Summary of ANOVA results
-summary(anova_model_era)
-
-
-# 3. Check normality of residuals (useful for assumptions)
-# Plotting residuals to inspect
-par(mfrow = c(1, 2))
-plot(anova_model_era, which = 1)  # R
+dat <- densitybydepth %>%
+  group_by(Era, Site_Category) %>% 
+  summarise (
+    median_count = median(DZ_Density_100m2, na.rm = TRUE), 
+    mean_count = mean(DZ_Density_100m2, na.rm = TRUE), 
+    sd_count = sd(DZ_Density_100m2, na.rm = TRUE)
+  )
 
 
-#new stats test: 
-TukeyHSD(anova_model_era, which = "Era")
+# run levene's test of equal variances among groups using leveneTest function in car package
+library(car) # this will generate an error if "car" has not been installed
+leveneTest(y=dat$DZ_Density_100m2, group=dat$Site_Category)
+
+#########
+# display means
+tapply(densitybydepth$DZ_Density_100m2, densitybydepth$Era, mean)
+# summary function will show parameter estiamtes (group means in one-way ANOVA context)
+summary(lm_count_spray)
+# note estimates are relative to intercept value (arbitrarily the first level of categorical variable in data)
+# BUT, each test is typically not something of interest (i.e., do not use those results for one-way ANOVA)
 
 
+# Individual value plots + 95% CI for each group
+ggplot(dat, aes(y=count, x=spray, col = spray)) +
+  stat_summary(fun.data="mean_cl_normal", mapping = aes(group = spray), geom = "crossbar", width = 0.2, col="black", fill = "gray") +
+  geom_jitter(width=0.2, size = 2) +
+  theme_bw()
+
+
+#test 11/17/2025
+postwaste_filtered <- densitybydepth %>%
+  filter(Era == "Post-Wasting Recovery") %>%
+  filter(Species == "Mesocentrotus franciscanus")
+
+anova_model <- aov(DZ_Density_100m2 ~ Site_Category, data = postwaste_filtered)
+plot(anova_model, which = 2) 
+shapiro_result <- shapiro.test(residuals(anova_model))
+print(shapiro_result)
+
+levene_result <- leveneTest(DZ_Density_100m2 ~ Site_Category, data = postwaste_filtered)
+print("Levene's Test (Variance):")
+print(levene_result)
+
+#good for testing specific species - but homogeneity of variances is too high and not normally distributed
+# welch_anova_result <- oneway.test(DZ_Density_100m2 ~ Site_Category, 
+#                                   data = postwaste_filtered, 
+#                                   var.equal = FALSE)
+# 
+# print("Welch's ANOVA Results (Corrected for Unequal Variance):")
+# print(welch_anova_result)
+
+#kruskal wallis is the answer 
+kruskal_result <- kruskal.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_filtered)
+
+print("Kruskal-Wallis Test Results (Final Recommendation):")
+print(kruskal_result)
+  
+#
