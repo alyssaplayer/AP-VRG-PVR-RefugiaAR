@@ -11,6 +11,9 @@ library("ggh4x")
 library("broom")
 library("AICcmodavg")
 library("car")
+library("ggpubr")
+library("rstatix")
+
 
 #setwd("/Users/alyssaplayer/Desktop/AP VRG PVR 2024")
 
@@ -85,7 +88,7 @@ data_PV <- data_PV %>%
 
 densitybydepth <- data_PV %>%
   group_by(DepthZone, Year, Species, Site, Era, Site_Category) %>%
-  dplyr::summarise(DZ_Density_100m2=mean(Density_100m2)) %>%
+  dplyr::summarise(DZ_Density_100m2=(mean(Density_100m2))) %>%
   mutate(Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE))
 
 density_stars <- densitybydepth %>%
@@ -217,6 +220,8 @@ levene_result <- leveneTest(DZ_Density_100m2 ~ Site_Category, data = postwaste_f
 print("Levene's Test (Variance):")
 print(levene_result)
 
+
+#we do not want high p-value - as close to equal as possible
 #good for testing specific species - but homogeneity of variances is too high and not normally distributed
 # welch_anova_result <- oneway.test(DZ_Density_100m2 ~ Site_Category, 
 #                                   data = postwaste_filtered, 
@@ -225,10 +230,20 @@ print(levene_result)
 # print("Welch's ANOVA Results (Corrected for Unequal Variance):")
 # print(welch_anova_result)
 
-#kruskal wallis is the answer 
+#kruskal wallis ? 
 kruskal_result <- kruskal.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_filtered)
 
 print("Kruskal-Wallis Test Results (Final Recommendation):")
 print(kruskal_result)
-  
-#
+
+
+#https://www.datanovia.com/en/lessons/friedman-test-in-r/
+#friedman 
+#calculate the mean for each era and site category 
+#split by species 
+#Era - postwaste recovery + MPA, postwaste non -MPA, postwaste PVR 
+#Waste -postwaste, wasting, prewaste x 3 sites 
+
+
+ftest <- friedman.test(y=densitybydepth$DZ_Density_100m2, groups=densitybydepth$Era, blocks=densitybydepth$Site_Category)
+
