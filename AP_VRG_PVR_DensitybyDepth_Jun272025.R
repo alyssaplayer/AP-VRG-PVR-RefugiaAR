@@ -17,6 +17,7 @@ library("rstatix")
 
 #setwd("/Users/alyssaplayer/Desktop/AP VRG PVR 2024")
 
+####DATA MANAGEMENT AND FILTERING####
 #### Species Info ####
 # Read data set that contains means between replicates
 data_PVR <- read.csv("PV_Stars_Urchins2025-07-09.csv", check.names = F)
@@ -33,7 +34,7 @@ data_PV <- data_PV %>%
   complete(nesting(Site, Year), Species, fill = list(Density_m2=0, Density_100m2=0)) 
 
 
-# Focal species list
+####Focal Species List####
 foc_spp <- c("Mesocentrotus franciscanus",
               "Strongylocentrotus purpuratus",
               "Patiria miniata", 
@@ -41,7 +42,6 @@ foc_spp <- c("Mesocentrotus franciscanus",
               "Pisaster giganteus")
   
 #used to have a. parvimensis, a. californicus but removed bc not relevant to findings
-
 
 data_PV <- data_PV %>%
   filter(Species %in% foc_spp, Year >= 2011) %>%
@@ -61,6 +61,7 @@ data_PV <- data_PV %>%
   )
 
   
+#Creating the functional groups for the species
 data_PV <- data_PV %>%
     mutate(
       FunctionalGroup = case_when(
@@ -86,6 +87,7 @@ data_PV <- data_PV %>%
   ))
 
 
+####CREATING THE DENSITY PLOTS####
 densitybydepth <- data_PV %>%
   group_by(DepthZone, Year, Species, Site, Era, Site_Category) %>%
   dplyr::summarise(DZ_Density_100m2=(mean(Density_100m2))) %>%
@@ -132,50 +134,12 @@ print(densitybydepthplot_urchins)
 
 #### STATISTICS ####
 #goal is test if the difference in means is significant between MPA, non-MPA and PVR post-wasting 
-# 
+
 # postwaste_groups <- data_PV %>%
 #   filter(Era == c("Post-Wasting Recovery"), Species == c("Mesocentrotus franciscanus")) %>%
 #   group_by(Year, Species, Site, Site_Category) %>%
 #   dplyr::summarise(DZ_Density_100m2=mean(Density_100m2))
 # #do a for loop or pipe with group-by / mutate
-# 
-# 
-# leveneTest(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
-# #if the variance is equal between Era by DZ by Species
-# 
-# # 2. Fit the two-way ANOVA model
-# anova_model_era <- aov(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
-# 
-# # Summary of ANOVA results
-# summary(anova_model_era)
-# 
-# 
-# # 3. Check normality of residuals (useful for assumptions)
-# # Plotting residuals to inspect
-# par(mfrow = c(1, 2))
-# plot(anova_model_era, which = 1)  # R
-# 
-# #non-parametric of one-way ANOVA
-# kruskal.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
-# 
-# #residuals will show any unexplained variance
-# #try a qqplot - plotting quantiles against each other 
-# 
-# # 
-# # #new stats test: 
-# # TukeyHSD(anova_model_era, which = "Era")
-# 
-# # this function can run a one-way ANOVA with a Welch correction if variances not equal (like corrected version of 2 sample t-test)
-# oneway.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_groups)
-# 
-# #try my stats test
-
-### Stats test using Jeremy's script 
-# ?tapply
-# tapply(dat$count, dat$spray, mean)
-# tapply(dat$count, dat$spray, sd)
-# tapply(dat$count, dat$spray, summary)
-
 
 dat <- densitybydepth %>%
   group_by(Era, Site_Category) %>% 
@@ -211,35 +175,16 @@ postwaste_filtered <- densitybydepth %>%
   filter(Era == "Post-Wasting Recovery") %>%
   filter(Species == "Mesocentrotus franciscanus")
 
-anova_model <- aov(DZ_Density_100m2 ~ Site_Category, data = postwaste_filtered)
-plot(anova_model, which = 2) 
-shapiro_result <- shapiro.test(residuals(anova_model))
-print(shapiro_result)
-
-levene_result <- leveneTest(DZ_Density_100m2 ~ Site_Category, data = postwaste_filtered)
-print("Levene's Test (Variance):")
-print(levene_result)
-
-
-#we do not want high p-value - as close to equal as possible
-#good for testing specific species - but homogeneity of variances is too high and not normally distributed
-# welch_anova_result <- oneway.test(DZ_Density_100m2 ~ Site_Category, 
-#                                   data = postwaste_filtered, 
-#                                   var.equal = FALSE)
-# 
-# print("Welch's ANOVA Results (Corrected for Unequal Variance):")
-# print(welch_anova_result)
-
-#kruskal wallis ? 
-kruskal_result <- kruskal.test(DZ_Density_100m2 ~ Site_Category, data = postwaste_filtered)
-
-print("Kruskal-Wallis Test Results (Final Recommendation):")
-print(kruskal_result)
 
 
 #https://www.datanovia.com/en/lessons/friedman-test-in-r/
-#friedman 
+####Friedman Test####
+
 #calculate the mean for each era and site category 
+friedman_mean <- densitybydepth %>%
+  dplyr::summarise(Era=(mean(Density_100m2))) %>%
+  
+  
 #split by species 
 #Era - postwaste recovery + MPA, postwaste non -MPA, postwaste PVR 
 #Waste -postwaste, wasting, prewaste x 3 sites 
