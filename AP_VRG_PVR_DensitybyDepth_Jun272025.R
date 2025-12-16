@@ -30,7 +30,7 @@ colnames(data_PV)[colnames(data_PV)=="BenthicReefSpecies"] <- "Species"
 colnames(data_PV)[colnames(data_PV)=="SampleYear"] <- "Year"
 
 data_PV <- data_PV %>%
-  mutate(Density_100m2=100*Density_m2) #Create a column that is Density per 100m2
+  mutate(Density_100m2=100*Density_m2) %>% #Create a column that is Density per 100m2
   complete(nesting(Site, Year), Species, fill = list(Density_m2=0, Density_100m2=0)) 
 
 
@@ -179,16 +179,60 @@ postwaste_filtered <- densitybydepth %>%
 
 #https://www.datanovia.com/en/lessons/friedman-test-in-r/
 ####Friedman Test####
+# .... (Ensure you ran the fixed data_PV code above first) ....
 
-#calculate the mean for each era and site category 
-friedman_mean <- densitybydepth %>%
-  dplyr::summarise(Era=(mean(Density_100m2))) %>%
+#### Friedman Test Loop ####
+
+for (spp in foc_spp) {
   
+  # 1. Print a separator
+  cat("\n\n========================================\n")
+  cat(" ANALYZING SPECIES:", spp, "\n")
+  cat("========================================\n")
   
-#split by species 
-#Era - postwaste recovery + MPA, postwaste non -MPA, postwaste PVR 
-#Waste -postwaste, wasting, prewaste x 3 sites 
-
-
-ftest <- friedman.test(y=densitybydepth$DZ_Density_100m2, groups=densitybydepth$Era, blocks=densitybydepth$Site_Category)
-
+  # 2. Filter and summarize
+  friedman_data <- densitybydepth %>%
+    dplyr::filter(Species == spp) %>% 
+    group_by(Site, Era, Site_Category) %>% 
+    dplyr::summarise(
+      Mean_Density = mean(DZ_Density_100m2, na.rm = TRUE),
+      .groups = "drop"
+    )
+  
+  # 3. Clean: Keep only sites that have data for ALL 3 Eras
+  friedman_data_clean <- friedman_data %>%
+    group_by(Site) %>%
+    dplyr::filter(n() == 3) %>% 
+    ungroup()
+  
+  # Check if data exists
+  if(nrow(friedman_data_clean) == 0) {
+    cat("  -> Not enough complete data (sites missing eras). Skipping.\n")
+    next 
+  }
+  
+  # 4. Run Friedman Test
+  cat("\n--- FRIEDMAN TEST RESULTS ---\n")
+  
+  friedman_results <- try({
+    friedman_data_clean %>%
+      group_by(Site_Category) %>%
+      rstatix::friedman_test(Mean_Density ~ Era | Site)
+  }, silent = TRUE)
+  
+  if(inherits(friedman_results, "try-error")) {
+    cat("  -> Friedman Test failed (likely constant values/all zeros).\n")
+  } else {
+    print(friedman_results)
+    
+    # 5. Pairwise Comparisons
+    cat("\n--- PAIRWISE COMPARISONS (Wilcoxon) ---\n")
+    # We use try() here too, just in case one group is perfect (no variance)
+    try({
+      pwc <- friedman_data_clean %>%
+        group_by(Site_Category) %>%
+        rstatix::wilcox_test(Mean_Density ~ Era, p.adjust.method = "bonferroni")
+      print(pwc)
+    }, silent = TRUE)
+  }
+}
