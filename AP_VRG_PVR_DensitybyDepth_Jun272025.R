@@ -183,14 +183,13 @@ postwaste_filtered <- densitybydepth %>%
 
 #### Friedman Test Loop ####
 
+all_friedman_results <- list()
+all_pairwise_results <- list()
+
+# 2. Start the Loop
 for (spp in foc_spp) {
   
-  # 1. Print a separator
-  cat("\n\n========================================\n")
-  cat(" ANALYZING SPECIES:", spp, "\n")
-  cat("========================================\n")
-  
-  # 2. Filter and summarize
+  # Filter and summarize
   friedman_data <- densitybydepth %>%
     dplyr::filter(Species == spp) %>% 
     group_by(Site, Era, Site_Category) %>% 
@@ -199,40 +198,37 @@ for (spp in foc_spp) {
       .groups = "drop"
     )
   
-  # 3. Clean: Keep only sites that have data for ALL 3 Eras
+  # Clean: Keep only sites that have data for ALL 3 Eras
   friedman_data_clean <- friedman_data %>%
     group_by(Site) %>%
     dplyr::filter(n() == 3) %>% 
     ungroup()
   
-  # Check if data exists
-  if(nrow(friedman_data_clean) == 0) {
-    cat("  -> Not enough complete data (sites missing eras). Skipping.\n")
-    next 
-  }
+  # Skip if not enough data
+  if(nrow(friedman_data_clean) == 0) next 
   
-  # 4. Run Friedman Test
-  cat("\n--- FRIEDMAN TEST RESULTS ---\n")
-  
-  friedman_results <- try({
-    friedman_data_clean %>%
+  # Run Tests (Wrapped in try to prevent crashing on zeros/errors)
+  try({
+    # --- Friedman Test ---
+    ft_res <- friedman_data_clean %>%
       group_by(Site_Category) %>%
-      rstatix::friedman_test(Mean_Density ~ Era | Site)
-  }, silent = TRUE)
-  
-  if(inherits(friedman_results, "try-error")) {
-    cat("  -> Friedman Test failed (likely constant values/all zeros).\n")
-  } else {
-    print(friedman_results)
+      rstatix::friedman_test(Mean_Density ~ Era | Site) %>%
+      mutate(Species = spp) # Add species identifier
     
-    # 5. Pairwise Comparisons
-    cat("\n--- PAIRWISE COMPARISONS (Wilcoxon) ---\n")
-    # We use try() here too, just in case one group is perfect (no variance)
-    try({
-      pwc <- friedman_data_clean %>%
-        group_by(Site_Category) %>%
-        rstatix::wilcox_test(Mean_Density ~ Era, p.adjust.method = "bonferroni")
-      print(pwc)
-    }, silent = TRUE)
-  }
+    all_friedman_results[[spp]] <- ft_res
+    
+    # --- Pairwise Comparisons (Wilcoxon) ---
+    pwc <- friedman_data_clean %>%
+      group_by(Site_Category) %>%
+      rstatix::wilcox_test(Mean_Density ~ Era, p.adjust.method = "bonferroni") %>%
+      mutate(Species = spp) # Add species identifier
+    
+    all_pairwise_results[[spp]] <- pwc
+    
+  }, silent = TRUE)
 }
+final_friedman_df <- dplyr::bind_rows(all_friedman_results)
+final_pairwise_df <- dplyr::bind_rows(all_pairwise_results)
+
+write.csv(final_friedman_df, "Friedman_Test_Results.csv", row.names = FALSE)
+write.csv(final_pairwise_df, "Pairwise_Wilcoxon_Results.csv", row.names = FALSE)
