@@ -232,3 +232,45 @@ final_pairwise_df <- dplyr::bind_rows(all_pairwise_results)
 
 write.csv(final_friedman_df, "Friedman_Test_Results.csv", row.names = FALSE)
 write.csv(final_pairwise_df, "Pairwise_Wilcoxon_Results.csv", row.names = FALSE)
+
+
+#changing my strategy: MPA vs PVR at post-wasting, non-MPA vs PVR at post-wasting 
+#storage variable
+era_comparisons <- list()
+
+for (spp in foc_spp) {
+  
+#Filter Species + Era
+  era_data <- densitybydepth %>%
+    dplyr::filter(Species == spp, Era == "Post-Wasting Recovery") %>%
+    #checks for recplicates
+    group_by(Site, Site_Category) %>%
+    dplyr::summarise(
+      Mean_Density = mean(DZ_Density_100m2, na.rm = TRUE),
+      .groups = "drop"
+    )
+  
+  # 2 categories needed for this test 
+  if (n_distinct(era_data$Site_Category) < 2) next
+  
+  try({
+    #Test (Kruskal-Wallis) 
+    kw_res <- era_data %>% 
+      rstatix::kruskal_test(Mean_Density ~ Site_Category)
+    
+    # 4. Pairwise Tests (Wilcoxon / Mann-Whitney U)
+    # Compares: MPA vs non-MPA | MPA vs PVR | non-MPA vs PVR
+    pwc_res <- era_data %>% 
+      rstatix::wilcox_test(Mean_Density ~ Site_Category, paired = FALSE, p.adjust.method = "bonferroni") %>%
+      dplyr::mutate(
+        Species = spp,
+        Kruskal_P = kw_res$p  # Useful context: was the global test significant?
+      )
+    
+    era_comparisons[[spp]] <- pwc_res
+    
+  }, silent = TRUE)
+}
+
+final_era_comparisons <- dplyr::bind_rows(era_comparisons)
+write.csv(final_era_comparisons, "Full_Site_Comparisons_Era3.csv", row.names = FALSE)
