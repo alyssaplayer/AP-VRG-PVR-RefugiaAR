@@ -264,7 +264,7 @@ for (spp in foc_spp) {
       rstatix::wilcox_test(Mean_Density ~ Site_Category, paired = FALSE, p.adjust.method = "bonferroni") %>%
       dplyr::mutate(
         Species = spp,
-        Kruskal_P = kw_res$p  # Useful context: was the global test significant?
+        Kruskal_P = kw_res$p  # value showing whether the global kruskal wallis is significant
       )
     
     era_comparisons[[spp]] <- pwc_res
@@ -273,4 +273,5 @@ for (spp in foc_spp) {
 }
 
 final_era_comparisons <- dplyr::bind_rows(era_comparisons)
-write.csv(final_era_comparisons, "Full_Site_Comparisons_Era3.csv", row.names = FALSE)
+write.csv(final_era_comparisons, "Full_Site_Comparisons_Post-Wasting.csv", row.names = FALSE)
+
