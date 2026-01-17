@@ -212,7 +212,7 @@ for (spp in foc_spp) {
       rstatix::wilcox_test(Mean_Density ~ Site_Category, paired = FALSE, p.adjust.method = "bonferroni") %>%
       dplyr::mutate(
         Species = spp,
-        Kruskal_P = kw_res$p  # Useful context: was the global test significant?
+        Kruskal_P = kw_res$p  # value showing whether the global kruskal wallis is significant
       )
     
     era_comparisons[[spp]] <- pwc_res
@@ -220,6 +220,7 @@ for (spp in foc_spp) {
   }, silent = TRUE)
 }
 
+<<<<<<< HEAD
 era_comparisons_output <- dplyr::bind_rows(era_comparisons)
 #write.csv(final_era_comparisons, "Full_Site_Comparisons_Era.csv", row.names = FALSE)
 
@@ -347,3 +348,8 @@ mean_meso <- dif_mean %>%
 # write.csv(final_pairwise_df, "Pairwise_Wilcoxon_Results.csv", row.names = FALSE)
 # 
 # 
+=======
+final_era_comparisons <- dplyr::bind_rows(era_comparisons)
+write.csv(final_era_comparisons, "Full_Site_Comparisons_Post-Wasting.csv", row.names = FALSE)
+
+>>>>>>> 546ce4f761f9d2cfd1ef5ea1ba1e9a4565271a30
