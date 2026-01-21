@@ -1,5 +1,6 @@
 # AP-VRG-PVR-RefugiaAR
-> The role of Palos Verdes Reef as a refuge habitat for climate-threatened species <
+
+## The role of Palos Verdes Reef as a refuge habitat for climate-threatened species 
 This project analyses the role of artificial reefs acting as conservation habitats for climate-threatened species, most notably sea stars and sea urchins, along the Southern California Bight. This project employs multiple analytical approaches, and all data processing and statistical testing were conducted in R. 
 
 ---
