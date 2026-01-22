@@ -143,6 +143,7 @@ densitybydepth <- data_PV %>%
 density_stars <- densitybydepth %>%
   filter(Species %in% c("Patiria miniata", "Pisaster ochraceus", "Pisaster giganteus"))
 
+
 densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(DZ_Density_100m2), color = Era)) +
   geom_boxplot(outlier.shape = NA, aes(fill=Era), alpha = 0.4) + # Set outlier.shape inside geom_boxplot(), alpha makes transparency so the data points are visible
   geom_point(aes(color = Era),
