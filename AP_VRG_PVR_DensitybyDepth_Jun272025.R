@@ -130,6 +130,12 @@ data_PV <- data_PV %>%
     TRUE ~ "Non-MPA"
   ))
 
+complete_site_list <- data_PV %>%
+  select(Site, Site_Category)%>%
+  distinct()
+write.csv(complete_site_list, "Complete Site List.csv", row.names = FALSE)
+
+
 
 #site categories, MPA, non-MPA, PVR, PVR-Control, PVR-Adj
 
@@ -221,7 +227,7 @@ for (spp in foc_spp) {
   }, silent = TRUE)
 }
 
-<<<<<<< HEAD
+
 era_comparisons_output <- dplyr::bind_rows(era_comparisons)
 #write.csv(final_era_comparisons, "Full_Site_Comparisons_Era.csv", row.names = FALSE)
 
@@ -240,10 +246,20 @@ differences <- data_PV %>%
   mutate(mean_Difference = `Site_Mean_Post-Wasting Recovery` - `Site_Mean_Pre-Wasting`)
 write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
 
+#the data going into the plot
 
+proportion <- data_PV %>%
+  group_by(Species, Era) %>%
+  mutate(Site_Mean = mean(Density_100m2)) %>% #, stdev = sd(Density_100m2)) %>%
+  select(Site_Category, Species, Era, Site_Mean) %>%
+  distinct() %>%
+  pivot_wider(names_from = Era, values_from = c(Site_Mean)) %>%
+  #group_by(Species) %>%
+  #mutate(stdev_Difference = `stdev_Post-Wasting Recovery` - `stdev_Pre-Wasting`) %>%
+  mutate(prop_baseline = `Post-Wasting Recovery` / `Pre-Wasting`) #%>%
+  
+write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
 
-mean_meso <- dif_mean %>%
-  filter(Era)
 
 
 
@@ -349,8 +365,8 @@ mean_meso <- dif_mean %>%
 # write.csv(final_pairwise_df, "Pairwise_Wilcoxon_Results.csv", row.names = FALSE)
 # 
 # 
-=======
-final_era_comparisons <- dplyr::bind_rows(era_comparisons)
-write.csv(final_era_comparisons, "Full_Site_Comparisons_Post-Wasting.csv", row.names = FALSE)
 
->>>>>>> 546ce4f761f9d2cfd1ef5ea1ba1e9a4565271a30
+#final_era_comparisons <- dplyr::bind_rows(era_comparisons)
+#write.csv(final_era_comparisons, "Full_Site_Comparisons_Post-Wasting.csv", row.names = FALSE)
+
+
