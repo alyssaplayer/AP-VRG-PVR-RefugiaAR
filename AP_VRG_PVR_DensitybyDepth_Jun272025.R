@@ -111,6 +111,14 @@ densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(DZ_Densit
 
 
 print(densitybydepthplot_stars)
+ggsave(
+  filename = "density_by_depth_stars.png", 
+  plot = densitybydepthplot_stars,
+  width = 10, 
+  height = 8, 
+  units = "in", 
+  dpi = 300
+)
 
 density_urchins <- densitybydepth %>%
   filter(Species %in% c("Mesocentrotus franciscanus", "Strongylocentrotus purpuratus"))
