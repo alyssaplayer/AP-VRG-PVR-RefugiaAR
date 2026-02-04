@@ -72,8 +72,7 @@ data_PV <- data_PV %>%
       FunctionalGroup = factor(FunctionalGroup, levels = c("Stars", "Urchins")) #defining the functional groups 
     )
 
-#Creating the site groups 
-#all separated
+#Creating the site groups #all separated
 # data_PV <- data_PV %>%
 #   mutate(Site_Category = case_when(
 #     Site %in% c("Long Point East",
@@ -133,12 +132,9 @@ data_PV <- data_PV %>%
 complete_site_list <- data_PV %>%
   select(Site, Site_Category)%>%
   distinct()
-write.csv(complete_site_list, "Complete Site List.csv", row.names = FALSE)
-
-
+#write.csv(complete_site_list, "Complete Site List.csv", row.names = FALSE)
 
 #site categories, MPA, non-MPA, PVR, PVR-Control, PVR-Adj
-
 
 ####CREATING THE DENSITY PLOTS####
 densitybydepth <- data_PV %>%
@@ -252,22 +248,42 @@ differences <- data_PV %>%
   group_by(Site_Category, Species) %>%
   mutate(stdev_Difference = `stdev_Post-Wasting Recovery` - `stdev_Pre-Wasting`) %>%
   mutate(mean_Difference = `Site_Mean_Post-Wasting Recovery` - `Site_Mean_Pre-Wasting`)
-write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
+#write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
 
 #the data going into the plot
-
 proportion <- data_PV %>%
-  group_by(Species, Era) %>%
-  mutate(Site_Mean = mean(Density_100m2)) %>% #, stdev = sd(Density_100m2)) %>%
+  group_by(Site_Category, Species, Era) %>% #CHELSEA THIS WAS OUR ISSUE......, adding site_cat makes them unique
+  mutate(Site_Mean = mean(Density_100m2)) %>%  
+  mutate(stdev = sd(Density_100m2)) %>%
   select(Site_Category, Species, Era, Site_Mean) %>%
   distinct() %>%
-  pivot_wider(names_from = Era, values_from = c(Site_Mean)) %>%
-  #group_by(Species) %>%
-  #mutate(stdev_Difference = `stdev_Post-Wasting Recovery` - `stdev_Pre-Wasting`) %>%
+  pivot_wider(names_from = Era, values_from = Site_Mean) %>%
   mutate(prop_baseline = `Post-Wasting Recovery` / `Pre-Wasting`) #%>%
-  
-write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
+ # mutate(stdev_Difference = `stdev_Post-Wasting Recovery` - `stdev_Pre-Wasting`)
 
+proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline, fill = Site_Category)) +
+  geom_col() +
+  facet_wrap(~ Species, ncol = 2) +
+  labs(
+    title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
+    x = "Site Category",
+    y = "Proportion of Baseline",
+    fill = "Site Category"
+  ) +
+  ylim(0, 1)+
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "italic", size = 10),
+    panel.grid.major.x = element_blank()
+  ) +
+  scale_fill_brewer(palette = "Pastel1")
+#still need to facet wrap, change colour palette? don't love it 
+#
+
+
+show(proportion_plot)
+#write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
 
 
 
