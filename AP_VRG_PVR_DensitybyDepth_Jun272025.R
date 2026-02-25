@@ -41,6 +41,7 @@ foc_spp <- c("Mesocentrotus franciscanus",
               "Pisaster ochraceus", 
               "Pisaster giganteus")
   
+
 #used to have a. parvimensis, a. californicus but removed bc not relevant to findings
 
 data_PV <- data_PV %>%
@@ -251,26 +252,37 @@ differences <- data_PV %>%
 #write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
 
 #the data going into the plot
-proportion <- data_PV %>%
-  group_by(Site_Category, Species, Era) %>% #CHELSEA THIS WAS OUR ISSUE......, adding site_cat makes them unique
-  mutate(Site_Mean = mean(Density_100m2)) %>%  
-  mutate(stdev = sd(Density_100m2)) %>%
-  select(Site_Category, Species, Era, Site_Mean) %>%
-  distinct() %>%
-  pivot_wider(names_from = Era, values_from = Site_Mean) %>%
-  mutate(prop_baseline = `Post-Wasting Recovery` / `Pre-Wasting`) #%>%
- # mutate(stdev_Difference = `stdev_Post-Wasting Recovery` - `stdev_Pre-Wasting`)
 
-proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline, fill = Site_Category)) +
+proportion <- data_PV %>%
+  group_by(Site_Category, Species, Era) %>% 
+  mutate(Site_Mean = mean(Density_100m2),stdev = sd(Density_100m2)) %>%
+  select(Site_Category, Species, Era, Site_Mean, stdev) %>%
+  distinct() %>%
+  pivot_wider(
+    names_from = Era, 
+    values_from = c(Site_Mean, stdev),
+    names_sep = "_" 
+  ) %>%
+  mutate(prop_baseline = `Site_Mean_Post-Wasting Recovery` / `Site_Mean_Pre-Wasting`,
+        prop_error = prop_baseline * sqrt((`stdev_Post-Wasting Recovery` / `Site_Mean_Post-Wasting Recovery`)^2 + (`stdev_Pre-Wasting` / `Site_Mean_Pre-Wasting`)^2)
+  )
+
+
+proportion_plot <-  
+  ggplot(proportion, aes(x = Site_Category, y = prop_baseline, fill = Site_Category)) +
   geom_col() +
+    geom_errorbar(
+    aes(ymin = prop_baseline - prop_error, 
+        ymax = prop_baseline + prop_error), 
+    width = 0.2,        
+    alpha = 0.7) +
   facet_wrap(~ Species, ncol = 2) +
   labs(
     title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
     x = "Site Category",
     y = "Proportion of Baseline",
-    fill = "Site Category"
-  ) +
-  ylim(0, 1)+
+    fill = "Site Category" ) +
+    coord_cartesian(ylim = c(-2.5, 5)) + 
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
@@ -278,11 +290,13 @@ proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline, 
     panel.grid.major.x = element_blank()
   ) +
   scale_fill_brewer(palette = "Pastel1")
-#still need to facet wrap, change colour palette? don't love it 
-#
-
 
 show(proportion_plot)
+
+#still need to facet wrap, change colour palette? don't love it 
+
+#If you wanted to propagate error more formally from both eras, you could use: prop_se = prop_baseline * sqrt((stdev_Post/mean_Post)^2 + (stdev_Pre/mean_Pre)^2).
+
 #write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
 
 
