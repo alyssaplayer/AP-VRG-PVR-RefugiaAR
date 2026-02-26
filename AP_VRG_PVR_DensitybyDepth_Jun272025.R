@@ -57,7 +57,6 @@ data_PV <- data_PV %>%
           Year < 2014 ~ "Pre-Wasting",
           Year >= 2014 & Year <= 2016 ~ "Wasting Event",
           Year > 2016 ~ "Post-Wasting Recovery"),
-        #Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE),#I added this change to the densitybydepth function and now it's correctly being ordered in the plot
         DepthZone = factor(DepthZone, levels = c("Inner", "Middle", "Outer", "Deep", "ARM"), ordered = TRUE)
   )
 
@@ -130,9 +129,10 @@ data_PV <- data_PV %>%
     TRUE ~ "Non-MPA"
   ))
 
-complete_site_list <- data_PV %>%
-  select(Site, Site_Category)%>%
-  distinct()
+###writes a complete site list 
+# complete_site_list <- data_PV %>%
+#   select(Site, Site_Category)%>%
+#   distinct()
 #write.csv(complete_site_list, "Complete Site List.csv", row.names = FALSE)
 
 #site categories, MPA, non-MPA, PVR, PVR-Control, PVR-Adj
@@ -162,14 +162,14 @@ densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(DZ_Densit
 
 
 print(densitybydepthplot_stars)
-ggsave(
-  filename = "density_by_depth_stars.png", 
-  plot = densitybydepthplot_stars,
-  width = 10, 
-  height = 8, 
-  units = "in", 
-  dpi = 300
-)
+# ggsave(
+#   filename = "density_by_depth_stars.png", 
+#   plot = densitybydepthplot_stars,
+#   width = 10, 
+#   height = 8, 
+#   units = "in", 
+#   dpi = 300
+# )
 
 density_urchins <- densitybydepth %>%
   filter(Species %in% c("Mesocentrotus franciscanus", "Strongylocentrotus purpuratus"))
@@ -195,48 +195,48 @@ print(densitybydepthplot_urchins)
 #goal is test if the difference in means is significant between MPA, non-MPA and PVR post-wasting 
 
 #changing my strategy: MPA vs PVR at post-wasting, non-MPA vs PVR at post-wasting 
-#storage variable
-era_comparisons <- list()
+# #storage variable
+# era_comparisons <- list()
+# 
+# for (spp in foc_spp) {
+#   
+# #Filter Species + Era
+#   era_data <- densitybydepth %>%
+#     dplyr::filter(Species == spp, Era == "Post-Wasting Recovery") %>%
+#     #checks for replicates
+#     group_by(Site, Site_Category) %>%
+#     dplyr::summarise(
+#       Mean_Density = mean(DZ_Density_100m2, na.rm = TRUE),
+#       .groups = "drop"
+#     )
+#   
+#   # 2 categories needed for this test 
+#   if (n_distinct(era_data$Site_Category) < 2) next
+#   
+#   try({
+#     #Test (Kruskal-Wallis) 
+#     kw_res <- era_data %>% 
+#       rstatix::kruskal_test(Mean_Density ~ Site_Category)
+#     
+#     # 4. Pairwise Tests (Wilcoxon / Mann-Whitney U)
+#     # Compares: MPA vs non-MPA | MPA vs PVR | non-MPA vs PVR
+#     pwc_res <- era_data %>% 
+#       rstatix::wilcox_test(Mean_Density ~ Site_Category, paired = FALSE, p.adjust.method = "bonferroni") %>%
+#       dplyr::mutate(
+#         Species = spp,
+#         Kruskal_P = kw_res$p  # value showing whether the global kruskal wallis is significant
+#       )
+#     
+#     era_comparisons[[spp]] <- pwc_res
+#     
+#   }, silent = TRUE)
+# }
+# 
+# 
+# era_comparisons_output <- dplyr::bind_rows(era_comparisons)
+# #write.csv(final_era_comparisons, "Full_Site_Comparisons_Era.csv", row.names = FALSE)
 
-for (spp in foc_spp) {
-  
-#Filter Species + Era
-  era_data <- densitybydepth %>%
-    dplyr::filter(Species == spp, Era == "Post-Wasting Recovery") %>%
-    #checks for replicates
-    group_by(Site, Site_Category) %>%
-    dplyr::summarise(
-      Mean_Density = mean(DZ_Density_100m2, na.rm = TRUE),
-      .groups = "drop"
-    )
-  
-  # 2 categories needed for this test 
-  if (n_distinct(era_data$Site_Category) < 2) next
-  
-  try({
-    #Test (Kruskal-Wallis) 
-    kw_res <- era_data %>% 
-      rstatix::kruskal_test(Mean_Density ~ Site_Category)
-    
-    # 4. Pairwise Tests (Wilcoxon / Mann-Whitney U)
-    # Compares: MPA vs non-MPA | MPA vs PVR | non-MPA vs PVR
-    pwc_res <- era_data %>% 
-      rstatix::wilcox_test(Mean_Density ~ Site_Category, paired = FALSE, p.adjust.method = "bonferroni") %>%
-      dplyr::mutate(
-        Species = spp,
-        Kruskal_P = kw_res$p  # value showing whether the global kruskal wallis is significant
-      )
-    
-    era_comparisons[[spp]] <- pwc_res
-    
-  }, silent = TRUE)
-}
-
-
-era_comparisons_output <- dplyr::bind_rows(era_comparisons)
-#write.csv(final_era_comparisons, "Full_Site_Comparisons_Era.csv", row.names = FALSE)
-
-
+###PROPORTION CALCULATIONS####
 #difference of means: 
 #take the mean of MPA pre-wasting and post-wasting (ignore wasting)
 #carrying capacity of the habitat type might vary 
@@ -255,9 +255,9 @@ differences <- data_PV %>%
 #needs to remove site - PLOT
 proportion <- data_PV %>%
   group_by(Site_Category, Species, Era) %>% 
-  mutate(Site_Mean = mean(Density_100m2),stdev = sd(Density_100m2)) %>%
+  mutate(Site_Mean = mean(Density_100m2), stdev = sd(Density_100m2)) %>%
   select(Site_Category, Species, Era, Site_Mean, stdev) %>%
-  filter(!(Site_Category == 'Non-MPA' & Species == 'Strongylocentrotus purpuratus' & Site =='Portuguese Bend')) %>%
+  #filter(!(Site_Category == 'Non-MPA' & Species == 'Strongylocentrotus purpuratus' & Site =='Portuguese Bend')) %>%
   distinct() %>%
   pivot_wider(
     names_from = Era, 
@@ -281,7 +281,7 @@ proportion_forerror <- data_PV %>%
   mutate(prop_baseline = `Site_Mean_Post-Wasting Recovery` / `Site_Mean_Pre-Wasting`)
          
          
-        #!is.infinite() - remove infinite values from prop_baseline and run the error bars, use the pro
+#!is.infinite() - remove infinite values from prop_baseline and run the error bars, use the pro
 
 #calculate error bars 
 # error_bars <- proportion_forerror %>%
@@ -301,7 +301,7 @@ error_bars <- proportion_forerror %>%
     .groups = "drop"
   )
 
-
+##keep this version
 proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline, color = Site_Category, error_bars)) + #aes = error_bars
   geom_jitter() +
   facet_wrap(~ Species, ncol = 2) +
@@ -310,129 +310,19 @@ proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline, 
     x = "Site Category",
     y = "Proportion of Baseline",
     fill = "Site Category" ) +
-   ylim = c(0, 3) + 
+  ylim(0, 3) +
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
     strip.text = element_text(face = "italic", size = 10),
     panel.grid.major.x = element_blank()
   ) +
-  scale_color_brewer(palette = "Pastel1")+
+  scale_color_brewer(palette = "Pastel1") +
   show(proportion_plot)
 
 
-#still need to facet wrap, change colour palette? don't love it 
 
-#If you wanted to propagate error more formally from both eras, you could use: prop_se = prop_baseline * sqrt((stdev_Post/mean_Post)^2 + (stdev_Pre/mean_Pre)^2).
 
 #write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
-
-
-
-##TRASH
-
-# postwaste_groups <- data_PV %>%
-#   filter(Era == c("Post-Wasting Recovery"), Species == c("Mesocentrotus franciscanus")) %>%
-#   group_by(Year, Species, Site, Site_Category) %>%
-#   dplyr::summarise(DZ_Density_100m2=mean(Density_100m2))
-# #do a for loop or pipe with group-by / mutate
-# 
-# dat <- densitybydepth %>%
-#   group_by(Era, Site_Category) %>% 
-#   summarise (
-#     median_count = median(DZ_Density_100m2, na.rm = TRUE), 
-#     mean_count = mean(DZ_Density_100m2, na.rm = TRUE), 
-#     sd_count = sd(DZ_Density_100m2, na.rm = TRUE)
-#   )
-# 
-# 
-# # run levene's test of equal variances among groups using leveneTest function in car package
-# library(car) # this will generate an error if "car" has not been installed
-# leveneTest(y=dat$DZ_Density_100m2, group=dat$Site_Category)
-# 
-# #########
-# # display means
-# tapply(densitybydepth$DZ_Density_100m2, densitybydepth$Era, mean)
-# # summary function will show parameter estiamtes (group means in one-way ANOVA context)
-# summary(lm_count_spray)
-# # note estimates are relative to intercept value (arbitrarily the first level of categorical variable in data)
-# # BUT, each test is typically not something of interest (i.e., do not use those results for one-way ANOVA)
-# 
-# 
-# # Individual value plots + 95% CI for each group
-# ggplot(dat, aes(y=count, x=spray, col = spray)) +
-#   stat_summary(fun.data="mean_cl_normal", mapping = aes(group = spray), geom = "crossbar", width = 0.2, col="black", fill = "gray") +
-#   geom_jitter(width=0.2, size = 2) +
-#   theme_bw()
-# 
-# 
-# #test 11/17/2025
-# postwaste_filtered <- densitybydepth %>%
-#   filter(Era == "Post-Wasting Recovery") %>%
-#   filter(Species == "Mesocentrotus franciscanus")
-# 
-# 
-# 
-# #https://www.datanovia.com/en/lessons/friedman-test-in-r/
-# ####Friedman Test####
-# # .... (Ensure you ran the fixed data_PV code above first) ....
-# 
-# #### Friedman Test Loop ####
-# 
-# all_friedman_results <- list()
-# all_pairwise_results <- list()
-# 
-# # 2. Start the Loop
-# for (spp in foc_spp) {
-#   
-#   # Filter and summarize
-#   friedman_data <- densitybydepth %>%
-#     dplyr::filter(Species == spp) %>% 
-#     group_by(Site, Era, Site_Category) %>% 
-#     dplyr::summarise(
-#       Mean_Density = mean(DZ_Density_100m2, na.rm = TRUE),
-#       .groups = "drop"
-#     )
-#   
-#   # Clean: Keep only sites that have data for ALL 3 Eras
-#   friedman_data_clean <- friedman_data %>%
-#     group_by(Site) %>%
-#     dplyr::filter(n() == 3) %>% 
-#     ungroup()
-#   
-#   # Skip if not enough data
-#   if(nrow(friedman_data_clean) == 0) next 
-#   
-#   # Run Tests (Wrapped in try to prevent crashing on zeros/errors)
-#   try({
-#     # --- Friedman Test ---
-#     ft_res <- friedman_data_clean %>%
-#       group_by(Site_Category) %>%
-#       rstatix::friedman_test(Mean_Density ~ Era | Site) %>%
-#       mutate(Species = spp) # Add species identifier
-#     
-#     all_friedman_results[[spp]] <- ft_res
-#     
-#     # --- Pairwise Comparisons (Wilcoxon) ---
-#     pwc <- friedman_data_clean %>%
-#       group_by(Site_Category) %>%
-#       rstatix::wilcox_test(Mean_Density ~ Era, p.adjust.method = "bonferroni") %>%
-#       mutate(Species = spp) # Add species identifier
-#     
-#     all_pairwise_results[[spp]] <- pwc
-#     
-#   }, silent = TRUE)
-# }
-# 
-# final_friedman_df <- dplyr::bind_rows(all_friedman_results)
-# final_pairwise_df <- dplyr::bind_rows(all_pairwise_results)
-# 
-# write.csv(final_friedman_df, "Friedman_Test_Results.csv", row.names = FALSE)
-# write.csv(final_pairwise_df, "Pairwise_Wilcoxon_Results.csv", row.names = FALSE)
-# 
-# 
-
-#final_era_comparisons <- dplyr::bind_rows(era_comparisons)
-#write.csv(final_era_comparisons, "Full_Site_Comparisons_Post-Wasting.csv", row.names = FALSE)
 
 
