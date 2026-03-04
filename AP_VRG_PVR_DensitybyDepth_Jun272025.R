@@ -45,7 +45,7 @@ foc_spp <- c("Mesocentrotus franciscanus",
 #used to have a. parvimensis, a. californicus but removed bc not relevant to findings
 
 data_PV <- data_PV %>%
-  filter(Species %in% foc_spp, Year >= 2011)# %>%
+  filter(Species %in% foc_spp, Year >= 2011) %>%
   filter(DepthZone %in% c("Outer", "Deep", "ARM"))
 
 data_PV %>%
@@ -254,7 +254,7 @@ differences <- data_PV %>%
 #the data going into the plot
 #needs to remove site - PLOT
 proportion <- data_PV %>%
-  group_by(Site_Category, Species, Era) %>% 
+  group_by(Site_Category, Species, Era, Site) %>% 
   mutate(Site_Mean = mean(Density_100m2), stdev = sd(Density_100m2)) %>%
   select(Site_Category, Species, Era, Site_Mean, stdev) %>%
   #filter(!(Site_Category == 'Non-MPA' & Species == 'Strongylocentrotus purpuratus' & Site =='Portuguese Bend')) %>%
@@ -279,50 +279,121 @@ proportion_forerror <- data_PV %>%
     names_sep = "_" 
   ) %>%
   mutate(prop_baseline = `Site_Mean_Post-Wasting Recovery` / `Site_Mean_Pre-Wasting`)
-         
-         
-#!is.infinite() - remove infinite values from prop_baseline and run the error bars, use the pro
 
 #calculate error bars 
-# error_bars <- proportion_forerror %>%
-#   group_by(Site_Category, Species) %>% 
-#   mutate(stdev = sd(prop_baseline)) %>%
-#   filter(!is.infinite(stdev)) %>%  # <--- Filter added here
-#   select(Site_Category, Species, stdev) %>%
-#   distinct()
-
-#inclined to keep this version
 error_bars <- proportion_forerror %>%
-  filter(!is.infinite(prop_baseline)) %>%   
-  group_by(Site_Category, Species) %>% 
+  filter(!is.infinite(prop_baseline)) %>%
+  group_by(Site_Category, Species) %>%
   summarise(
-    avg = mean(prop_baseline, na.rm = TRUE), 
-    stdev = sd(prop_baseline, na.rm = TRUE), 
-    .groups = "drop"
-  )
+    error_mean = mean(prop_baseline),stdev = sd(prop_baseline), .groups = "drop") #.group drops all grouping layers
 
 ##keep this version
-proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline, color = Site_Category, error_bars)) + #aes = error_bars
-  geom_jitter() +
+proportion_plot <- ggplot(proportion(Site_Category, prop_baseline, color = Site_Category)) +
+  geom_bar() +  
   facet_wrap(~ Species, ncol = 2) +
   labs(
     title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
     x = "Site Category",
     y = "Proportion of Baseline",
-    fill = "Site Category" ) +
-  ylim(0, 3) +
+    color = "Site Category",
+    fill = "Site Category"
+  ) +
+  ylim(-5, 5) +
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
     strip.text = element_text(face = "italic", size = 10),
     panel.grid.major.x = element_blank()
   ) +
-  scale_color_brewer(palette = "Pastel1") +
-  show(proportion_plot)
+  scale_color_brewer(palette = "Set2") +   
+  scale_fill_brewer(palette = "Set2") 
+show(proportion_plot)
+
+####BOX PLOT VERSION? 
+# proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline, 
+#                                           color = Site_Category, fill = Site_Category)) +
+#   geom_boxplot(alpha = 0.4, linewidth = 0.8, outlier.size = 1.5) +
+#   geom_jitter(width = 0.1, size = 2, alpha = 0.6) +# fill adds color inside boxes
+#   facet_wrap(~ Species, ncol = 2) +
+#   labs(
+#     title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
+#     x = "Site Category",
+#     y = "Proportion of Baseline",
+#     color = "Site Category",
+#     fill = "Site Category"
+#   ) +
+#   ylim(0, 6) +
+#   theme_minimal() +
+#   theme(
+#     axis.text.x = element_text(angle = 45, hjust = 1),
+#     strip.text = element_text(face = "italic", size = 10),
+#     panel.grid.major.x = element_blank()
+#   ) +
+#   scale_color_brewer(palette = "Set2") +   # Set2 is more saturated than Pastel1
+#   scale_fill_brewer(palette = "Set2") 
+
+proportion_plot <- ggplot(proportion, aes(x = Site_Category, color = Site_Category)) +
+  geom_jitter(aes(y = prop_baseline), width = 0.1, size = 1.5, alpha = 0.4) +  
+  geom_point(aes(y = avg), size = 4) +                                          
+  geom_errorbar(aes(ymin = avg - error_sd, ymax = avg + error_sd),              
+                width = 0.2, linewidth = 0.8) +
+  facet_wrap(~ Species, ncol = 2) +
+  labs(
+    title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
+    x = "Site Category",
+    y = "Proportion of Baseline",
+    color = "Site Category"
+  ) +
+  ylim(-5, 5) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "italic", size = 10),
+    panel.grid.major.x = element_blank()
+  ) +
+  scale_color_brewer(palette = "Set2")
+show(proportion_plot)
+
+show(proportion_plot)
 
 
+#write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
 
 
+###OLD CODE BEFORE THINGS WENT SO WRONG 
+proportion <- data_PV %>%
+  group_by(Site_Category, Species, Era) %>% #CHELSEA THIS WAS OUR ISSUE......, adding site_cat makes them unique
+  mutate(Site_Mean = mean(Density_100m2), stdev = sd(Density_100m2))  %>%  
+  select(Site_Category, Species, Era, Site_Mean) %>%
+  distinct() %>%
+  pivot_wider(names_from = Era, values_from = c(Site_Mean)) %>%
+  #group_by(Species) %>%
+  #mutate(stdev_Difference = `stdev_Post-Wasting Recovery` - `stdev_Pre-Wasting`) %>%
+  pivot_wider(names_from = Era, values_from = Site_Mean) %>%
+  mutate(prop_baseline = `Post-Wasting Recovery` / `Pre-Wasting`) %>%
+  filter(!is.infinite(prop_baseline)) 
+
+proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline, fill = Site_Category)) +
+  geom_col() +
+  facet_wrap(~ Species, ncol = 2) +
+  labs(
+    title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
+    x = "Site Category",
+    y = "Proportion of Baseline",
+    fill = "Site Category"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "italic", size = 10),
+    panel.grid.major.x = element_blank()
+  ) +
+  scale_fill_brewer(palette = "Pastel1")
+#still need to facet wrap, change colour palette? don't love it 
+show(proportion_plot)
+
+
+show(proportion_plot)
 #write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
 
 
