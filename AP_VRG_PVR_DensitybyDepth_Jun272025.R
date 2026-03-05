@@ -25,6 +25,8 @@ crane_data <-read.csv("PV_Stars_Urchins2025-11-05.csv", check.names = F)
 #data_PVR <- data_PVR %>%
  # filter(DepthZone == "ARM")
 data_PV <- rbind(data_PVR, crane_data)
+write.csv(data_PV, "data_PV.csv", row.names = FALSE)
+
   
 colnames(data_PV)[colnames(data_PV)=="BenthicReefSpecies"] <- "Species"
 colnames(data_PV)[colnames(data_PV)=="SampleYear"] <- "Year"
@@ -243,12 +245,15 @@ print(densitybydepthplot_urchins)
 differences <- data_PV %>%
   group_by(Site_Category, Species, Era, Site) %>%
   mutate(Site_Mean = mean(Density_100m2), stdev = sd(Density_100m2)) %>%
-  select(Site_Category, Species, Era, stdev, Site_Mean) %>%
+  select(Site_Category, Species, Era, stdev, Site_Mean, Site) %>%
   distinct() %>%
   pivot_wider(names_from = Era, values_from = c(stdev, Site_Mean)) %>%
   group_by(Site_Category, Species) %>%
   mutate(stdev_Difference = `stdev_Post-Wasting Recovery` - `stdev_Pre-Wasting`) %>%
-  mutate(mean_Difference = `Site_Mean_Post-Wasting Recovery` - `Site_Mean_Pre-Wasting`)
+  mutate(mean_Difference = `Site_Mean_Post-Wasting Recovery` - `Site_Mean_Pre-Wasting`) %>%
+  mutate(prop_baseline = `Site_Mean_Post-Wasting Recovery` / `Site_Mean_Pre-Wasting`) %>%
+  filter(!is.na(prop_baseline))
+
 #write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
 
 #the data going into the plot
@@ -289,7 +294,7 @@ error_bars <- proportion_forerror %>%
     error_mean = mean(prop_baseline),stdev = sd(prop_baseline)) #.group drops all grouping layers
 
 ##keep this version
-proportion_plot <- ggplot(proportion (Site_Category, prop_baseline, color = Site_Category)) +
+proportion_plot <- ggplot(proportion, aes(Site_Category, prop_baseline, color = Site_Category)) +
   geom_bar() +  
   geom_errorbar(error_bars)+
   facet_wrap(~ Species, ncol = 2) +
@@ -311,17 +316,12 @@ proportion_plot <- ggplot(proportion (Site_Category, prop_baseline, color = Site
   scale_fill_brewer(palette = "Set2") 
 show(proportion_plot)
 
-proportion_plot <- ggplot(error_bars, aes(x = Site_Category, fill = Site_Category)) +
-  # 1. Bar chart for the averages
-  geom_col(aes(y = error_mean), color = "black") +  
-  
-  # 2. Error bars for the standard deviation
-  geom_errorbar(aes(ymin = error_mean - stdev, ymax = error_mean + stdev), width = 0.2) +
-  
-  # 3. NEW: Jittered points for the raw site data!
-  geom_jitter(data = proportion, aes(y = prop_baseline), 
-              width = 0.2, height = 0, alpha = 0.7, size = 1.5, color = "black") +
-  
+
+####BOX PLOT VERSION? 
+proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline,
+                                          color = Site_Category, fill = Site_Category)) +
+  geom_boxplot(alpha = 0.4, linewidth = 0.8, outlier.size = 1.5) +
+  geom_jitter(width = 0.1, size = 2, alpha = 0.6) +# fill adds color inside boxes
   facet_wrap(~ Species, ncol = 2) +
   labs(
     title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
@@ -330,40 +330,46 @@ proportion_plot <- ggplot(error_bars, aes(x = Site_Category, fill = Site_Categor
     color = "Site Category",
     fill = "Site Category"
   ) +
-  ylim(-5, 5) +
+  ylim(0, 6) +
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
     strip.text = element_text(face = "italic", size = 10),
     panel.grid.major.x = element_blank()
   ) +
-  scale_color_brewer(palette = "Set2") +   
-  scale_fill_brewer(palette = "Set2") 
-
+  scale_color_brewer(palette = "Set2") +   # Set2 is more saturated than Pastel1
+  scale_fill_brewer(palette = "Set2")
 show(proportion_plot)
 
-####BOX PLOT VERSION? 
-# proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline, 
-#                                           color = Site_Category, fill = Site_Category)) +
-#   geom_boxplot(alpha = 0.4, linewidth = 0.8, outlier.size = 1.5) +
-#   geom_jitter(width = 0.1, size = 2, alpha = 0.6) +# fill adds color inside boxes
-#   facet_wrap(~ Species, ncol = 2) +
-#   labs(
-#     title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
-#     x = "Site Category",
-#     y = "Proportion of Baseline",
-#     color = "Site Category",
-#     fill = "Site Category"
-#   ) +
-#   ylim(0, 6) +
-#   theme_minimal() +
-#   theme(
-#     axis.text.x = element_text(angle = 45, hjust = 1),
-#     strip.text = element_text(face = "italic", size = 10),
-#     panel.grid.major.x = element_blank()
-#   ) +
-#   scale_color_brewer(palette = "Set2") +   # Set2 is more saturated than Pastel1
-#   scale_fill_brewer(palette = "Set2") 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -406,3 +412,89 @@ show(proportion_plot)
 #write.csv(differences, "PostWasting_PreWasting_Differences_20260117.csv", row.names = FALSE)
 
 
+
+# Per-site proportion of post-wasting vs pre-wasting (used for plotting points)
+proportion <- data_PV %>%
+  group_by(Site_Category, Species, Era, Site) %>%
+  mutate(Site_Mean = mean(Density_100m2), stdev = sd(Density_100m2)) %>%
+  select(Site_Category, Species, Era, Site_Mean, stdev) %>%
+  distinct() %>%
+  pivot_wider(
+    names_from = Era,
+    values_from = c(Site_Mean, stdev),
+    names_sep = "_"
+  ) %>%
+  mutate(prop_baseline = `Site_Mean_Post-Wasting Recovery` / `Site_Mean_Pre-Wasting`) %>%
+  filter(!is.na(prop_baseline) & !is.infinite(prop_baseline))
+
+# Error bars: mean ± SD of prop_baseline across sites per Site_Category x Species
+error_bars <- proportion %>%
+  filter(!is.infinite(prop_baseline) & !is.na(prop_baseline)) %>%
+  group_by(Site_Category, Species) %>%
+  summarise(
+    error_mean = mean(prop_baseline),
+    stdev = sd(prop_baseline),
+    .groups = "drop"
+  )
+
+# Proportion plot: boxplot with jittered points
+proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline,
+                                          color = Site_Category, fill = Site_Category)) +
+  geom_boxplot(alpha = 0.4, linewidth = 0.8, outlier.size = 1.5) +
+  geom_jitter(width = 0.1, size = 2, alpha = 0.6) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "black", alpha = 0.6) + # reference line at baseline
+  facet_wrap(~ Species, ncol = 2) +
+  labs(
+    title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
+    x = "Site Category",
+    y = "Proportion of Baseline",
+    color = "Site Category",
+    fill = "Site Category"
+  ) +
+  ylim(0, 6) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "italic", size = 10),
+    panel.grid.major.x = element_blank()
+  ) +
+  scale_color_brewer(palette = "Set2") +
+  scale_fill_brewer(palette = "Set2")
+
+show(proportion_plot)
+
+# Bar chart version with explicit error bars
+proportion_bar_plot <- ggplot() +
+  # Bars for group means
+  geom_col(data = error_bars,
+           aes(x = Site_Category, y = error_mean, fill = Site_Category),
+           alpha = 0.6, width = 0.6) +
+  # Error bars (mean ± 1 SD)
+  geom_errorbar(data = error_bars,
+                aes(x = Site_Category, ymin = error_mean - stdev, ymax = error_mean + stdev),
+                width = 0.2, linewidth = 0.8) +
+  # Jittered individual site points overlaid
+  geom_jitter(data = proportion,
+              aes(x = Site_Category, y = prop_baseline, color = Site_Category),
+              width = 0.15, size = 1.8, alpha = 0.6) +
+  # Reference line at 1 (= no change from baseline)
+  geom_hline(yintercept = 1, linetype = "dashed", color = "black", alpha = 0.6) +
+  facet_wrap(~ Species, ncol = 2) +
+  labs(
+    title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
+    x = "Site Category",
+    y = "Proportion of Baseline",
+    fill = "Site Category",
+    color = "Site Category"
+  ) +
+  ylim(-5, 5) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "italic", size = 10),
+    panel.grid.major.x = element_blank()
+  ) +
+  scale_fill_brewer(palette = "Set2") +
+  scale_color_brewer(palette = "Set2")
+
+show(proportion_bar_plot)
