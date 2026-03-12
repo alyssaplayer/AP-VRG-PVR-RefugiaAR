@@ -15,7 +15,6 @@ library("car")
 library("ggpubr")
 library("rstatix")
 
-
 #setwd("/Users/alyssaplayer/Desktop/AP VRG PVR 2024")
 
 ####DATA MANAGEMENT AND FILTERING####
@@ -77,14 +76,8 @@ data_PV <- data_PV %>%
                 "Long Point West", 
                 "Old Marineland", 
                 "Point Vicente West",
-                "Portuguese Point") ~ "MPA",
-    Site %in% c("Ridges North", 
-                "Honeymoon Cove", 
-                "Resort Point",
-                "Rocky Point North", 
-                "Rocky Point South", 
-                "Hawthorne Reef",
-                "Lunada Bay") ~ "PVR-Control",
+                "Portuguese Point",
+                "Hawthorne Reef") ~ "MPA&Adj",
     Site %in% c("3 Palms East", 
                 "3 Palms West", 
                 "Bunker Point",
@@ -96,6 +89,7 @@ data_PV <- data_PV %>%
     TRUE ~ "Non-MPA"
   ))
 
+unique_sites <- data_PVR %>% distinct(Site)
 
 ####CREATING THE DENSITY PLOTS####
 densitybydepth <- data_PV %>%
@@ -141,20 +135,55 @@ print(densitybydepthplot_urchins)
 
 
 ###PROPORTION CALCULATIONS####
+differences <- data_PV %>%
+  group_by(Site_Category, Species, Era, Site) %>%
+  mutate(Site_Mean = mean(Density_100m2), stdev = sd(Density_100m2)) %>%
+  select(Site_Category, Species, Site, Era, stdev, Site_Mean) %>%
+  distinct() %>%
+  pivot_wider(names_from = Era, values_from = c(stdev, Site_Mean), names_sep = "_") %>%
+  group_by(Site_Category, Species) %>%
+  mutate(stdev_Difference = `stdev_Post-Wasting Recovery` - `stdev_Pre-Wasting`) %>%
+  mutate(mean_Difference = `Site_Mean_Post-Wasting Recovery` - `Site_Mean_Pre-Wasting`)%>% 
+  ungroup()
+
+#write.csv(differences, "differences_mar10.csv", row.names = FALSE)
+
 
 # Per-site proportion of post-wasting vs pre-wasting (used for plotting points)
 proportion <- data_PV %>%
+  mutate(Site = case_when(
+    Site %in% c("PVR 2A",
+                "PVR 2B",
+                "PVR 2C") ~ "Burial Grounds",
+    Site %in% c("PVR 4A",
+                "PVR 4B",
+                "PVR 4C",
+                "PVR 5A",
+                "PVR 5B",
+                "PVR 5C",
+                "PCR 6B",
+                "PVR 6C",
+                "PCR 6D") ~ "Old 18th",
+    Site %in% c("PVR 7A",
+                "PVR 7B",
+                "PVR 7C",
+                "PVR 8A",
+                "PVR 8B",
+                "PVR 8C") ~ "Cape Point",
+    .default=as.character(Site))) %>%
   group_by(Site_Category, Species, Era, Site) %>%
   mutate(Site_Mean = mean(Density_100m2), stdev = sd(Density_100m2)) %>%
-  select(Site_Category, Species, Era, Site_Mean, stdev) %>%
+  select(Site_Category, Species, Era, Site, Site_Mean, stdev) %>%
   distinct() %>%
   pivot_wider(
     names_from = Era,
     values_from = c(Site_Mean, stdev),
     names_sep = "_"
   ) %>%
-  mutate(prop_baseline = `Site_Mean_Post-Wasting Recovery` / `Site_Mean_Pre-Wasting`) %>%
+  mutate(prop_baseline = `Site_Mean_Post-Wasting Recovery` / `Site_Mean_Pre-Wasting`)%>%
   filter(!is.na(prop_baseline) & !is.infinite(prop_baseline))
+
+#write.csv(proportion, "proportion_mar10.csv", row.names = FALSE)
 
 # Error bars: mean ± SD of prop_baseline across sites per Site_Category x Species
 error_bars <- proportion %>%
@@ -170,18 +199,18 @@ error_bars <- proportion %>%
 # Bar chart version with explicit error bars
 proportion_bar_plot <- ggplot() +
   # Bars for group means
-  geom_col(data = error_bars,
-           aes(x = Site_Category, y = error_mean, fill = Site_Category),
+  geom_boxplot(data = proportion,
+           aes(x = Site_Category, y = prop_baseline, fill = Site_Category),
            alpha = 0.6, width = 0.6) +
   # Error bars (mean ± 1 SD)
-  geom_errorbar(data = error_bars,
-                aes(x = Site_Category, ymin = error_mean - stdev, ymax = error_mean + stdev),
-                width = 0.2, linewidth = 0.5) +
-  # Jittered individual site points overlaid
+  # geom_errorbar(data = error_bars,
+  #               aes(x = Site_Category, ymin = error_mean - stdev, ymax = error_mean + stdev),
+  #               width = 0.2, linewidth = 0.5) +
+  # # Jittered individual site points overlaid
   geom_jitter(data = proportion,
               aes(x = Site_Category, y = prop_baseline, color = Site_Category),
               width = 0.15, size = 1.8, alpha = 0.6) +
-  # Reference line at 1 (= no change from baseline)
+  # # Reference line at 1 (= no change from baseline)
   geom_hline(yintercept = 1, linetype = "dashed", color = "black", alpha = 0.6) +
   facet_wrap(~ Species, ncol = 2, scales = "free_y") +
   labs(
@@ -200,20 +229,11 @@ proportion_bar_plot <- ggplot() +
   ) +
   scale_fill_brewer(palette = "Set2") +
   scale_color_brewer(palette = "Set2")
-
 show(proportion_bar_plot)
 
-differences <- data_PV %>%
-  group_by(Site_Category, Species, Era, Site) %>%
-  mutate(Site_Mean = mean(Density_100m2), stdev = sd(Density_100m2)) %>%
-  select(Site_Category, Species, Era, stdev, Site_Mean) %>%
-  distinct() %>%
-  pivot_wider(names_from = Era, values_from = c(stdev, Site_Mean)) %>%
-  group_by(Site_Category, Species) %>%
-  mutate(stdev_Difference = `stdev_Post-Wasting Recovery` - `stdev_Pre-Wasting`) %>%
-  mutate(mean_Difference = `Site_Mean_Post-Wasting Recovery` - `Site_Mean_Pre-Wasting`)
 
---------------------------------
+
+###--------------------------------
   # 
   # # Proportion plot: boxplot with jittered points
   # proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline,
