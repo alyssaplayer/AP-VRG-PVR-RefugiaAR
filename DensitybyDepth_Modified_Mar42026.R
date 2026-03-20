@@ -14,6 +14,9 @@ library("AICcmodavg")
 library("car")
 library("ggpubr")
 library("rstatix")
+library("GGally")
+library("DataExplorer")
+
 
 #setwd("/Users/alyssaplayer/Desktop/AP VRG PVR 2024")
 
@@ -22,8 +25,9 @@ library("rstatix")
 # Read data set that contains means between replicates
 data_PVR <- read.csv("PV_Stars_Urchins2025-07-09.csv", check.names = F)
 crane_data <- read.csv("PV_Stars_Urchins2025-11-05.csv", check.names = F)
+habitat_data_raw <- read.csv("all_env_lat_lon.csv", check.names = F)
 data_PV <- rbind(data_PVR, crane_data)
-write.csv(data_PV, "data_PV.csv", row.names = FALSE)
+#write.csv(data_PV, "data_PV.csv", row.names = FALSE)
 
 colnames(data_PV)[colnames(data_PV) == "BenthicReefSpecies"] <- "Species"
 colnames(data_PV)[colnames(data_PV) == "SampleYear"] <- "Year"
@@ -232,6 +236,87 @@ proportion_bar_plot <- ggplot() +
 show(proportion_bar_plot)
 
 
+
+###HABITAT METRICS
+habitat_data <- data_PV %>%
+  left_join(habitat_data_raw, by = c("Site", "DepthZone"))
+habitat_proportion <- proportion %>%
+  left_join(habitat_data_raw, by = "Site")
+
+#Relief Index vs prop_baseline
+ggplot(habitat_proportion, aes(x = Relief_index, y = prop_baseline, color = Site_Category)) +
+  geom_point(size = 3, alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, color = "black", linetype = "dashed") + #linear regression model line
+  facet_wrap(~ Species, scales = "free_y") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "gray50") + #points above = recovery, points below line = decline
+  labs(
+    x = "Relief Index",
+    y = "Proportion of Baseline (Post / Pre-Wasting)",
+    color = "Site Category",
+    title = "Relief index"
+  ) +
+  theme_minimal() +
+  theme(strip.text = element_text(face = "italic")) +
+  scale_color_brewer(palette = "Set2")
+
+ggplot(habitat_proportion, aes(x = Substrate_index, y = prop_baseline, color = Site_Category)) +
+  geom_point(size = 3, alpha = 0.7) +
+  #geom_smooth(method = "lm", se = TRUE, color = "black", linetype = "dashed") + #linear regression model line
+  facet_wrap(~ Species, scales = "free_y") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "gray50") + #points above = recovery, points below line = decline
+  labs(
+    x = "Substrate Index",
+    y = "Proportion of Baseline (Post / Pre-Wasting)",
+    color = "Site Category",
+    title = "Substrate index"
+  ) +
+  theme_minimal() +
+  theme(strip.text = element_text(face = "italic")) +
+  scale_color_brewer(palette = "Set2")
+
+# #- make scatter plots with habitat data
+# - should go by species, color by site category, group by era, and seperate by species
+# - 1 plot per substrate type
+
+# Plot 1: Relief Index
+habitat_data %>%
+  filter(!is.na(Relief_index)) %>%
+  ggplot(aes(x = Relief_index, y = Density_100m2, color = Site_Category)) +
+  geom_point(size = 2.5, alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7) +
+  facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
+  labs(
+    x = "Relief Index",
+    y = "Mean Density (per 100m²)",
+    color = "Site Category",
+    title = "Density vs. Relief by Species and Era"
+  ) +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(face = "italic"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  scale_color_brewer(palette = "Set2")
+
+# Plot 2: Substrate Index
+habitat_data %>%
+  filter(!is.na(Substrate_index)) %>%
+  ggplot(aes(x = Substrate_index, y = Density_100m2, color = Site_Category)) +
+  geom_point(size = 2.5, alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7) +
+  facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
+  labs(
+    x = "Substrate Index (Hard Rock)",
+    y = "Mean Density (per 100m²)",
+    color = "Site Category",
+    title = "Density vs. Hard Substrate by Species and Era"
+  ) +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(face = "italic"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  scale_color_brewer(palette = "Set2")
 
 ###--------------------------------
   # 
