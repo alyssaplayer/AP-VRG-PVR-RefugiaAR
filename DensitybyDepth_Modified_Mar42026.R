@@ -238,10 +238,10 @@ show(proportion_bar_plot)
 
 
 ###HABITAT METRICS
-habitat_data <- data_PV %>%
+habitat_data <- densitybydepth %>%
   left_join(habitat_data_raw, by = c("Site", "DepthZone"))
-habitat_proportion <- proportion %>%
-  left_join(habitat_data_raw, by = "Site")
+# habitat_proportion <- proportion %>%
+#   left_join(habitat_data_raw, by = "Site")
 
 #Relief Index vs prop_baseline
 ggplot(habitat_proportion, aes(x = Relief_index, y = prop_baseline, color = Site_Category)) +
@@ -278,16 +278,16 @@ ggplot(habitat_proportion, aes(x = Substrate_index, y = prop_baseline, color = S
 # - should go by species, color by site category, group by era, and seperate by species
 # - 1 plot per substrate type
 
-# Plot 1: Relief Index
+# Relief Index
 habitat_data %>%
   filter(!is.na(Relief_index)) %>%
-  ggplot(aes(x = Relief_index, y = Density_100m2, color = Site_Category)) +
-  geom_point(size = 2.5, alpha = 0.7) +
-  geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7) +
+  ggplot(aes(x = Relief_index, y = log(Density_100m2))) +
+  geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7, color = "black")+
   facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
   labs(
     x = "Relief Index",
-    y = "Mean Density (per 100m²)",
+    y = "Log Mean Density (per 100m²)",
     color = "Site Category",
     title = "Density vs. Relief by Species and Era"
   ) +
@@ -298,16 +298,37 @@ habitat_data %>%
   ) +
   scale_color_brewer(palette = "Set2")
 
-# Plot 2: Substrate Index
+# Relief SD #NEEDS EDITING 
+habitat_data %>%
+  filter(!is.na(Relief_index)) %>%
+  ggplot(aes(x = Relief_index, y = log(Density_100m2))) +
+  geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7, color = "black")+
+  facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
+  labs(
+    x = "Relief Index",
+    y = "Log Mean Density (per 100m²)",
+    color = "Site Category",
+    title = "Density vs. Relief by Species and Era"
+  ) +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(face = "italic"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  scale_color_brewer(palette = "Set2")
+
+
+# Substrate Index
 habitat_data %>%
   filter(!is.na(Substrate_index)) %>%
-  ggplot(aes(x = Substrate_index, y = Density_100m2, color = Site_Category)) +
-  geom_point(size = 2.5, alpha = 0.7) +
-  geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7) +
+  ggplot(aes(x = Substrate_index, y = log(Density_100m2), color = Site_Category)) +
+  geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7, color = "black")+
   facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
   labs(
     x = "Substrate Index (Hard Rock)",
-    y = "Mean Density (per 100m²)",
+    y = "Log Mean Density (per 100m²)",
     color = "Site Category",
     title = "Density vs. Hard Substrate by Species and Era"
   ) +
@@ -317,6 +338,71 @@ habitat_data %>%
     axis.text.x = element_text(angle = 45, hjust = 1)
   ) +
   scale_color_brewer(palette = "Set2")
+
+# Habitat Post Wasting only 
+habitat_postwasting <- habitat_data %>%
+  filter(Era == 'Post-Wasting Recovery')
+
+variables <- c("DZ_Density_100m2",
+               "dist_200m_bath",
+               "giantkelp_stipe_density_m2",
+               "giantkelp_density_m2",
+               "Relief_index",
+               "Relief_SD",
+               "Relief_simpson",
+               "Substrate_index",
+              "Substrate_SD",
+              "Substrate_simpson")
+
+## ... and create all possible combinations
+variables_set <- tidyr::expand_grid(variables, variables)
+
+plot_scatter_lm <- function(data, var1, var2, pointsize = 2, transparency = .5, color = "") {
+  
+  ## check if inputs are valid
+  if (!exists(substitute(data))) stop("data needs to be a data frame.")
+  if (!is.data.frame(data)) stop("data needs to be a data frame.")
+  if (!is.numeric(pull(data[var1]))) stop("Column var1 needs to be of type numeric, passed as string.")
+  if (!is.numeric(pull(data[var2]))) stop("Column var2 needs to be of type numeric, passed as string.")
+  if (!is.numeric(pointsize)) stop("pointsize needs to be of type numeric.")
+  if (!is.numeric(transparency)) stop("transparency needs to be of type numeric.")
+  if (color != "") { if (!color %in% names(data)) stop("Column color needs to be a column of data, passed as string.") }
+  
+  g <- 
+    ggplot(data, aes(x = !!sym(var1), y = !!sym(var2))) +
+    geom_point(aes(color = !!sym(color)), size = pointsize, alpha = transparency) +
+    geom_smooth(aes(color = !!sym(color), color = after_scale(prismatic::clr_darken(color, .3))), 
+                method = "lm", se = FALSE) +
+    theme_minimal(base_family = "Roboto Condensed", base_size = 15) +
+    theme(panel.grid.minor = element_blank(),
+          legend.position = "top")
+  
+  if (color != "") { 
+    if (is.numeric(pull(data[color]))) {
+      g <- g + scale_color_viridis_c(direction = -1, end = .85) +
+        guides(color = guide_colorbar(
+          barwidth = unit(12, "lines"), barheight = unit(.6, "lines"), title.position = "top"
+        ))
+    } else {
+      g <- g + scale_color_brewer(palette = "Set2")
+    }
+  }
+  
+  return(g)
+}
+pmap(
+  variables_set, ~plot_scatter_lm(
+    data = habitat_postwasting, 
+    var1 = .x, var2 = .y, color = "Species"
+  )
+)
+
+library(ggplot2)   ## for plotting
+library(purrr)     ## for iterative tasks
+library(dplyr)     ## for data wrangling
+library(patchwork)
+library(stringr)
+library(prismatic)
 
 ###--------------------------------
   # 
