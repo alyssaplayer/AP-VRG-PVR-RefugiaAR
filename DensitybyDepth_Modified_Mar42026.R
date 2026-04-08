@@ -14,8 +14,16 @@ library("AICcmodavg")
 library("car")
 library("ggpubr")
 library("rstatix")
+
+#For Habitat Metrics
 library("GGally")
 library("DataExplorer")
+library("purrr")     ## for iterative tasks
+library("dplyr")     ## for data wrangling
+library("patchwork")
+library("stringr")
+library("prismatic")
+library("ggforce")
 
 
 #setwd("/Users/alyssaplayer/Desktop/AP VRG PVR 2024")
@@ -237,6 +245,7 @@ show(proportion_bar_plot)
 
 
 
+
 ###HABITAT METRICS
 habitat_data <- densitybydepth %>%
   left_join(habitat_data_raw, by = c("Site", "DepthZone"))
@@ -301,7 +310,7 @@ habitat_data %>%
 # Relief SD #NEEDS EDITING 
 habitat_data %>%
   filter(!is.na(Relief_index)) %>%
-  ggplot(aes(x = Relief_index, y = log(Density_100m2))) +
+  ggplot(aes(x = Relief_index, y = log(DZ_Density_100m2))) +
   geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
   geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7, color = "black")+
   facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
@@ -322,7 +331,7 @@ habitat_data %>%
 # Substrate Index
 habitat_data %>%
   filter(!is.na(Substrate_index)) %>%
-  ggplot(aes(x = Substrate_index, y = log(Density_100m2), color = Site_Category)) +
+  ggplot(aes(x = Substrate_index, y = log(DZ_Density_100m2), color = Site_Category)) +
   geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
   geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7, color = "black")+
   facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
@@ -354,55 +363,66 @@ variables <- c("DZ_Density_100m2",
               "Substrate_SD",
               "Substrate_simpson")
 
-## ... and create all possible combinations
-variables_set <- tidyr::expand_grid(variables, variables)
+habitat_postwasting_plot <- habitat_postwasting %>%
+mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2))  # log-transform density
 
-plot_scatter_lm <- function(data, var1, var2, pointsize = 2, transparency = .5, color = "") {
-  
-  ## check if inputs are valid
-  if (!exists(substitute(data))) stop("data needs to be a data frame.")
-  if (!is.data.frame(data)) stop("data needs to be a data frame.")
-  if (!is.numeric(pull(data[var1]))) stop("Column var1 needs to be of type numeric, passed as string.")
-  if (!is.numeric(pull(data[var2]))) stop("Column var2 needs to be of type numeric, passed as string.")
-  if (!is.numeric(pointsize)) stop("pointsize needs to be of type numeric.")
-  if (!is.numeric(transparency)) stop("transparency needs to be of type numeric.")
-  if (color != "") { if (!color %in% names(data)) stop("Column color needs to be a column of data, passed as string.") }
-  
-  g <- 
-    ggplot(data, aes(x = !!sym(var1), y = !!sym(var2))) +
-    geom_point(aes(color = !!sym(color)), size = pointsize, alpha = transparency) +
-    geom_smooth(aes(color = !!sym(color), color = after_scale(prismatic::clr_darken(color, .3))), 
-                method = "lm", se = FALSE) +
-    theme_minimal(base_family = "Roboto Condensed", base_size = 15) +
-    theme(panel.grid.minor = element_blank(),
-          legend.position = "top")
-  
-  if (color != "") { 
-    if (is.numeric(pull(data[color]))) {
-      g <- g + scale_color_viridis_c(direction = -1, end = .85) +
-        guides(color = guide_colorbar(
-          barwidth = unit(12, "lines"), barheight = unit(.6, "lines"), title.position = "top"
-        ))
-    } else {
-      g <- g + scale_color_brewer(palette = "Set2")
-    }
-  }
-  
-  return(g)
-}
-pmap(
-  variables_set, ~plot_scatter_lm(
-    data = habitat_postwasting, 
-    var1 = .x, var2 = .y, color = "Species"
+#all species combined
+ggplot(habitat_postwasting_plot, aes(x = .panel_x, y = .panel_y, color = Species, fill = Species)) +
+  geom_point(size = 1.2, alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE, linewidth = 0.5) +
+  ggforce::geom_autodensity(alpha = 0.4) +
+  scale_color_brewer(palette = "Set2", name = NULL) +
+  scale_fill_brewer(palette = "Set2", name = NULL) +
+  ggforce::facet_matrix(
+    vars(all_of(variables)),
+    layer.lower = 1,   # geom_point
+    layer.diag  = 3,   # geom_autodensity
+    layer.upper = 2    # geom_smooth
+  ) +
+  theme_minimal(base_size = 9) +
+  theme(
+    strip.text = element_text(size = 6),
+    legend.position = "bottom",
+    panel.grid.minor = element_blank()
   )
-)
 
-library(ggplot2)   ## for plotting
-library(purrr)     ## for iterative tasks
-library(dplyr)     ## for data wrangling
-library(patchwork)
-library(stringr)
-library(prismatic)
+#ggsave("scatter_matrix.png", width = 20, height = 20)
+
+#species separated
+for (sp in foc_spp) {
+  
+  p <- habitat_postwasting %>%
+    mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) %>%
+    filter(Species == sp) %>%
+    ggplot(aes(x = .panel_x, y = .panel_y)) +
+    geom_point(size = 1.2, alpha = 0.5, color = "steelblue") +
+    geom_smooth(method = "lm", se = FALSE, linewidth = 0.5, color = "steelblue") +
+    ggforce::geom_autodensity(fill = "steelblue", alpha = 0.4) +
+    ggforce::facet_matrix(
+      vars(all_of(variables)),
+      layer.lower = 1,
+      layer.diag  = 3,
+      layer.upper = 2
+    ) +
+    labs(title = sp) +
+    theme_minimal(base_size = 9) +
+    theme(
+      strip.text = element_text(size = 6),
+      plot.title = element_text(face = "italic", hjust = 0.5),
+      panel.grid.minor = element_blank()
+    )
+  
+  print(p)
+}
+
+
+
+# ggsave(
+#   filename = paste0("scatter_matrix_", gsub(" ", "_", sp), ".pdf"),
+#   plot = p,
+#   width = 16, height = 16
+# )
+
 
 ###--------------------------------
   # 
