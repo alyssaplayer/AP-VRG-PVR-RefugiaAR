@@ -352,6 +352,9 @@ habitat_data %>%
 habitat_postwasting <- habitat_data %>%
   filter(Era == 'Post-Wasting Recovery')
 
+habitat_prewasting <- habitat_data %>%
+  filter(Era == 'Pre-Wasting')
+
 variables <- c("DZ_Density_100m2",
                "dist_200m_bath",
                "giantkelp_stipe_density_m2",
@@ -365,6 +368,31 @@ variables <- c("DZ_Density_100m2",
 
 habitat_postwasting_plot <- habitat_postwasting %>%
 mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2))  # log-transform density
+
+
+habitat_prewasting_plot <- habitat_prewasting %>%
+  mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2))  # log-transform density
+
+#pre
+ggplot(habitat_prewasting_plot, aes(x = .panel_x, y = .panel_y, color = Species, fill = Species)) +
+  geom_point(size = 1.2, alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE, linewidth = 0.5) +
+  ggforce::geom_autodensity(alpha = 0.4) +
+  scale_color_brewer(palette = "Set2", name = NULL) +
+  scale_fill_brewer(palette = "Set2", name = NULL) +
+  ggforce::facet_matrix(
+    vars(all_of(variables)),
+    layer.lower = 1,   # geom_point
+    layer.diag  = 3,   # geom_autodensity
+    layer.upper = 2    # geom_smooth
+  ) +
+  theme_minimal(base_size = 9) +
+  theme(
+    strip.text = element_text(size = 6),
+    legend.position = "bottom",
+    panel.grid.minor = element_blank()
+  )
+
 
 #all species combined
 ggplot(habitat_postwasting_plot, aes(x = .panel_x, y = .panel_y, color = Species, fill = Species)) +
@@ -398,6 +426,32 @@ for (sp in foc_spp) {
     geom_point(size = 1.2, alpha = 0.5, color = "steelblue") +
     geom_smooth(method = "lm", se = FALSE, linewidth = 0.5, color = "steelblue") +
     ggforce::geom_autodensity(fill = "steelblue", alpha = 0.4) +
+    ggforce::facet_matrix(
+      vars(all_of(variables)),
+      layer.lower = 1,
+      layer.diag  = 3,
+      layer.upper = 2
+    ) +
+    labs(title = sp) +
+    theme_minimal(base_size = 9) +
+    theme(
+      strip.text = element_text(size = 6),
+      plot.title = element_text(face = "italic", hjust = 0.5),
+      panel.grid.minor = element_blank()
+    )
+  
+  print(p)
+}
+
+for (sp in foc_spp) {
+  
+  p <- habitat_prewasting %>%
+    mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) %>%
+    filter(Species == sp) %>%
+    ggplot(aes(x = .panel_x, y = .panel_y)) +
+    geom_point(size = 1.2, alpha = 0.5, color = "darkorchid4") +
+    geom_smooth(method = "lm", se = FALSE, linewidth = 0.5, color = "darkorchid4") +
+    ggforce::geom_autodensity(fill = "darkorchid4", alpha = 0.4) +
     ggforce::facet_matrix(
       vars(all_of(variables)),
       layer.lower = 1,
