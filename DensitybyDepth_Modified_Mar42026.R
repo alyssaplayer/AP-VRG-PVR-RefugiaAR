@@ -416,7 +416,7 @@ ggplot(habitat_postwasting_plot, aes(x = .panel_x, y = .panel_y, color = Species
 
 #ggsave("scatter_matrix.png", width = 20, height = 20)
 
-#species separated
+#scatter matrix of species separated
 for (sp in foc_spp) {
   
   p <- habitat_postwasting %>%
@@ -469,13 +469,155 @@ for (sp in foc_spp) {
   print(p)
 }
 
-
-
 # ggsave(
 #   filename = paste0("scatter_matrix_", gsub(" ", "_", sp), ".pdf"),
 #   plot = p,
 #   width = 16, height = 16
 # )
+
+
+#Density / Categories by Era, sep by Species post-Wasting only  
+for (sp in foc_spp) {
+  
+  p <- habitat_postwasting %>%
+    mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) %>%
+    filter(Species == sp) %>%
+    select(DZ_Density_100m2, all_of(predictor_vars)) %>%
+    pivot_longer(cols = all_of(predictor_vars),
+                 names_to = "variable",
+                 values_to = "value") %>%
+    ggplot(aes(x = value, y = DZ_Density_100m2)) +
+    geom_point(size = 1.2, alpha = 0.4, color = "steelblue") +
+    geom_smooth(method = "lm", se = TRUE, linewidth = 0.6,
+                color = "steelblue4", fill = "steelblue", alpha = 0.2) +
+    facet_wrap(~ variable, scales = "free_x", ncol = 3) +
+    labs(
+      title = sp,
+      y = "log(Density + 1)",
+      x = NULL
+    ) +
+    theme_minimal(base_size = 9) +
+    theme(
+      strip.text = element_text(size = 7),
+      plot.title = element_text(face = "italic", hjust = 0.5),
+      panel.grid.minor = element_blank()
+    )
+  
+  print(p)
+}
+
+##Density / Categories by Era, sep by Species pre-Wasting only 
+for (sp in foc_spp) {
+  
+  p <- habitat_prewasting %>%
+    mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) %>%
+    filter(Species == sp) %>%
+    select(DZ_Density_100m2, all_of(predictor_vars)) %>%
+    pivot_longer(cols = all_of(predictor_vars),
+                 names_to = "variable",
+                 values_to = "value") %>%
+    ggplot(aes(x = value, y = DZ_Density_100m2)) +
+    geom_point(size = 1.2, alpha = 0.4, color = "darkorchid4") +
+    geom_smooth(method = "lm", se = TRUE, linewidth = 0.6,
+                color = "darkorchid", fill = "darkorchid4", alpha = 0.2) +
+    facet_wrap(~ variable, scales = "free_x", ncol = 3) +
+    labs(
+      title = paste0(sp, "- Pre-Wasting"),
+      y = "log(Density + 1)",
+      x = NULL
+    ) +
+    theme_minimal(base_size = 9) +
+    theme(
+      strip.text = element_text(size = 7),
+      plot.title = element_text(face = "italic", hjust = 0.5),
+      panel.grid.minor = element_blank()
+    )
+  
+  print(p)
+}
+
+#combined Pre and Post by species 
+for (sp in foc_spp) {
+  
+  combined <- bind_rows(
+    habitat_prewasting  %>% mutate(era = "Pre-Wasting"),
+    habitat_postwasting %>% mutate(era = "Post-Wasting")
+  ) %>%
+    mutate(
+      DZ_Density_100m2 = log1p(DZ_Density_100m2),
+      era = factor(era, levels = c("Pre-Wasting", "Post-Wasting"))  # fix order
+    ) %>%
+    filter(Species == sp) %>%
+    select(DZ_Density_100m2, era, all_of(predictor_vars)) %>%
+    pivot_longer(cols = all_of(predictor_vars),
+                 names_to  = "variable",
+                 values_to = "value")
+  
+  p <- combined %>%
+    ggplot(aes(x = value, y = DZ_Density_100m2, color = era, fill = era)) +
+    geom_point(size = 1.2, alpha = 0.4) +
+    geom_smooth(method = "lm", se = TRUE, linewidth = 0.6, alpha = 0.2) +
+    scale_color_manual(values = c("Pre-Wasting" = "darkorchid4", "Post-Wasting" = "steelblue")) +
+    scale_fill_manual(values  = c("Pre-Wasting" = "darkorchid",  "Post-Wasting" = "steelblue")) +
+    facet_grid(era ~ variable, scales = "free_x") +
+    labs(
+      title = sp,
+      y     = "log(Density + 1)",
+      x     = NULL
+    ) +
+    theme_minimal(base_size = 9) +
+    theme(
+      strip.text        = element_text(size = 7),
+      plot.title        = element_text(face = "italic", hjust = 0.5),
+      panel.grid.minor  = element_blank(),
+      legend.position   = "none"  # era is already shown in row strip labels
+    )
+  
+  print(p)
+}
+
+#COLOR BY ERA
+era_colors <- c(
+  "Pre-Wasting"  = "darkseagreen4",
+  "Wasting" = "chocolate",
+  "Post-Wasting Recovery" = "cadetblue4"
+)
+
+for (sp in foc_spp) {
+  
+  p <- habitat_data %>%
+    mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) %>%
+    filter(Species == sp) %>%
+    select(DZ_Density_100m2, Era, all_of(predictor_vars)) %>%  
+    pivot_longer(cols = all_of(predictor_vars),
+                 names_to  = "variable",
+                 values_to = "value") %>%
+    ggplot(aes(x = value, y = DZ_Density_100m2, color = Era, fill = Era)) +  
+    geom_point(size = 1.2, alpha = 0.4) +
+    geom_smooth(method = "lm", se = TRUE, linewidth = 0.6, alpha = 1) +
+    scale_color_manual(values = era_colors) +   # <-- here
+    scale_fill_manual(values  = era_colors) +   # <-- and here
+    facet_wrap(~ variable, scales = "free_x", ncol = 3) +
+    labs(
+      title = sp,
+      y     = "log(Density + 1)",
+      x     = NULL
+    ) +
+    theme_minimal(base_size = 9) +
+    theme(
+      strip.text       = element_text(size = 7),
+      plot.title       = element_text(face = "italic", hjust = 0.5),
+      panel.grid.minor = element_blank()
+    )
+  
+  print(p)
+}
+
+
+
+#Make a GLM 
+
+
 
 
 ###--------------------------------
