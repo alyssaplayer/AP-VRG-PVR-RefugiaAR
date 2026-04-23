@@ -1,6 +1,7 @@
 ##Mean Density of focspp. by Depth Zone 
 ##Created Oct 4, 2024 
 #Modified March 4, 2026
+ 
 
 # Require packages
 library("plyr")
@@ -579,28 +580,34 @@ for (sp in foc_spp) {
 #COLOR BY ERA
 era_colors <- c(
   "Pre-Wasting"  = "darkseagreen4",
-  "Wasting" = "chocolate",
+  "Wasting Event" = "chocolate",
   "Post-Wasting Recovery" = "cadetblue4"
+)
+
+depth_colors <- c(
+  "Outer"  = "white",
+  "Deep" = "white",
+  "ARM" = "black"
 )
 
 for (sp in foc_spp) {
   
   p <- habitat_data %>%
-    mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) %>%
+    mutate(DZ_Density_100m2 = log(DZ_Density_100m2)) %>%
     filter(Species == sp) %>%
-    select(DZ_Density_100m2, Era, all_of(predictor_vars)) %>%  
+    select(DZ_Density_100m2, Era, all_of(predictor_vars), DepthZone) %>%  
     pivot_longer(cols = all_of(predictor_vars),
                  names_to  = "variable",
                  values_to = "value") %>%
-    ggplot(aes(x = value, y = DZ_Density_100m2, color = Era, fill = Era)) +  
+    ggplot(aes(x = value, y = DZ_Density_100m2, color = Era, fill = Era)) +  #original both Era
     geom_point(size = 1.2, alpha = 0.4) +
-    geom_smooth(method = "lm", se = TRUE, linewidth = 0.6, alpha = 1) +
-    scale_color_manual(values = era_colors) +   # <-- here
-    scale_fill_manual(values  = era_colors) +   # <-- and here
+    geom_smooth(method = "lm", se = TRUE, linewidth = 0.6, alpha = 0.5) +
+    scale_color_manual(values = era_colors) +   
+    scale_fill_manual(values  = era_colors) +   
     facet_wrap(~ variable, scales = "free_x", ncol = 3) +
     labs(
       title = sp,
-      y     = "log(Density + 1)",
+      y     = "log(Density)",
       x     = NULL
     ) +
     theme_minimal(base_size = 9) +
@@ -614,11 +621,162 @@ for (sp in foc_spp) {
 }
 
 
+#highlight ARM as DepthZone
+for (sp in foc_spp) {
+  
+  plot_data <- habitat_data %>%
+    mutate(DZ_Density_100m2 = log(DZ_Density_100m2)) %>%
+    filter(Species == sp) %>%
+    select(DZ_Density_100m2, Era, all_of(predictor_vars), DepthZone) %>%
+    pivot_longer(cols = all_of(predictor_vars),
+                 names_to  = "variable",
+                 values_to = "value")
+  
+  p <- ggplot(plot_data, aes(x = value, y = DZ_Density_100m2)) +
+    # All points (muted)
+    geom_point(aes(color = Era),
+               size = 1.2, alpha = 0.2) +
+    # ARM points on top (highlighted)
+    geom_point(data = filter(plot_data, DepthZone == "ARM"),
+               aes(color = Era),
+               size = 1.8, alpha = 0.9, shape = 17) +  # triangle shape
+    # Smooth lines across all data
+    geom_smooth(aes(color = Era, fill = Era),
+                method = "lm", se = TRUE, linewidth = 0.6, alpha = 0.15) +
+    scale_color_manual(values = era_colors) +
+    scale_fill_manual(values  = era_colors) +
+    # ARM annotation per facet
+    geom_rug(data = filter(plot_data, DepthZone == "ARM"),
+             aes(color = Era),
+             sides = "b", linewidth = 0.5, alpha = 0.7) +
+    facet_wrap(~ variable, scales = "free_x", ncol = 3) +
+    labs(
+      title    = sp,
+      y        = "log(Density)",
+      x        = NULL,
+      caption  = "▲ ARM depth zone"
+    ) +
+    theme_minimal(base_size = 9) +
+    theme(
+      strip.text       = element_text(size = 7),
+      plot.title       = element_text(face = "italic", hjust = 0.5),
+      panel.grid.minor = element_blank(),
+      plot.caption     = element_text(size = 7, hjust = 0)
+    )
+  
+  print(p)
+}
 
-#Make a GLM 
 
 
+### Generalised Linear Model (Poisson) ###
+habitat_pisgig <- habitat_data %>%
+  filter(Species == "Pisaster giganteus", Era == "Post-Wasting Recovery")
 
+Pois1 <- glm(DZ_Density_100m2 ~ 
+               dist_200m_bath +
+               giantkelp_stipe_density_m2 +
+               giantkelp_density_m2 +
+               Relief_index +
+               Relief_SD +
+               Relief_simpson +
+               Substrate_index +
+               Substrate_SD +
+               Substrate_simpson,
+             data = habitat_pisgig,
+             family = poisson(link = log))
+summary (Pois1)
+
+
+#install.packages("mvabund")
+#day/night is era
+#https://bedeffinianrowedavies.com/statisticstutorials/multivariateglms
+library(tidyverse)
+library(mgcv)
+
+DZ_DepthZone ~ Era 
+
+#hypothemised model
+#DZ_Density_100m2 ~ Era + habitat metrics + (random effects)
+#install.packages("TMB", type="source")
+#install.packages("glmmTMB", type="source")
+
+library(TMB)
+library(glmmTMB)
+
+# Set reference Era (earliest/baseline)
+habitat_pisgig$Era <- relevel(factor(habitat_pisgig$Era), ref = "Pre-Wasting")
+
+#Fixed Effects: Expect to affect the dependent variable
+#Habitat Metrics 
+
+#Random: Controlled, need to include but not necessarily 
+##temporal groups (Site, Site_Category, DepthZone, Era)
+
+# removes zero-inflated continuous density
+glmm1 <- glmmTMB(DZ_Density_100m2 ~
+                   Substrate_index +
+                   Relief_index +
+                   giantkelp_stipe_density_m2 +
+                   (1 | Site_Category + Era),          # random intercept ?? keep or delete
+                 data   = habitat_pisgig,
+                 family = tweedie(link = "log"))
+
+summary(glmm1)
+
+library(patchwork)
+install.packages("ggplot")
+library('ggplot')
+
+ModelOutputs <- data.frame(Fitted    = fitted(glmm1),
+                           Residuals = resid(glmm1))
+
+p1 <- ggplot(ModelOutputs) +
+  geom_point(aes(x = Fitted, y = Residuals)) +
+  theme_classic() +
+  labs(y = "Residuals", x = "Fitted Values")
+
+p2 <- ggplot(ModelOutputs) +
+  stat_qq(aes(sample = Residuals)) +
+  stat_qq_line(aes(sample = Residuals)) +
+  theme_classic() +
+  labs(y = "Sample Quartiles", x = "Theoretical Quartiles")
+
+p1 + p2
+
+library(modelr)
+library(ggeffects)
+
+# Overall Era effect, marginalised over habitat metrics
+ggpredict(glmm1, terms = "Era") %>%
+  as_tibble() %>%
+  ggplot(aes(x = x, y = predicted, colour = x, fill = x)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high), size = 1) +
+  scale_color_manual(values = era_colors) +
+  labs(x = "Era", y = "Predicted Density (DZ_Density_100m2)", colour = "Era") +
+  theme_classic() +
+  theme(legend.position = "none")
+
+glmm2 <- glmmTMB(DZ_Density_100m2 ~ Era * Substrate_index +
+                   Era * Relief_index +
+                   Era * giantkelp_stipe_density_m2 +
+                   (1 | Site),
+                 data   = habitat_pisgig,
+                 family = tweedie(link = "log"))
+
+# Compare models — does the interaction improve fit?
+AIC(glmm1, glmm2)
+
+# Plot Era × Substrate interaction
+ggpredict(glmm2, terms = c("Substrate_index", "Era")) %>%
+  as_tibble() %>%
+  ggplot(aes(x = x, y = predicted, colour = group, fill = group)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = 0.2) +
+  geom_line(linewidth = 1) +
+  scale_color_manual(values = era_colors) +
+  scale_fill_manual(values  = era_colors) +
+  labs(x = "Substrate Index", y = "Predicted Density", colour = "Era", fill = "Era") +
+  theme_classic()
 
 ###--------------------------------
   # 
