@@ -25,6 +25,8 @@ library("patchwork")
 library("stringr")
 library("prismatic")
 library("ggforce")
+library("glmmTMB")
+
 
 
 #setwd("/Users/alyssaplayer/Desktop/AP VRG PVR 2024")
@@ -102,6 +104,7 @@ data_PV <- data_PV %>%
     TRUE ~ "Non-MPA"
   ))
 
+#site of unique sites
 unique_sites <- data_PVR %>% distinct(Site)
 
 ####CREATING THE DENSITY PLOTS####
@@ -244,9 +247,6 @@ proportion_bar_plot <- ggplot() +
   scale_color_brewer(palette = "Set2")
 show(proportion_bar_plot)
 
-
-
-
 ###HABITAT METRICS
 habitat_data <- densitybydepth %>%
   left_join(habitat_data_raw, by = c("Site", "DepthZone"))
@@ -308,15 +308,15 @@ habitat_data %>%
   ) +
   scale_color_brewer(palette = "Set2")
 
-# Relief SD #NEEDS EDITING 
+#Density vs Relief SD 
 habitat_data %>%
-  filter(!is.na(Relief_index)) %>%
-  ggplot(aes(x = Relief_index, y = log(DZ_Density_100m2))) +
+  filter(!is.na(Relief_SD)) %>%
+  ggplot(aes(x = Relief_SD, y = log(DZ_Density_100m2))) +
   geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
   geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7, color = "black")+
   facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
   labs(
-    x = "Relief Index",
+    x = "Relief SD",
     y = "Log Mean Density (per 100m²)",
     color = "Site Category",
     title = "Density vs. Relief by Species and Era"
@@ -329,7 +329,7 @@ habitat_data %>%
   scale_color_brewer(palette = "Set2")
 
 
-# Substrate Index
+#Density vs Substrate Index
 habitat_data %>%
   filter(!is.na(Substrate_index)) %>%
   ggplot(aes(x = Substrate_index, y = log(DZ_Density_100m2), color = Site_Category)) +
@@ -349,13 +349,16 @@ habitat_data %>%
   ) +
   scale_color_brewer(palette = "Set2")
 
-# Habitat Post Wasting only 
-habitat_postwasting <- habitat_data %>%
-  filter(Era == 'Post-Wasting Recovery')
-
+# Habitat by Era
 habitat_prewasting <- habitat_data %>%
-  filter(Era == 'Pre-Wasting')
+  filter(Era == 'Pre-Wasting') %>%
+  mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) # log-transform density
 
+habitat_postwasting <- habitat_data %>%
+  filter(Era == 'Post-Wasting Recovery') %>%
+  mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) # log-transform density
+
+#Variables of Interest
 variables <- c("DZ_Density_100m2",
                "dist_200m_bath",
                "giantkelp_stipe_density_m2",
@@ -367,15 +370,8 @@ variables <- c("DZ_Density_100m2",
               "Substrate_SD",
               "Substrate_simpson")
 
-habitat_postwasting_plot <- habitat_postwasting %>%
-mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2))  # log-transform density
-
-
-habitat_prewasting_plot <- habitat_prewasting %>%
-  mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2))  # log-transform density
-
-#pre
-ggplot(habitat_prewasting_plot, aes(x = .panel_x, y = .panel_y, color = Species, fill = Species)) +
+#All Habitat Variables vs Density (All Species, pre-wasting)
+ggplot(habitat_prewasting, aes(x = .panel_x, y = .panel_y, color = Species, fill = Species)) +
   geom_point(size = 1.2, alpha = 0.5) +
   geom_smooth(method = "lm", se = FALSE, linewidth = 0.5) +
   ggforce::geom_autodensity(alpha = 0.4) +
@@ -395,8 +391,8 @@ ggplot(habitat_prewasting_plot, aes(x = .panel_x, y = .panel_y, color = Species,
   )
 
 
-#all species combined
-ggplot(habitat_postwasting_plot, aes(x = .panel_x, y = .panel_y, color = Species, fill = Species)) +
+#All Habitat Variables vs Density (All Species, post-wasting)
+ggplot(habitat_postwasting, aes(x = .panel_x, y = .panel_y, color = Species, fill = Species)) +
   geom_point(size = 1.2, alpha = 0.5) +
   geom_smooth(method = "lm", se = FALSE, linewidth = 0.5) +
   ggforce::geom_autodensity(alpha = 0.4) +
@@ -417,7 +413,33 @@ ggplot(habitat_postwasting_plot, aes(x = .panel_x, y = .panel_y, color = Species
 
 #ggsave("scatter_matrix.png", width = 20, height = 20)
 
-#scatter matrix of species separated
+
+####SCATTER MATRICES ####
+#Scatter Matrix of Habitat Variables separated for each Species (pre-wasting)
+for (sp in foc_spp) {
+  p <- habitat_prewasting %>%
+    mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) %>%
+    filter(Species == sp) %>%
+    ggplot(aes(x = .panel_x, y = .panel_y)) +
+    geom_point(size = 1.2, alpha = 0.5, color = "darkorchid4") +
+    geom_smooth(method = "lm", se = FALSE, linewidth = 0.5, color = "darkorchid4") +
+    ggforce::geom_autodensity(fill = "darkorchid4", alpha = 0.4) +
+    ggforce::facet_matrix(
+      vars(all_of(variables)),
+      layer.lower = 1,
+      layer.diag  = 3,
+      layer.upper = 2
+    ) +
+    labs(title = sp) +
+    theme_minimal(base_size = 9) +
+    theme(
+      strip.text = element_text(size = 6),
+      plot.title = element_text(face = "italic", hjust = 0.5),
+      panel.grid.minor = element_blank()
+    )
+  print(p)
+}
+#Scatter Matrix of Habitat Variables separated for each Species (post-wasting)
 for (sp in foc_spp) {
   
   p <- habitat_postwasting %>%
@@ -443,78 +465,13 @@ for (sp in foc_spp) {
   
   print(p)
 }
-
+##Density / Categories by Era, sep by Species (pre-Wasting only)
 for (sp in foc_spp) {
-  
   p <- habitat_prewasting %>%
     mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) %>%
     filter(Species == sp) %>%
-    ggplot(aes(x = .panel_x, y = .panel_y)) +
-    geom_point(size = 1.2, alpha = 0.5, color = "darkorchid4") +
-    geom_smooth(method = "lm", se = FALSE, linewidth = 0.5, color = "darkorchid4") +
-    ggforce::geom_autodensity(fill = "darkorchid4", alpha = 0.4) +
-    ggforce::facet_matrix(
-      vars(all_of(variables)),
-      layer.lower = 1,
-      layer.diag  = 3,
-      layer.upper = 2
-    ) +
-    labs(title = sp) +
-    theme_minimal(base_size = 9) +
-    theme(
-      strip.text = element_text(size = 6),
-      plot.title = element_text(face = "italic", hjust = 0.5),
-      panel.grid.minor = element_blank()
-    )
-  
-  print(p)
-}
-
-# ggsave(
-#   filename = paste0("scatter_matrix_", gsub(" ", "_", sp), ".pdf"),
-#   plot = p,
-#   width = 16, height = 16
-# )
-
-
-#Density / Categories by Era, sep by Species post-Wasting only  
-for (sp in foc_spp) {
-  
-  p <- habitat_postwasting %>%
-    mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) %>%
-    filter(Species == sp) %>%
-    select(DZ_Density_100m2, all_of(predictor_vars)) %>%
-    pivot_longer(cols = all_of(predictor_vars),
-                 names_to = "variable",
-                 values_to = "value") %>%
-    ggplot(aes(x = value, y = DZ_Density_100m2)) +
-    geom_point(size = 1.2, alpha = 0.4, color = "steelblue") +
-    geom_smooth(method = "lm", se = TRUE, linewidth = 0.6,
-                color = "steelblue4", fill = "steelblue", alpha = 0.2) +
-    facet_wrap(~ variable, scales = "free_x", ncol = 3) +
-    labs(
-      title = sp,
-      y = "log(Density + 1)",
-      x = NULL
-    ) +
-    theme_minimal(base_size = 9) +
-    theme(
-      strip.text = element_text(size = 7),
-      plot.title = element_text(face = "italic", hjust = 0.5),
-      panel.grid.minor = element_blank()
-    )
-  
-  print(p)
-}
-
-##Density / Categories by Era, sep by Species pre-Wasting only 
-for (sp in foc_spp) {
-  
-  p <- habitat_prewasting %>%
-    mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) %>%
-    filter(Species == sp) %>%
-    select(DZ_Density_100m2, all_of(predictor_vars)) %>%
-    pivot_longer(cols = all_of(predictor_vars),
+    select(DZ_Density_100m2, all_of(variables)) %>%
+    pivot_longer(cols = all_of(variables),
                  names_to = "variable",
                  values_to = "value") %>%
     ggplot(aes(x = value, y = DZ_Density_100m2)) +
@@ -533,11 +490,39 @@ for (sp in foc_spp) {
       plot.title = element_text(face = "italic", hjust = 0.5),
       panel.grid.minor = element_blank()
     )
-  
+  print(p)
+}
+#Density / Categories by Era, sep by Species (post-Wasting only)  
+for (sp in foc_spp) {
+  p <- habitat_postwasting %>%
+    mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) %>%
+    filter(Species == sp) %>%
+    select(DZ_Density_100m2, all_of(variables)) %>%
+    pivot_longer(cols = all_of(variables),
+                 names_to = "variable",
+                 values_to = "value") %>%
+    ggplot(aes(x = value, y = DZ_Density_100m2)) +
+    geom_point(size = 1.2, alpha = 0.4, color = "steelblue") +
+    geom_smooth(method = "lm", se = TRUE, linewidth = 0.6,
+                color = "steelblue4", fill = "steelblue", alpha = 0.2) +
+    facet_wrap(~ variable, scales = "free_x", ncol = 3) +
+    labs(
+      title = sp,
+      y = "log(Density + 1)",
+      x = NULL
+    ) +
+    theme_minimal(base_size = 9) +
+    theme(
+      strip.text = element_text(size = 7),
+      plot.title = element_text(face = "italic", hjust = 0.5),
+      panel.grid.minor = element_blank()
+    )
   print(p)
 }
 
-#combined Pre and Post by species 
+predictor_vars <- setdiff(variables, "DZ_Density_100m2")
+
+#combined Pre and Post by species - NEED TO FIX THIS
 for (sp in foc_spp) {
   
   combined <- bind_rows(
@@ -577,12 +562,14 @@ for (sp in foc_spp) {
   print(p)
 }
 
+
 #COLOR BY ERA
 era_colors <- c(
   "Pre-Wasting"  = "darkseagreen4",
   "Wasting Event" = "chocolate",
   "Post-Wasting Recovery" = "cadetblue4"
 )
+
 
 depth_colors <- c(
   "Outer"  = "white",
@@ -591,11 +578,10 @@ depth_colors <- c(
 )
 
 for (sp in foc_spp) {
-  
   p <- habitat_data %>%
     mutate(DZ_Density_100m2 = log(DZ_Density_100m2)) %>%
     filter(Species == sp) %>%
-    select(DZ_Density_100m2, Era, all_of(predictor_vars), DepthZone) %>%  
+    select(DZ_Density_100m2, Era, all_of(variables), DepthZone) %>%  
     pivot_longer(cols = all_of(predictor_vars),
                  names_to  = "variable",
                  values_to = "value") %>%
@@ -669,23 +655,10 @@ for (sp in foc_spp) {
 
 
 
-### Generalised Linear Model (Poisson) ###
+#### Multivariate Generalised Linear Model ####
 habitat_pisgig <- habitat_data %>%
   filter(Species == "Pisaster giganteus", Era == "Post-Wasting Recovery")
 
-Pois1 <- glm(DZ_Density_100m2 ~ 
-               dist_200m_bath +
-               giantkelp_stipe_density_m2 +
-               giantkelp_density_m2 +
-               Relief_index +
-               Relief_SD +
-               Relief_simpson +
-               Substrate_index +
-               Substrate_SD +
-               Substrate_simpson,
-             data = habitat_pisgig,
-             family = poisson(link = log))
-summary (Pois1)
 
 
 #install.packages("mvabund")
@@ -694,89 +667,31 @@ summary (Pois1)
 library(tidyverse)
 library(mgcv)
 
-DZ_DepthZone ~ Era 
+#DZ_Density_100m2 ~ Era + habitat_metrics + (1 | Site)
 
-#hypothemised model
-#DZ_Density_100m2 ~ Era + habitat metrics + (random effects)
-#install.packages("TMB", type="source")
-#install.packages("glmmTMB", type="source")
-
-library(TMB)
-library(glmmTMB)
-
-# Set reference Era (earliest/baseline)
-habitat_pisgig$Era <- relevel(factor(habitat_pisgig$Era), ref = "Pre-Wasting")
-
-#Fixed Effects: Expect to affect the dependent variable
-#Habitat Metrics 
-
-#Random: Controlled, need to include but not necessarily 
-##temporal groups (Site, Site_Category, DepthZone, Era)
-
-# removes zero-inflated continuous density
 glmm1 <- glmmTMB(DZ_Density_100m2 ~
+                   Era +
                    Substrate_index +
                    Relief_index +
                    giantkelp_stipe_density_m2 +
-                   (1 | Site_Category + Era),          # random intercept ?? keep or delete
-                 data   = habitat_pisgig,
+                   (1 | Site),          # Site as random intercept
+                 data   = habitat_data,  
                  family = tweedie(link = "log"))
 
-summary(glmm1)
-
-library(patchwork)
-install.packages("ggplot")
-library('ggplot')
-
-ModelOutputs <- data.frame(Fitted    = fitted(glmm1),
-                           Residuals = resid(glmm1))
-
-p1 <- ggplot(ModelOutputs) +
-  geom_point(aes(x = Fitted, y = Residuals)) +
-  theme_classic() +
-  labs(y = "Residuals", x = "Fitted Values")
-
-p2 <- ggplot(ModelOutputs) +
-  stat_qq(aes(sample = Residuals)) +
-  stat_qq_line(aes(sample = Residuals)) +
-  theme_classic() +
-  labs(y = "Sample Quartiles", x = "Theoretical Quartiles")
-
-p1 + p2
-
-library(modelr)
-library(ggeffects)
-
-# Overall Era effect, marginalised over habitat metrics
-ggpredict(glmm1, terms = "Era") %>%
-  as_tibble() %>%
-  ggplot(aes(x = x, y = predicted, colour = x, fill = x)) +
-  geom_pointrange(aes(ymin = conf.low, ymax = conf.high), size = 1) +
-  scale_color_manual(values = era_colors) +
-  labs(x = "Era", y = "Predicted Density (DZ_Density_100m2)", colour = "Era") +
-  theme_classic() +
-  theme(legend.position = "none")
-
-glmm2 <- glmmTMB(DZ_Density_100m2 ~ Era * Substrate_index +
+# Interaction model to test if habitat effects differ by Era
+glmm2 <- glmmTMB(DZ_Density_100m2 ~
+                   Era * Substrate_index +
                    Era * Relief_index +
                    Era * giantkelp_stipe_density_m2 +
                    (1 | Site),
-                 data   = habitat_pisgig,
+                 data   = habitat_data,
                  family = tweedie(link = "log"))
 
-# Compare models — does the interaction improve fit?
 AIC(glmm1, glmm2)
 
-# Plot Era × Substrate interaction
-ggpredict(glmm2, terms = c("Substrate_index", "Era")) %>%
-  as_tibble() %>%
-  ggplot(aes(x = x, y = predicted, colour = group, fill = group)) +
-  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = 0.2) +
-  geom_line(linewidth = 1) +
-  scale_color_manual(values = era_colors) +
-  scale_fill_manual(values  = era_colors) +
-  labs(x = "Substrate Index", y = "Predicted Density", colour = "Era", fill = "Era") +
-  theme_classic()
+#most recent error
+#Error in fitTMB(TMBStruc) : 
+  #negative log-likelihood is NaN at starting parameter values
 
 ###--------------------------------
   # 
