@@ -151,100 +151,126 @@ print(densitybydepthplot_urchins)
 
 
 ###PROPORTION CALCULATIONS####
-differences <- data_PV %>%
+
+
+
+
+###LOG RESPONSE RATIO (LRR) CALCULATIONS####
+# LRR = log(Post-Wasting Recovery mean / Pre-Wasting mean) per site x species
+# LRR = 0  → no change from pre-wasting baseline
+# LRR > 0  → density increased post-wasting
+# LRR < 0  → density decreased post-wasting
+# Symmetric: doubling (+0.69) and halving (-0.69) are equidistant from 0
+
+# Canonical site-level summary used by all downstream calculations
+# PVR module sites are collapsed to parent sites before averaging
+site_summary <- data_PV %>%
+  mutate(Site = case_when(
+    Site %in% c("PVR 2A", "PVR 2B", "PVR 2C") ~ "Burial Grounds",
+    Site %in% c("PVR 4A", "PVR 4B", "PVR 4C",
+                "PVR 5A", "PVR 5B", "PVR 5C",
+                "PCR 6B", "PVR 6C", "PCR 6D") ~ "Old 18th",
+    Site %in% c("PVR 7A", "PVR 7B", "PVR 7C",
+                "PVR 8A", "PVR 8B", "PVR 8C") ~ "Cape Point",
+    .default = as.character(Site)
+  )) %>%
   group_by(Site_Category, Species, Era, Site) %>%
-  mutate(Site_Mean = mean(Density_100m2), stdev = sd(Density_100m2)) %>%
-  select(Site_Category, Species, Site, Era, stdev, Site_Mean) %>%
-  distinct() %>%
-  pivot_wider(names_from = Era, values_from = c(stdev, Site_Mean), names_sep = "_") %>%
+  dplyr::summarise(
+    Site_Mean = mean(Density_100m2),
+    stdev     = sd(Density_100m2),
+    .groups   = "drop"
+  )
+
+# Differences table (raw mean and SD change, pre → post)
+differences <- site_summary %>%
+  pivot_wider(
+    names_from  = Era,
+    values_from = c(Site_Mean, stdev),
+    names_sep   = "_"
+  ) %>%
   group_by(Site_Category, Species) %>%
-  mutate(stdev_Difference = `stdev_Post-Wasting Recovery` - `stdev_Pre-Wasting`) %>%
-  mutate(mean_Difference = `Site_Mean_Post-Wasting Recovery` - `Site_Mean_Pre-Wasting`)%>% 
+  mutate(
+    stdev_Difference = `stdev_Post-Wasting Recovery` - `stdev_Pre-Wasting`,
+    mean_Difference  = `Site_Mean_Post-Wasting Recovery` - `Site_Mean_Pre-Wasting`
+  ) %>%
   ungroup()
 
 #write.csv(differences, "differences_mar10.csv", row.names = FALSE)
 
-
-# Per-site proportion of post-wasting vs pre-wasting (used for plotting points)
-proportion <- data_PV %>%
-  mutate(Site = case_when(
-    Site %in% c("PVR 2A",
-                "PVR 2B",
-                "PVR 2C") ~ "Burial Grounds",
-    Site %in% c("PVR 4A",
-                "PVR 4B",
-                "PVR 4C",
-                "PVR 5A",
-                "PVR 5B",
-                "PVR 5C",
-                "PCR 6B",
-                "PVR 6C",
-                "PCR 6D") ~ "Old 18th",
-    Site %in% c("PVR 7A",
-                "PVR 7B",
-                "PVR 7C",
-                "PVR 8A",
-                "PVR 8B",
-                "PVR 8C") ~ "Cape Point",
-    .default=as.character(Site))) %>%
-  group_by(Site_Category, Species, Era, Site) %>%
-  mutate(Site_Mean = mean(Density_100m2), stdev = sd(Density_100m2)) %>%
-  select(Site_Category, Species, Era, Site, Site_Mean, stdev) %>%
-  distinct() %>%
+# LRR table — only sites with Pre-Wasting mean > 0 are valid (avoids log(0) and Inf)
+proportion <- site_summary %>%
   pivot_wider(
-    names_from = Era,
+    names_from  = Era,
     values_from = c(Site_Mean, stdev),
-    names_sep = "_"
+    names_sep   = "_"
   ) %>%
-  mutate(prop_baseline = `Site_Mean_Post-Wasting Recovery` / `Site_Mean_Pre-Wasting`)%>%
-  filter(!is.na(prop_baseline) & !is.infinite(prop_baseline))
-
-#write.csv(proportion, "proportion_mar10.csv", row.names = FALSE)
-
-# Error bars: mean ± SD of prop_baseline across sites per Site_Category x Species
-error_bars <- proportion %>%
-  filter(!is.infinite(prop_baseline) & !is.na(prop_baseline)) %>%
-  dplyr::group_by(Site_Category, Species) %>%
-  dplyr::summarise(
-    error_mean = mean(prop_baseline),
-    stdev = sd(prop_baseline),
-    .groups = "drop"
+  filter(
+    !is.na(`Site_Mean_Pre-Wasting`),
+    !is.na(`Site_Mean_Post-Wasting Recovery`),
+    `Site_Mean_Pre-Wasting` > 0   # exclude true pre-wasting absences
+  ) %>%
+  mutate(
+    LRR = log(`Site_Mean_Post-Wasting Recovery` / `Site_Mean_Pre-Wasting`)
   )
 
+#write.csv(proportion, "proportion_LRR.csv", row.names = FALSE)
 
-# Bar chart version with explicit error bars
+# Summary: mean LRR ± 95% CI across sites per Site_Category x Species
+# Used for error bars on the plot
+error_bars <- proportion %>%
+  dplyr::group_by(Site_Category, Species) %>%
+  dplyr::summarise(
+    LRR_mean = mean(LRR),
+    LRR_se   = sd(LRR) / sqrt(n()),
+    LRR_ci   = qt(0.975, df = n() - 1) * LRR_se,  # 95% CI
+    .groups  = "drop"
+  )
+
+# LRR plot: boxplot + jittered site points + mean 95% CI + reference line at 0
 proportion_bar_plot <- ggplot() +
-  # Bars for group means
-  geom_boxplot(data = proportion,
-           aes(x = Site_Category, y = prop_baseline, fill = Site_Category),
-           alpha = 0.6, width = 0.6) +
-  # Error bars (mean ± 1 SD)
-  # geom_errorbar(data = error_bars,
-  #               aes(x = Site_Category, ymin = error_mean - stdev, ymax = error_mean + stdev),
-  #               width = 0.2, linewidth = 0.5) +
-  # # Jittered individual site points overlaid
-  geom_jitter(data = proportion,
-              aes(x = Site_Category, y = prop_baseline, color = Site_Category),
-              width = 0.15, size = 1.8, alpha = 0.6) +
-  # # Reference line at 1 (= no change from baseline)
-  geom_hline(yintercept = 1, linetype = "dashed", color = "black", alpha = 0.6) +
-  facet_wrap(~ Species, ncol = 2, scales = "free_y") +
-  labs(
-    title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
-    x = "Site Category",
-    y = "Proportion of Baseline",
-    fill = "Site Category",
-    color = "Site Category"
+  geom_boxplot(
+    data  = proportion,
+    aes(x = Site_Category, y = LRR, fill = Site_Category),
+    alpha = 0.6, width = 0.6, outlier.shape = NA
   ) +
-  #ylim(-5, 5) +
+  # Mean ± 95% CI across sites
+  geom_errorbar(
+    data = error_bars,
+    aes(x = Site_Category, ymin = LRR_mean - LRR_ci, ymax = LRR_mean + LRR_ci),
+    width = 0.2, linewidth = 0.7, color = "grey30"
+  ) +
+  geom_point(
+    data = error_bars,
+    aes(x = Site_Category, y = LRR_mean),
+    size = 2.5, shape = 18, color = "grey30"
+  ) +
+  # Jittered individual site points
+  geom_jitter(
+    data  = proportion,
+    aes(x = Site_Category, y = LRR, color = Site_Category),
+    width = 0.15, size = 1.8, alpha = 0.6
+  ) +
+  # Reference line at 0 = no change from pre-wasting baseline
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black", alpha = 0.6) +
+  facet_wrap(~ Species, ncol = 2) +
+  labs(
+    title   = "Post-Wasting Recovery: Log Response Ratio vs. Pre-Wasting Baseline",
+    caption = "LRR = 0: no change  |  LRR > 0: increased density  |  LRR < 0: decreased density\nDiamond = mean; error bars = 95% CI; sites with zero pre-wasting density excluded",
+    x       = "Site Category",
+    y       = "Log Response Ratio (LRR)",
+    fill    = "Site Category",
+    color   = "Site Category"
+  ) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    strip.text = element_text(face = "italic", size = 10),
-    panel.grid.major.x = element_blank()
+    axis.text.x    = element_text(angle = 45, hjust = 1),
+    strip.text     = element_text(face = "italic", size = 10),
+    panel.grid.major.x = element_blank(),
+    plot.caption   = element_text(size = 8, color = "grey40", hjust = 0)
   ) +
   scale_fill_brewer(palette = "Set2") +
   scale_color_brewer(palette = "Set2")
+
 show(proportion_bar_plot)
 
 ###HABITAT METRICS
@@ -720,3 +746,17 @@ AIC(glmm1, glmm2)
   #   scale_fill_brewer(palette = "Set2")
   # 
   # show(proportion_plot)
+
+
+
+# differences <- data_PV %>%
+#   group_by(Site_Category, Species, Era, Site) %>%
+#   mutate(Site_Mean = mean(Density_100m2), stdev = sd(Density_100m2)) %>%
+#   select(Site_Category, Species, Site, Era, stdev, Site_Mean) %>%
+#   distinct() %>%
+#   pivot_wider(names_from = Era, values_from = c(stdev, Site_Mean), names_sep = "_") %>%
+#   group_by(Site_Category, Species) %>%
+#   mutate(stdev_Difference = `stdev_Post-Wasting Recovery` - `stdev_Pre-Wasting`) %>%
+#   mutate(mean_Difference = `Site_Mean_Post-Wasting Recovery` - `Site_Mean_Pre-Wasting`)%>% 
+#   ungroup()
+#write.csv(differences, "differences_mar10.csv", row.names = FALSE)
