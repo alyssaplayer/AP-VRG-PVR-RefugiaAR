@@ -142,7 +142,7 @@ densitybydepthplot_urchins <- ggplot(density_urchins, aes(x = Era, y = log(DZ_De
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(x = "Site Type",
-       y = expression("Log of Mean Density (100" * m^2 * " / yr)")) +
+       y = expression("log of Mean Density (100" * m^2 * " / yr)")) +
   facet_grid(rows = vars(Species), cols = vars(Site_Category), scales = "free_y", space = "free") +
   scale_color_brewer(palette = "Oranges") +
   scale_fill_brewer(palette = "Oranges")
@@ -683,9 +683,7 @@ for (sp in foc_spp) {
 
 #### Multivariate Generalised Linear Model ####
 habitat_pisgig <- habitat_data %>%
-  filter(Species == "Pisaster giganteus", Era == "Post-Wasting Recovery")
-
-
+  filter(Species == "Pisaster giganteus")
 
 #install.packages("mvabund")
 #day/night is era
@@ -695,29 +693,56 @@ library(mgcv)
 
 #DZ_Density_100m2 ~ Era + habitat_metrics + (1 | Site)
 
+glmm0 <- glmmTMB(DZ_Density_100m2 ~
+                   Era +
+                   (1 | Site),          # Site as random intercept
+                 data   = habitat_pisgig,  
+                 family = tweedie(link = "log"))
+
 glmm1 <- glmmTMB(DZ_Density_100m2 ~
                    Era +
                    Substrate_index +
                    Relief_index +
-                   giantkelp_stipe_density_m2 +
+                   #giantkelp_stipe_density_m2 +
                    (1 | Site),          # Site as random intercept
-                 data   = habitat_data,  
+                 data   = habitat_pisgig,  
                  family = tweedie(link = "log"))
 
 # Interaction model to test if habitat effects differ by Era
 glmm2 <- glmmTMB(DZ_Density_100m2 ~
                    Era * Substrate_index +
                    Era * Relief_index +
-                   Era * giantkelp_stipe_density_m2 +
+                  # Era * giantkelp_stipe_density_m2 +
                    (1 | Site),
-                 data   = habitat_data,
+                 data   = habitat_pisgig,
                  family = tweedie(link = "log"))
 
-AIC(glmm1, glmm2)
 
-#most recent error
-#Error in fitTMB(TMBStruc) : 
-  #negative log-likelihood is NaN at starting parameter values
+# Interaction model to test if habitat effects differ by Era and Site Category
+glmm3 <- glmmTMB(DZ_Density_100m2 ~
+                   Site_Category * Era * Substrate_index +
+                   Site_Category * Era * Relief_index +
+                   #Site_Category * Era * giantkelp_stipe_density_m2 +
+                   (1 | Site),
+                 data   = habitat_pisgig,
+                 family = tweedie(link = "log"))
+
+
+AIC(glmm0, glmm1, glmm2, glmm3)
+summary(glmm0)
+summary(glmm1)
+summary(glmm2)
+summary(glmm3)
+
+ggplot(habitat_data, aes(x = DZ_Density_100m2, fill = Era)) +
+        geom_histogram(bins = 10, color = 'white') + 
+        facet_wrap(~Era, scales = "free_y")
+
+
+nothing <- habitat_pisgig %>%
+  select(Substrate_index) 
+
+sum(is.na(nothing))
 
 ###--------------------------------
   # 
