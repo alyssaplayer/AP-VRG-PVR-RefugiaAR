@@ -1,7 +1,6 @@
 ##Mean Density of focspp. by Depth Zone 
 ##Created Oct 4, 2024 
 #Modified March 4, 2026
- 
 
 # Require packages
 library("plyr")
@@ -16,7 +15,7 @@ library("car")
 library("ggpubr")
 library("rstatix")
 
-#For Habitat Metrics
+#For Habitat Metric + GLMMM
 library("GGally")
 library("DataExplorer")
 library("purrr")     ## for iterative tasks
@@ -153,8 +152,6 @@ print(densitybydepthplot_urchins)
 ###PROPORTION CALCULATIONS####
 
 
-
-
 ###LOG RESPONSE RATIO (LRR) CALCULATIONS####
 # LRR = log(Post-Wasting Recovery mean / Pre-Wasting mean) per site x species
 # LRR = 0  → no change from pre-wasting baseline
@@ -276,8 +273,8 @@ show(proportion_bar_plot)
 ###HABITAT METRICS
 habitat_data <- densitybydepth %>%
   left_join(habitat_data_raw, by = c("Site", "DepthZone"))
-# habitat_proportion <- proportion %>%
-#   left_join(habitat_data_raw, by = "Site")
+habitat_proportion <- proportion %>%
+  left_join(habitat_data_raw, by = "Site")
 
 #Relief Index vs prop_baseline
 ggplot(habitat_proportion, aes(x = Relief_index, y = prop_baseline, color = Site_Category)) +
@@ -680,10 +677,19 @@ for (sp in foc_spp) {
 }
 
 
-
 #### Multivariate Generalised Linear Model ####
 habitat_pisgig <- habitat_data %>%
-  filter(Species == "Pisaster giganteus")
+  filter(Species == "Pisaster giganteus") %>%
+  select(-c(mean_chl_mg_m3,
+            max_chl_mg_m3,
+            min_chl_mg_m3,
+            mean_sst_C,
+            max_sst_C,
+            min_sst_C,
+            dist_200m_bath)) %>%
+  drop_na()
+
+colnames(habitat_pisgig)
 
 #install.packages("mvabund")
 #day/night is era
@@ -691,12 +697,16 @@ habitat_pisgig <- habitat_data %>%
 library(tidyverse)
 library(mgcv)
 
+#Zero-Inflated Tweedie Generalized Linear Mixed Model (ZI-Tweedie GLMM) is a powerful statistical approach for modeling continuous, strictly positive data that also contains an excessive number of zeros
+#https://cran.r-project.org/web/packages/glmmTMB/vignettes/glmmTMB.pdf
+#page 4 -> add ziformula=~1
+#did not work 
+
 #DZ_Density_100m2 ~ Era + habitat_metrics + (1 | Site)
 
-glmm0 <- glmmTMB(DZ_Density_100m2 ~
-                   Era +
-                   (1 | Site),          # Site as random intercept
-                 data   = habitat_pisgig,  
+glmm0 <- glmmTMB(DZ_Density_100m2 ~ Era + (1 | Site),
+                 #ziformula = ~1,
+                 data   = habitat_pisgig,
                  family = tweedie(link = "log"))
 
 glmm1 <- glmmTMB(DZ_Density_100m2 ~
@@ -743,6 +753,9 @@ nothing <- habitat_pisgig %>%
   select(Substrate_index) 
 
 sum(is.na(nothing))
+
+
+
 
 ###--------------------------------
   # 
