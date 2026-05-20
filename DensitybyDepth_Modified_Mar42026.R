@@ -63,8 +63,8 @@ data_PV <- data_PV %>%
   mutate(
     Era = case_when(
       Year < 2014 ~ "Pre-Wasting",
-      Year >= 2014 & Year <= 2016 ~ "Wasting Event",
-      Year > 2016 ~ "Post-Wasting Recovery"
+      Year >= 2014 & Year <= 2019 ~ "Wasting Event",
+      Year > 2020 ~ "Post-Wasting Recovery"
     ),
     Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE),
     DepthZone = factor(DepthZone, levels = c("Inner", "Middle", "Outer", "Deep", "ARM"), ordered = TRUE)
@@ -705,7 +705,7 @@ library(mgcv)
 #DZ_Density_100m2 ~ Era + habitat_metrics + (1 | Site)
 
 glmm0 <- glmmTMB(DZ_Density_100m2 ~ Era + (1 | Site),
-                 #ziformula = ~1,
+                 ziformula = ~1,
                  data   = habitat_pisgig,
                  family = tweedie(link = "log"))
 
@@ -715,6 +715,7 @@ glmm1 <- glmmTMB(DZ_Density_100m2 ~
                    Relief_index +
                    #giantkelp_stipe_density_m2 +
                    (1 | Site),          # Site as random intercept
+                 ziformula = ~1,
                  data   = habitat_pisgig,  
                  family = tweedie(link = "log"))
 
@@ -724,6 +725,7 @@ glmm2 <- glmmTMB(DZ_Density_100m2 ~
                    Era * Relief_index +
                   # Era * giantkelp_stipe_density_m2 +
                    (1 | Site),
+                 ziformula = ~1,
                  data   = habitat_pisgig,
                  family = tweedie(link = "log"))
 
@@ -734,6 +736,7 @@ glmm3 <- glmmTMB(DZ_Density_100m2 ~
                    Site_Category * Era * Relief_index +
                    #Site_Category * Era * giantkelp_stipe_density_m2 +
                    (1 | Site),
+                 ziformula = ~1,
                  data   = habitat_pisgig,
                  family = tweedie(link = "log"))
 
