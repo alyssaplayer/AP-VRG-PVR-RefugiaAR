@@ -25,6 +25,7 @@ library("stringr")
 library("prismatic")
 library("ggforce")
 library("glmmTMB")
+library("ggeffects")
 
 
 
@@ -104,7 +105,8 @@ data_PV <- data_PV %>%
   ))
 
 #site of unique sites
-unique_sites <- data_PVR %>% distinct(Site)
+unique_sites <- habitat_pisgig %>% distinct(Site)
+write_csv(unique_sites, "unique_sites_habitatpisgig_BACIPS.csv")
 
 ####CREATING THE DENSITY PLOTS####
 densitybydepth <- data_PV %>%
@@ -705,7 +707,7 @@ library(mgcv)
 #DZ_Density_100m2 ~ Era + habitat_metrics + (1 | Site)
 
 glmm0 <- glmmTMB(DZ_Density_100m2 ~ Era + (1 | Site),
-                 ziformula = ~1,
+                 #ziformula = ~1,
                  data   = habitat_pisgig,
                  family = tweedie(link = "log"))
 
@@ -715,7 +717,7 @@ glmm1 <- glmmTMB(DZ_Density_100m2 ~
                    Relief_index +
                    #giantkelp_stipe_density_m2 +
                    (1 | Site),          # Site as random intercept
-                 ziformula = ~1,
+                 #ziformula = ~1,
                  data   = habitat_pisgig,  
                  family = tweedie(link = "log"))
 
@@ -725,7 +727,7 @@ glmm2 <- glmmTMB(DZ_Density_100m2 ~
                    Era * Relief_index +
                   # Era * giantkelp_stipe_density_m2 +
                    (1 | Site),
-                 ziformula = ~1,
+                 #ziformula = ~1,
                  data   = habitat_pisgig,
                  family = tweedie(link = "log"))
 
@@ -736,7 +738,7 @@ glmm3 <- glmmTMB(DZ_Density_100m2 ~
                    Site_Category * Era * Relief_index +
                    #Site_Category * Era * giantkelp_stipe_density_m2 +
                    (1 | Site),
-                 ziformula = ~1,
+                 #ziformula = ~1,
                  data   = habitat_pisgig,
                  family = tweedie(link = "log"))
 
@@ -747,15 +749,44 @@ summary(glmm1)
 summary(glmm2)
 summary(glmm3)
 
-ggplot(habitat_data, aes(x = DZ_Density_100m2, fill = Era)) +
-        geom_histogram(bins = 10, color = 'white') + 
-        facet_wrap(~Era, scales = "free_y")
+ggeffects::ggpredict(glmm2, terms = c("Substrate_index", "Era")) 
 
 
-nothing <- habitat_pisgig %>%
-  select(Substrate_index) 
+pred <- ggpredict(glmm2, terms = c("Substrate_index", "Era")) 
+plot(pred)
 
-sum(is.na(nothing))
+ggplot(pred, aes(x = x, y = predicted, color = group, fill = group)) + 
+  geom_line(linewidth = 1) + 
+  geom_ribbon(aes(ymin =conf.low, ymax = conf.high), alpha = 0.2, color = NA) + 
+  scale_color_manual( values = c("Pre-Wasting"  ="darkseagreen4", "Wasting Event"  = "chocolate", "Post-Wasting Recovery" = "cadetblue4"), labels = c("Pre-Wasting","Wasting Event", "Post-Wasting Recovery") ) + 
+  scale_fill_manual( values = c("Pre-Wasting"  = "darkseagreen4", "Wasting Event"  = "chocolate", "Post-Wasting Recovery" = "cadetblue4") ) + 
+  labs( title  = expression(italic("Pisaster giganteus") ~"density vs. Substrate Index by Era"), x  = "Substrate Index (Hard Rock)", y  = "Predicted Density (per 100m²)", color  ="Era", fill  = "Era", caption = "Shaded bands = 95% CI; predictions averaged over random Site effect" ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+
+# Extract residuals #u want the points to fall along the red diagonal
+res <- residuals(glmm2, type = "pearson")  # pearson is standard for GLMMs 
+qqnorm(res, main = "QQ Plot - glmm2 Pearson Residuals") 
+qqline(res, col = "red", lwd = 2)
+
+#DHARMa handles non-normal distribution
+library(DHARMa) 
+sim_res <- simulateResiduals(fittedModel = glmm2, n = 1000) # QQ
+plotQQunif(sim_res)
+
+
+
+#don't need
+# ggplot(habitat_data, aes(x = DZ_Density_100m2, fill = Era)) +
+#         geom_histogram(bins = 10, color = 'white') + 
+#         facet_wrap(~Era, scales = "free_y")
+# 
+# 
+# nothing <- habitat_pisgig %>%
+#   select(Substrate_index) 
+# 
+# sum(is.na(nothing))
 
 
 
