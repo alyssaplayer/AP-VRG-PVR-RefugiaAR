@@ -26,7 +26,7 @@ library("prismatic")
 library("ggforce")
 library("glmmTMB")
 library("ggeffects")
-
+library("DHARMa")
 
 
 #setwd("/Users/alyssaplayer/Desktop/AP VRG PVR 2024")
@@ -602,34 +602,34 @@ depth_colors <- c(
   "ARM" = "black"
 )
 
-for (sp in foc_spp) {
-  p <- habitat_data %>%
-    mutate(DZ_Density_100m2 = log(DZ_Density_100m2)) %>%
-    filter(Species == sp) %>%
-    select(DZ_Density_100m2, Era, all_of(variables), DepthZone) %>%  
-    pivot_longer(cols = all_of(predictor_vars),
-                 names_to  = "variable",
-                 values_to = "value") %>%
-    ggplot(aes(x = value, y = DZ_Density_100m2, color = Era, fill = Era)) +  #original both Era
-    geom_point(size = 1.2, alpha = 0.4) +
-    geom_smooth(method = "lm", se = TRUE, linewidth = 0.6, alpha = 0.5) +
-    scale_color_manual(values = era_colors) +   
-    scale_fill_manual(values  = era_colors) +   
-    facet_wrap(~ variable, scales = "free_x", ncol = 3) +
-    labs(
-      title = sp,
-      y     = "log(Density)",
-      x     = NULL
-    ) +
-    theme_minimal(base_size = 9) +
-    theme(
-      strip.text       = element_text(size = 7),
-      plot.title       = element_text(face = "italic", hjust = 0.5),
-      panel.grid.minor = element_blank()
-    )
-  
-  print(p)
-}
+# for (sp in foc_spp) {
+#   p <- habitat_data %>%
+#     mutate(DZ_Density_100m2 = log(DZ_Density_100m2)) %>%
+#     filter(Species == sp) %>%
+#     select(DZ_Density_100m2, Era, all_of(variables), DepthZone) %>%  
+#     pivot_longer(cols = all_of(predictor_vars),
+#                  names_to  = "variable",
+#                  values_to = "value") %>%
+#     ggplot(aes(x = value, y = DZ_Density_100m2, color = Era, fill = Era)) +  #original both Era
+#     geom_point(size = 1.2, alpha = 0.4) +
+#     geom_smooth(method = "lm", se = TRUE, linewidth = 0.6, alpha = 0.5) +
+#     scale_color_manual(values = era_colors) +   
+#     scale_fill_manual(values  = era_colors) +   
+#     facet_wrap(~ variable, scales = "free_x", ncol = 3) +
+#     labs(
+#       title = sp,
+#       y     = "log(Density)",
+#       x     = NULL
+#     ) +
+#     theme_minimal(base_size = 9) +
+#     theme(
+#       strip.text       = element_text(size = 7),
+#       plot.title       = element_text(face = "italic", hjust = 0.5),
+#       panel.grid.minor = element_blank()
+#     )
+#   
+#   print(p)
+# }
 
 
 #highlight ARM as DepthZone
@@ -774,22 +774,6 @@ qqline(res, col = "red", lwd = 2)
 library(DHARMa) 
 sim_res <- simulateResiduals(fittedModel = glmm2, n = 1000) # QQ
 plotQQunif(sim_res)
-
-
-
-#don't need
-# ggplot(habitat_data, aes(x = DZ_Density_100m2, fill = Era)) +
-#         geom_histogram(bins = 10, color = 'white') + 
-#         facet_wrap(~Era, scales = "free_y")
-# 
-# 
-# nothing <- habitat_pisgig %>%
-#   select(Substrate_index) 
-# 
-# sum(is.na(nothing))
-
-
-
 
 ###--------------------------------
   # 
