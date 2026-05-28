@@ -104,8 +104,13 @@ data_PV <- data_PV %>%
                 "KOU Rock",
                 "Old 18th") ~ "PVR&Adj",
     DepthZone == "ARM" ~ "PVR&Adj",
-    TRUE ~ "Non-MPA"
+    TRUE ~ "Reference" #everything natural
   ))
+
+data_non <- data_PV %>%
+  filter(Site_Category == "Reference") %>%
+  distinct(Site)
+
 
 #site of unique sites
 unique_sites <- habitat_pisgig %>% distinct(Site)
@@ -707,6 +712,84 @@ prediction_plots <- imap(results, \(r, sp) {
 })
 
 walk(compact(prediction_plots), print)
+testDispersion(simulationOutput)
+
+
+#just testing the residuals -> red line bad, black line good 
+#https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html
+#plot residuals against predictors 
+
+habitat_strpur <- habitat_data %>%
+  filter(Species == "Strongylocentrotus purpuratus") %>%
+  select(-c(mean_chl_mg_m3,
+            max_chl_mg_m3,
+            min_chl_mg_m3,
+            mean_sst_C,
+            max_sst_C,
+            min_sst_C,
+            dist_200m_bath)) %>%
+  drop_na()
+
+colnames(habitat_strpur)
+
+#https://bedeffinianrowedavies.com/statisticstutorials/multivariateglms
+#Zero-Inflated Tweedie Generalized Linear Mixed Model (ZI-Tweedie GLMM) is a powerful statistical approach for modeling continuous, strictly positive data that also contains an excessive number of zeros
+#https://cran.r-project.org/web/packages/glmmTMB/vignettes/glmmTMB.pdf
+#page 4 -> add ziformula=~1
+#did not work 
+
+#DZ_Density_100m2 ~ Era + habitat_metrics + (1 | Site)
+
+glmm0_sp <- glmmTMB(DZ_Density_100m2 ~ Era + (1 | Site),
+                 ziformula = ~predictor_vars,
+                 data   = habitat_strpur,
+                 family = tweedie(link = "log"))
+
+glmm1_sp <- glmmTMB(DZ_Density_100m2 ~
+                   Substrate_index +
+                   Relief_index +
+                   Era +
+                   #giantkelp_stipe_density_m2 +
+                   (1 | Site),          # Site as random intercept
+                 ziformula = ~ Era,
+                 data   = habitat_strpur,  
+                 family = tweedie(link = "log"))
+
+# Interaction model to test if habitat effects differ by Era
+glmm2_sp <- glmmTMB(DZ_Density_100m2 ~
+                   Era * Substrate_index +
+                   Era * Relief_index +
+                   # Era * giantkelp_stipe_density_m2 +
+                   (1 | Site),
+                 ziformula = ~1,
+                 data   = habitat_strpur,
+                 family = tweedie(link = "log"))
+
+# Interaction model to test if habitat effects differ by Era and Site Category
+glmm3_sp <- glmmTMB(DZ_Density_100m2 ~
+                   Site_Category * Era * Substrate_index +
+                   Site_Category * Era * Relief_index +
+                   #Site_Category * Era * giantkelp_stipe_density_m2 +
+                   (1 | Site),
+                 ziformula = ~1,
+                 data   = habitat_strpur,
+                 family = tweedie(link = "log"))
+
+AIC(glmm0_sp, glmm1_sp, glmm2_sp, glmm3_sp)
+summary(glmm0_sp)
+summary(glmm1_sp)
+summary(glmm2_sp)
+summary(glmm3_sp)
+
+
+#DHARMa handles non-normal distribution
+library(DHARMa) 
+sim_res <- simulateResiduals(fittedModel = glmm3_sp, refit = T) # QQ
+plotQQunif(sim_res)
+
+
+
+testDispersion(simulationOutput)
 
 
 ###Archived Plots-------------------------------
