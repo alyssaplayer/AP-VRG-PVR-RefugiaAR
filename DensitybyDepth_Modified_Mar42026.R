@@ -37,18 +37,26 @@ library(mgcv)
 ####DATA MANAGEMENT AND FILTERING####
 #### Species Info ####
 # Read data set that contains means between replicates
-data_PVR <- read.csv("PV_Stars_Urchins2025-07-09.csv", check.names = F)
-crane_data <- read.csv("PV_Stars_Urchins2025-11-05.csv", check.names = F)
+data_PV <- read.csv("PV_Stars_Urchins2026-06-03 (1).csv", check.names = F)
 habitat_data_raw <- read.csv("all_env_lat_lon.csv", check.names = F)
-data_PV <- rbind(data_PVR, crane_data)
+
 #write.csv(data_PV, "data_PV.csv", row.names = FALSE)
 
 colnames(data_PV)[colnames(data_PV) == "BenthicReefSpecies"] <- "Species"
 colnames(data_PV)[colnames(data_PV) == "SampleYear"] <- "Year"
 
-data_PV <- data_PV %>%
-  mutate(Density_100m2 = 100 * Density_m2) %>%
-  complete(nesting(Site, Year), Species, fill = list(Density_m2 = 0, Density_100m2 = 0))
+data_test <- data_PV %>%
+  group_by(Year, DiveReplicate, DepthZone, Site, Species) %>%
+  summarise(mean_density_100m2 = mean(Density_m2)*100) %>%
+  left_join(habitat_data_raw, by = c("Site", "DepthZone")) %>%
+  select(-giantkelp_density_m2, -giantkelp_stipe_density_m2)
+
+
+  
+  
+  #mutate(Density_100m2 = 100 * Density_m2) %>%
+  
+#  complete(nesting(Site, Year), Species, fill = list(Density_m2 = 0, Density_100m2 = 0))
 
 
 ####Focal Species List####
@@ -68,7 +76,7 @@ data_PV <- data_PV %>%
     Era = case_when(
       Year < 2014 ~ "Pre-Wasting",
       Year >= 2014 & Year <= 2019 ~ "Wasting Event",
-      Year > 2020 ~ "Post-Wasting Recovery"
+      Year >= 2020 ~ "Post-Wasting Recovery"
     ),
     Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE),
     DepthZone = factor(DepthZone, levels = c("Inner", "Middle", "Outer", "Deep", "ARM"), ordered = TRUE)
@@ -107,13 +115,9 @@ data_PV <- data_PV %>%
     TRUE ~ "Reference" #everything natural
   ))
 
-data_non <- data_PV %>%
-  filter(Site_Category == "Reference") %>%
-  distinct(Site)
-
 
 #site of unique sites
-unique_sites <- habitat_pisgig %>% distinct(Site)
+unique_sites <- data_PV %>% distinct(Site)
 #write_csv(unique_sites, "unique_sites_habitatpisgig_BACIPS.csv")
 
 ####CREATING THE DENSITY PLOTS####
@@ -281,16 +285,17 @@ proportion_bar_plot <- ggplot() +
 show(proportion_bar_plot)
 
 ###HABITAT METRICS
-habitat_data <- densitybydepth %>%
-  left_join(habitat_data_raw, by = c("Site", "DepthZone"))
-habitat_proportion <- proportion %>%
-  left_join(habitat_data_raw, by = "Site")
+data_PV <- data_PV %>% 
+  group_by(DepthZone, Year, Species, Site, Era, Site_Category) %>%
+  mutate(mean_Density_100m2 = mean(Density_100m2)) %>%
+  ungroup()
+write_csv(data_PV, "data_PV_withreplicates.csv")
 
 
 #Density vs Relief SD 
-habitat_data %>%
+data_PV %>%
   filter(!is.na(Relief_SD)) %>%
-  ggplot(aes(x = Relief_SD, y = log(DZ_Density_100m2))) +
+  ggplot(aes(x = Relief_SD, y = log(mean_Density_100m2))) +
   geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
   geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7, color = "black")+
   facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
@@ -309,7 +314,7 @@ habitat_data %>%
 
 
 #Density vs Substrate Index
-habitat_data %>%
+data_PV %>%
   filter(!is.na(Substrate_index)) %>%
   ggplot(aes(x = Substrate_index, y = log(DZ_Density_100m2), color = Site_Category)) +
   geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
@@ -329,11 +334,11 @@ habitat_data %>%
   scale_color_brewer(palette = "Set2")
 
 # Habitat by Era
-habitat_prewasting <- habitat_data %>%
+habitat_prewasting <- data_PV %>%
   filter(Era == 'Pre-Wasting') %>%
   mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) # log-transform density
 
-habitat_postwasting <- habitat_data %>%
+habitat_postwasting <- data_PV %>%
   filter(Era == 'Post-Wasting Recovery') %>%
   mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) # log-transform density
 
@@ -413,7 +418,7 @@ depth_colors <- c(
 #highlight ARM as DepthZone
 for (sp in foc_spp) {
   
-  plot_data <- habitat_data %>%
+  plot_data <- data_PV %>%
     mutate(DZ_Density_100m2 = log(DZ_Density_100m2)) %>%
     filter(Species == sp) %>%
     select(DZ_Density_100m2, Era, all_of(predictor_vars), DepthZone) %>%
@@ -458,7 +463,7 @@ for (sp in foc_spp) {
 
 
 #### Multivariate Generalised Linear Model ####
-habitat_pisgig <- habitat_data %>%
+habitat_pisgig <- data_PV %>%
   filter(Species == "Pisaster giganteus") %>%
   select(-c(mean_chl_mg_m3,
             max_chl_mg_m3,
@@ -611,7 +616,7 @@ fit_species_models <- function(sp, data, formulas) {
 # ── 4. Run across all species ────────────────────────────────────────────────
 results <- map(
   foc_spp,
-  \(sp) fit_species_models(sp, data = habitat_data, formulas = model_formulas)
+  \(sp) fit_species_models(sp, data = data_PV, formulas = model_formulas)
 ) |>
   set_names(foc_spp)
 
@@ -719,7 +724,7 @@ testDispersion(simulationOutput)
 #https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html
 #plot residuals against predictors 
 
-habitat_strpur <- habitat_data %>%
+habitat_strpur <- data_PV %>%
   filter(Species == "Strongylocentrotus purpuratus") %>%
   select(-c(mean_chl_mg_m3,
             max_chl_mg_m3,
