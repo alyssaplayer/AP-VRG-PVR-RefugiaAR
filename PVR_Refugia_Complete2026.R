@@ -31,7 +31,6 @@ library(tidyverse)
 library(mgcv)
 
 
-
 #setwd("/Users/alyssaplayer/Desktop/AP VRG PVR 2024")
 
 ####DATA MANAGEMENT AND FILTERING####
@@ -40,20 +39,19 @@ library(mgcv)
 data_PV <- read.csv("PV_Stars_Urchins2026-06-03 (1).csv", check.names = F)
 habitat_data_raw <- read.csv("all_env_lat_lon.csv", check.names = F)
 
-#write.csv(data_PV, "data_PV.csv", row.names = FALSE)
+
 
 colnames(data_PV)[colnames(data_PV) == "BenthicReefSpecies"] <- "Species"
 colnames(data_PV)[colnames(data_PV) == "SampleYear"] <- "Year"
 
 data_test <- data_PV %>%
-  group_by(Year, DiveReplicate, DepthZone, Site, Species) %>%
-  summarise(mean_density_100m2 = mean(Density_m2)*100) %>%
+  group_by(Year, DepthZone, Site, Species) %>%
+  summarise(mean_density_100m2 = mean(Density_m2) * 100, .groups = "drop") %>%
   left_join(habitat_data_raw, by = c("Site", "DepthZone")) %>%
   select(-giantkelp_density_m2, -giantkelp_stipe_density_m2)
 
-
   
-  
+write.csv(data_test, "data_PV.csv", row.names = FALSE)
   #mutate(Density_100m2 = 100 * Density_m2) %>%
   
 #  complete(nesting(Site, Year), Species, fill = list(Density_m2 = 0, Density_100m2 = 0))
@@ -119,6 +117,116 @@ data_PV <- data_PV %>%
 #site of unique sites
 unique_sites <- data_PV %>% distinct(Site)
 #write_csv(unique_sites, "unique_sites_habitatpisgig_BACIPS.csv")
+
+
+###EDA / Feature Importance ####
+####FEATURE IMPORTANCE — RF + GBT PRE-SCREENING####
+library(ranger)       # install.packages("ranger")
+library(gbm)          # install.packages("gbm")
+library(vip)          # install.packages("vip")
+
+# Full habitat feature pool
+habitat_features <- c(
+  "Relief_index", "Relief_SD", "Relief_simpson",
+  "Substrate_index", "Substrate_SD", "Substrate_simpson",
+  "dist_200m_bath",
+  "mean_chl_mg_m3", "max_chl_mg_m3", "min_chl_mg_m3",
+  "mean_sst_C", "max_sst_C", "min_sst_C"
+)
+
+# ── 1. Fit RF + GBT per species, extract importance ──────────────────────────
+importance_results <- map(foc_spp, function(sp) {
+  
+  sp_data <- data_PV %>%
+    filter(Species == sp) %>%
+    select(DZ_Density_100m2, all_of(habitat_features)) %>%
+    drop_na() %>%
+    mutate(log_density = log1p(DZ_Density_100m2)) %>%
+    select(-DZ_Density_100m2)
+  
+  message("Fitting models for: ", sp, " (n = ", nrow(sp_data), ")")
+  
+  # Random Forest — permutation importance
+  rf <- ranger(
+    log_density ~ .,
+    data        = sp_data,
+    num.trees   = 500,
+    importance  = "permutation",
+    seed        = 42
+  )
+  
+  rf_imp <- tibble(
+    feature    = names(rf$variable.importance),
+    rf_perm    = rf$variable.importance,
+    species    = sp
+  )
+  
+  # Gradient Boosted Trees — impurity importance via gbm
+  gbt <- gbm(
+    log_density ~ .,
+    data         = sp_data,
+    distribution = "gaussian",
+    n.trees      = 300,
+    interaction.depth = 3,
+    shrinkage    = 0.05,
+    cv.folds     = 5,
+    verbose      = FALSE
+  )
+  
+  gbt_imp <- summary(gbt, plotit = FALSE) %>%
+    as_tibble() %>%
+    rename(feature = var, gbt_impurity = rel.inf)
+  
+  # Join both
+  left_join(rf_imp, gbt_imp, by = "feature") %>%
+    mutate(
+      species = sp,
+      rf_r2   = rf$r.squared
+    )
+  
+}) %>%
+  set_names(foc_spp)
+
+# ── 2. Combine into one tidy table ───────────────────────────────────────────
+all_importance <- bind_rows(importance_results)
+
+# Print ranked table per species
+walk(foc_spp, function(sp) {
+  cat("\n", strrep("─", 55), "\n")
+  cat(" Species:", sp, "\n")
+  cat(strrep("─", 55), "\n")
+  all_importance %>%
+    filter(species == sp) %>%
+    arrange(desc(rf_perm)) %>%
+    select(feature, rf_perm, gbt_impurity) %>%
+    print(n = Inf)
+})
+
+# ── 3. Plot — faceted bar chart, one panel per species ───────────────────────
+all_importance %>%
+  group_by(species) %>%
+  mutate(feature = reorder(feature, rf_perm)) %>%
+  ungroup() %>%
+  ggplot(aes(x = feature, y = rf_perm)) +
+  geom_col(aes(fill = rf_perm > 0), alpha = 0.8, show.legend = FALSE) +
+  geom_point(aes(y = gbt_impurity / max(gbt_impurity) * max(rf_perm)),
+             color = "black", size = 1.8, shape = 16) +
+  coord_flip() +
+  facet_wrap(~ species, scales = "free_x", ncol = 2,
+             labeller = labeller(species = label_wrap_gen(25))) +
+  scale_fill_manual(values = c("TRUE" = "steelblue", "FALSE" = "grey70")) +
+  labs(
+    title    = "RF Permutation Importance + GBT Impurity (●) by Species",
+    subtitle = "Response: log(Density + 1) | GBT dots scaled to RF axis for visual comparison",
+    x        = NULL,
+    y        = "RF Permutation Importance"
+  ) +
+  theme_minimal() +
+  theme(
+    strip.text       = element_text(face = "italic", size = 9),
+    axis.text.y      = element_text(size = 8),
+    panel.grid.major.y = element_blank()
+  )
 
 ####CREATING THE DENSITY PLOTS####
 densitybydepth <- data_PV %>%
@@ -796,6 +904,205 @@ plotQQunif(sim_res)
 
 testDispersion(simulationOutput)
 
+
+###BACIPS####
+#####PVR ANALYSIS#####
+############################################################################################################
+#Object: Perform a Progressive-Change BACIPS analysis using step, linear, asymptotic and sigmoid models	#
+#Authors: L. Thiault, L. Kernal??guen, C.W. Osenberg & J. Claudet												#
+##### PVR BACIPS #######################################################################################################
+
+# Load packages
+require(minpack.lm) # Fitting non-linear models
+require(nls2) # Fitting non-linear models
+require(AICcmodavg) # calculate second order AIC (AICc)
+
+### The function requires 4 inputs of class integer with the same length (STEP 1) :
+# control: includes response variable measured in the Control site at each sampling time.model;
+# impact: includes response variable measured in the Impact site at each sampling time.model;
+# time.true: time corresponding to each sample;
+# time.model: surveys from the Before period are assigned time.model=0, and surveys from the After period are assigned time.models that represent the time since the intervention started.
+
+pvr_control_sites <- c("Hawthorne Reef",
+                       "Honeymoon Cove",
+                       "Lunada Bay",
+                       "Resort Point",  
+                       "Rocky Point South",
+                       "Rocky Point North",
+                       "Ridges North")
+
+pvr_impact_sites <- c("KOU Rock",
+                      "Old 18th",
+                      "Burial Grounds",
+                      "Cape Point",
+                      "3 Palms West",
+                      "3 Palms East",
+                      "Bunker Point")
+
+time.true <- c(2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023) #Sample Years
+time.model <- c(0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11) # 0 = pre-impact and impact, 1 = 2013 onwards (onset of wasting)
+
+#Set control and impact and bind to time.true and time.model
+
+control <- data_PV %>%
+  filter(Site %in% pvr_control_sites) %>%
+  group_by(Species, Year) %>%
+  dplyr::summarise(control = mean(Density_100m2)) 
+
+impact <-data_PV %>%
+  filter(Site %in% pvr_impact_sites) %>%
+  group_by(Species, Year) %>%
+  dplyr::summarise(impact = mean(Density_100m2)) 
+
+dat_pv <- control %>%
+  left_join(impact) %>%
+  dplyr::rename(time.true = Year) %>%
+  mutate(time.model = if_else(time.true < 2020, 0, time.true-2020))
+
+### Create the ProgressiveChangeBACIPS function
+ProgressiveChangeBACIPS <- function(control, impact, time.true, time.model) 
+{
+  ### STEP 2 - Calculate the delta at each sampling date
+  delta <- impact - control
+  
+  # Plot delta against time.true
+  # dev.new(width=10, height=5)
+  # png(file = paste(i, "_plot_PVR.png", sep = ""), width=10, height=4, unit="in", res = 500)
+  # par(mfrow=c(1,2))
+  # plot(delta~time.true, type="n")
+  # time.model.of.impact=max(which(time.model==0))
+  # abline(v = 2020, col = "cadetblue3", lty = 5)
+  # rect(2013, min(delta)-100, 2016, max(delta)+100, col = "sandybrown", border = NULL)
+  # points(delta~time.true, pch=24, bg="white", cex=2)
+  
+  png(file = paste(i, "_plot_PVR.png", sep = ""), width=11, height=4, unit="in", res = 500)
+  par(mfrow=c(1,2))
+  plot(delta ~ time.true, type="n", xaxt="n")  # Setting x-axis to none initially
+  time.model.of.impact <- max(which(time.model == 0))
+  abline(v = 2020, col = "cadetblue3", lty = 5)
+  #rect(2013, min(delta)-100, 2016, max(delta)+100, col = ("sandybrown" alpha = 0.1), border = NULL)
+  rect(2013, min(delta)-100, 2016, max(delta)+100, col = adjustcolor("sandybrown", alpha.f = 0.5), border = "white")
+  points(delta ~ time.true, pch=24, bg="white", cex=2)
+  axis(side=1, at=seq(2008, 2023, by=2))
+  
+  ### STEP 3 - Fit and compete models
+  ## Create a 'period' variable
+  period <- ifelse(time.model==0, "Before","After")
+  
+  ## Fit a step model
+  ## Step Model: The difference arises instantly and is constant through time
+  step.Model<-aov(delta ~ period)
+  
+  ## Fit a linear model
+  ## Linear Model: The difference increases through time at a constant rate
+  linear.Model<-lm(delta ~ time.model)
+  
+  ## Fit an asymptotic model
+  ## Asymptotic Model: The rate of change decreases monotonically to zero as time passes
+  # Create an asymptotic function
+  myASYfun<-function(delta, time.model)
+  {
+    funAsy<-function(parS, time.model)	(parS$M * time.model) / (parS$L + time.model) + parS$B
+    residFun<-function(p, observed, time.model) observed + funAsy(p,time.model)
+    parStart <- list(M=mean(delta[time.model.of.impact:length(time.true)]), B=mean(delta[1:time.model.of.impact]), L=1)
+    nls_ASY_out <- nls.lm(par=parStart, fn= residFun, observed=delta, time.model=time.model, control = nls.lm.control(maxfev = integer(), maxiter = 1000))
+    foAsy<-delta~(M * time.model) / (L + time.model) + B
+    startPar<-c(-coef(nls_ASY_out)[1], coef(nls_ASY_out)[2], coef(nls_ASY_out)[3])
+    asyFit<-nls2(foAsy, start=startPar, algorithm="brute-force") # nls2 enables to calculate AICc
+    asyFit
+  }
+  # Fit the asymptotic model
+  asymptotic.Model<-myASYfun(delta=delta,time.model=time.model)
+  
+  
+  ## Fit a sigmoid model
+  ## Sigmoid Model: The rate of change initially increases with time, but eventually decreases to zero.
+  ## Create a sigmoid function
+  mySIGfun<-function(delta, time.model)
+  {
+    funSIG<-function(parS, time.model)	(parS$M * (time.model/parS$L)^parS$K) / (1 + (time.model/parS$L) ^ parS$K) + parS$B
+    residFun<-function(p, observed, time.model) observed + funSIG(p,time.model)
+    parStart <- list(M=mean(delta[time.model.of.impact:length(time.true)]), B=mean(delta[1:time.model.of.impact]), L=mean(time.model), K=5)
+    nls_SIG_out <- nls.lm(par=parStart, fn= residFun, observed=delta, time.model=time.model, control = nls.lm.control(maxfev = integer(), maxiter = 1000))
+    foSIG<-delta~(M * (time.model/L) ^ K) / (1 + (time.model/L) ^ K) + B
+    startPar<-c(-coef(nls_SIG_out)[1],-coef(nls_SIG_out)[2],coef(nls_SIG_out)[3],coef(nls_SIG_out)[4])
+    sigFit<-nls2(foSIG, start=startPar, algorithm="brute-force") # nls2 enables to calculate AICc
+    sigFit
+  }
+  # Fit the sigmoid model
+  sigmoid.Model<-mySIGfun(delta=delta,time.model=time.model)
+  
+  
+  ## Compete models
+  # Perform AIC tests
+  #The Akaike Information Criterion is a measure used for model selection and comparison.
+  #It provides a balance between the goodness of fit of a model and its complexity, penalizing models with a larger number of parameters. 
+  #The lower the AIC value, the better the model is considered to fit the data.
+  AIC.test<-AIC(step.Model, linear.Model, asymptotic.Model, sigmoid.Model)
+  AICc.test<-as.data.frame(cbind(AIC.test[,1], c(AICc(step.Model), AICc(linear.Model), AICc(asymptotic.Model), AICc(sigmoid.Model))))
+  rownames(AICc.test)<-rownames(AIC.test)
+  names(AICc.test)<-names(AIC.test)
+  
+  # Calculate AICc weight and selected the best model
+  for(i in 1:dim(AICc.test)[1])
+  {
+    AICc.test$diff[i]<-AICc.test$AIC[i]-min(AICc.test$AIC)
+  }
+  AICc.test$RL<-exp(-0.5* AICc.test$diff)
+  RL_sum<-sum(AICc.test$RL)
+  AICc.test$aicWeights<-(AICc.test$RL/RL_sum)*100
+  w<-AICc.test$aicWeights
+  names(w)<-rownames(AICc.test)
+  
+  # Display AICc weights
+  print(w)
+  # barplot(w, col="white", ylab="Relative likelihood (%)", cex.names = 0.9, names.arg =c("Step","Linear","Asymptotic","Sigmoid"))
+  best.Model<-which(w==max(w))
+  
+  ### STEP 4 - Derive inference based on the best model (i.e., with the higher AICc weight)
+  if(best.Model==1) {writeLines(paste("\n\nSTEP MODEL SELECTED - Likelihood = ", round(w[1],1), "%\n\n", sep=""))
+    print(summary(step.Model))}
+  if(best.Model==2) {writeLines(paste("\n\nLINEAR MODEL SELECTED - Likelihood = ", round(w[2],1), "%\n\n", sep=""))
+    print(summary(linear.Model))}
+  if(best.Model==3) {writeLines(paste("\n\nASYMPTOTIC MODEL SELECTED - Likelihood = ", round(w[3],1), "%\n\n", sep=""))
+    print(asymptotic.Model)}
+  if(best.Model==4) {writeLines(paste("\n\nSIGMOID MODEL SELECTED - Likelihood = ", round(w[4],1), "%\n\n", sep=""))
+    print(sigmoid.Model)}
+  
+  dev.off()
+}
+
+ProgressiveChangeBACIPS(control, impact, time.true, time.model)
+delta <- impact - control
+
+#Create a for loop to have s
+for (i in foc_spp) {
+  control <- dat_pv %>%
+    filter(Species == i) %>%
+    pull(control)
+  impact <- dat_pv %>%
+    filter(Species == i) %>%
+    pull(impact)
+  
+  print(paste0("Species = ",i))
+  print(ProgressiveChangeBACIPS(control,impact, time.true, time.model))
+  delta <- impact - control
+  assign(paste ("Delta_PVR", i, sep = "_"), data.frame(i, time.true,time.model,impact, control, delta))
+  #dev.off()
+  
+}
+
+Delta_PVR_all <- rbind(`Delta_PVR_Mesocentrotus franciscanus`,
+                       `Delta_PVR_Patiria miniata`, 
+                       `Delta_PVR_Pisaster giganteus`,
+                       `Delta_PVR_Pisaster ochraceus`,
+                       `Delta_PVR_Strongylocentrotus purpuratus`, 
+                       `Delta_PVR_Apostichopus parvimensis`,
+                       `Delta_PVR_Apostichopus californicus`)
+
+Delta_PVR_all <- Delta_PVR_all %>%
+  dplyr::rename(., "Species" = "i") %>%
+  dplyr::rename(., "PVR_delta" = "delta")
 
 ###Archived Plots-------------------------------
   # 
