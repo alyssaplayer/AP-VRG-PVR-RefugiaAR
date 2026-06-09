@@ -2,6 +2,7 @@
 ##Created Oct 4, 2024 
 #Modified March 4, 2026
 
+###LOAD PACKAGES####
 # Require packages
 library("plyr")
 library("dplyr")
@@ -30,55 +31,39 @@ library("DHARMa")
 library(tidyverse)
 library(mgcv)
 
+#For the Random Forest / GBT 
+library(ranger)       # install.packages("ranger")
+library(gbm)          # install.packages("gbm")
+library(vip)          # install.packages("vip")
 
-#setwd("/Users/alyssaplayer/Desktop/AP VRG PVR 2024")
 
-####DATA MANAGEMENT AND FILTERING####
-#### Species Info ####
-# Read data set that contains means between replicates
+
+
+
+
+####Load Dataset / Feature Engineering####
+
+# Read the PVR dataset (inclusive of ARM, and merge to the habitat data set)
 data_PV <- read.csv("PV_Stars_Urchins2026-06-03 (1).csv", check.names = F)
 habitat_data_raw <- read.csv("all_env_lat_lon.csv", check.names = F)
 
-
-
+#Rename Columns 
 colnames(data_PV)[colnames(data_PV) == "BenthicReefSpecies"] <- "Species"
 colnames(data_PV)[colnames(data_PV) == "SampleYear"] <- "Year"
 
-data_test <- data_PV %>%
+#Merge
+data_PV <- data_PV %>%
   group_by(Year, DepthZone, Site, Species) %>%
   summarise(mean_density_100m2 = mean(Density_m2) * 100, .groups = "drop") %>%
   left_join(habitat_data_raw, by = c("Site", "DepthZone")) %>%
   select(-giantkelp_density_m2, -giantkelp_stipe_density_m2)
 
-  
-write.csv(data_test, "data_PV.csv", row.names = FALSE)
-  #mutate(Density_100m2 = 100 * Density_m2) %>%
-  
-#  complete(nesting(Site, Year), Species, fill = list(Density_m2 = 0, Density_100m2 = 0))
-
-
-####Focal Species List####
+#Focal Species List#
 foc_spp <- c("Mesocentrotus franciscanus",
              "Strongylocentrotus purpuratus",
              "Patiria miniata",
              "Pisaster ochraceus",
              "Pisaster giganteus")
-
-data_PV <- data_PV %>%
-  filter(Species %in% foc_spp, Year >= 2011) %>%
-  filter(DepthZone %in% c("Outer", "Deep", "ARM"))
-
-#Creating the Eras
-data_PV <- data_PV %>%
-  mutate(
-    Era = case_when(
-      Year < 2014 ~ "Pre-Wasting",
-      Year >= 2014 & Year <= 2019 ~ "Wasting Event",
-      Year >= 2020 ~ "Post-Wasting Recovery"
-    ),
-    Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE),
-    DepthZone = factor(DepthZone, levels = c("Inner", "Middle", "Outer", "Deep", "ARM"), ordered = TRUE)
-  )
 
 # Functional groups for the species
 data_PV <- data_PV %>%
@@ -90,6 +75,20 @@ data_PV <- data_PV %>%
     ),
     FunctionalGroup = factor(FunctionalGroup, levels = c("Stars", "Urchins"))
   )
+
+
+#Creating the Eras 
+data_PV <- data_PV %>%
+  mutate(
+    Era = case_when(
+      Year < 2014 ~ "Pre-Wasting",
+      Year >= 2014 & Year <= 2019 ~ "Wasting Event",
+      Year >= 2020 ~ "Post-Wasting Recovery"
+    ),
+    Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE),
+    DepthZone = factor(DepthZone, levels = c("Inner", "Middle", "Outer", "Deep", "ARM"), ordered = TRUE)
+  )
+
 
 # Site categories (PVR Modules and PVR-Adj combined)
 data_PV <- data_PV %>%
@@ -110,20 +109,25 @@ data_PV <- data_PV %>%
                 "KOU Rock",
                 "Old 18th") ~ "PVR&Adj",
     DepthZone == "ARM" ~ "PVR&Adj",
-    TRUE ~ "Reference" #everything natural
+    TRUE ~ "Reference" #all natural sites
   ))
 
+#Filtering for only Outer / Deep for this project 
+data_PV <- data_PV %>%
+  filter(Species %in% foc_spp, Year >= 2011) %>%
+  filter(DepthZone %in% c("Outer", "Deep", "ARM"))
 
-#site of unique sites
-unique_sites <- data_PV %>% distinct(Site)
-#write_csv(unique_sites, "unique_sites_habitatpisgig_BACIPS.csv")
+
+#print list of unique sites
+#unique_sites <- data_PV %>% distinct(Site)
+
+#unhash to save the file
+#write_csv(data_PV, "data_PV_**replace with date***.csv")
 
 
-###EDA / Feature Importance ####
+###EDA / Feature Importance 
+
 ####FEATURE IMPORTANCE — RF + GBT PRE-SCREENING####
-library(ranger)       # install.packages("ranger")
-library(gbm)          # install.packages("gbm")
-library(vip)          # install.packages("vip")
 
 # Full habitat feature pool
 habitat_features <- c(
@@ -139,10 +143,10 @@ importance_results <- map(foc_spp, function(sp) {
   
   sp_data <- data_PV %>%
     filter(Species == sp) %>%
-    select(DZ_Density_100m2, all_of(habitat_features)) %>%
+    select(mean_density_100m2, all_of(habitat_features)) %>%
     drop_na() %>%
-    mutate(log_density = log1p(DZ_Density_100m2)) %>%
-    select(-DZ_Density_100m2)
+    mutate(log_density = log1p(mean_density_100m2)) %>%
+    select(-mean_density_100m2)
   
   message("Fitting models for: ", sp, " (n = ", nrow(sp_data), ")")
   
@@ -231,13 +235,13 @@ all_importance %>%
 ####CREATING THE DENSITY PLOTS####
 densitybydepth <- data_PV %>%
   group_by(DepthZone, Year, Species, Site, Era, Site_Category) %>%
-  dplyr::summarise(DZ_Density_100m2 = mean(Density_100m2), .groups = "drop") %>%
+  dplyr::summarise(mean_density_100m2 = mean(Density_100m2), .groups = "drop") %>%
   mutate(Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE))
 
 density_stars <- densitybydepth %>%
   filter(Species %in% c("Patiria miniata", "Pisaster ochraceus", "Pisaster giganteus"))
 
-densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(DZ_Density_100m2), color = Era)) +
+densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(mean_density_100m2), color = Era)) +
   geom_boxplot(outlier.shape = NA, aes(fill = Era), alpha = 0.4) +
   geom_point(aes(color = Era),
              position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.5),
@@ -255,7 +259,7 @@ print(densitybydepthplot_stars)
 density_urchins <- densitybydepth %>%
   filter(Species %in% c("Mesocentrotus franciscanus", "Strongylocentrotus purpuratus"))
 
-densitybydepthplot_urchins <- ggplot(density_urchins, aes(x = Era, y = log(DZ_Density_100m2), color = Era)) +
+densitybydepthplot_urchins <- ggplot(density_urchins, aes(x = Era, y = log(mean_density_100m2), color = Era)) +
   geom_boxplot(outlier.shape = NA, aes(fill = Era), alpha = 0.4) +
   geom_point(aes(color = Era),
              position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.5),
@@ -393,12 +397,6 @@ proportion_bar_plot <- ggplot() +
 show(proportion_bar_plot)
 
 ###HABITAT METRICS
-data_PV <- data_PV %>% 
-  group_by(DepthZone, Year, Species, Site, Era, Site_Category) %>%
-  mutate(mean_Density_100m2 = mean(Density_100m2)) %>%
-  ungroup()
-write_csv(data_PV, "data_PV_withreplicates.csv")
-
 
 #Density vs Relief SD 
 data_PV %>%
@@ -424,7 +422,7 @@ data_PV %>%
 #Density vs Substrate Index
 data_PV %>%
   filter(!is.na(Substrate_index)) %>%
-  ggplot(aes(x = Substrate_index, y = log(DZ_Density_100m2), color = Site_Category)) +
+  ggplot(aes(x = Substrate_index, y = log(mean_density_100m2), color = Site_Category)) +
   geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
   geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7, color = "black")+
   facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
@@ -444,14 +442,14 @@ data_PV %>%
 # Habitat by Era
 habitat_prewasting <- data_PV %>%
   filter(Era == 'Pre-Wasting') %>%
-  mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) # log-transform density
+  mutate(mean_density_100m2 = log1p(mean_density_100m2)) # log-transform density
 
 habitat_postwasting <- data_PV %>%
   filter(Era == 'Post-Wasting Recovery') %>%
-  mutate(DZ_Density_100m2 = log1p(DZ_Density_100m2)) # log-transform density
+  mutate(mean_density_100m2 = log1p(mean_density_100m2)) # log-transform density
 
 #Variables of Interest
-variables <- c("DZ_Density_100m2",
+variables <- c("mean_density_100m2",
                "dist_200m_bath",
                "giantkelp_stipe_density_m2",
                "giantkelp_density_m2",
@@ -464,7 +462,7 @@ variables <- c("DZ_Density_100m2",
 
 
 
-predictor_vars <- setdiff(variables, "DZ_Density_100m2")
+predictor_vars <- setdiff(variables, "mean_density_100m2")
 
 #combined Pre and Post by species 
 for (sp in foc_spp) {
@@ -474,17 +472,17 @@ for (sp in foc_spp) {
     habitat_postwasting %>% mutate(era = "Post-Wasting")
   ) %>%
     mutate(
-      DZ_Density_100m2 = log1p(DZ_Density_100m2),
+      mean_density_100m2 = log1p(mean_density_100m2),
       era = factor(era, levels = c("Pre-Wasting", "Post-Wasting"))  # fix order
     ) %>%
     filter(Species == sp) %>%
-    select(DZ_Density_100m2, era, all_of(predictor_vars)) %>%
+    select(mean_density_100m2, era, all_of(predictor_vars)) %>%
     pivot_longer(cols = all_of(predictor_vars),
                  names_to  = "variable",
                  values_to = "value")
   
   p <- combined %>%
-    ggplot(aes(x = value, y = DZ_Density_100m2, color = era, fill = era)) +
+    ggplot(aes(x = value, y = mean_density_100m2, color = era, fill = era)) +
     geom_point(size = 1.2, alpha = 0.4) +
     geom_smooth(method = "lm", se = TRUE, linewidth = 0.6, alpha = 0.2) +
     scale_color_manual(values = c("Pre-Wasting" = "darkorchid4", "Post-Wasting" = "steelblue")) +
@@ -527,14 +525,14 @@ depth_colors <- c(
 for (sp in foc_spp) {
   
   plot_data <- data_PV %>%
-    mutate(DZ_Density_100m2 = log(DZ_Density_100m2)) %>%
+    mutate(mean_density_100m2 = log(mean_density_100m2)) %>%
     filter(Species == sp) %>%
-    select(DZ_Density_100m2, Era, all_of(predictor_vars), DepthZone) %>%
+    select(mean_density_100m2, Era, all_of(predictor_vars), DepthZone) %>%
     pivot_longer(cols = all_of(predictor_vars),
                  names_to  = "variable",
                  values_to = "value")
   
-  p <- ggplot(plot_data, aes(x = value, y = DZ_Density_100m2)) +
+  p <- ggplot(plot_data, aes(x = value, y = mean_density_100m2)) +
     # All points (muted)
     geom_point(aes(color = Era),
                size = 1.2, alpha = 0.2) +
@@ -590,14 +588,14 @@ colnames(habitat_pisgig)
 #page 4 -> add ziformula=~1
 #did not work 
 
-#DZ_Density_100m2 ~ Era + habitat_metrics + (1 | Site)
+#mean_density_100m2 ~ Era + habitat_metrics + (1 | Site)
 
-glmm0 <- glmmTMB(DZ_Density_100m2 ~ Era + (1 | Site),
+glmm0 <- glmmTMB(mean_density_100m2 ~ Era + (1 | Site),
                  #ziformula = ~1,
                  data   = habitat_pisgig,
                  family = tweedie(link = "log"))
 
-glmm1 <- glmmTMB(DZ_Density_100m2 ~
+glmm1 <- glmmTMB(mean_density_100m2 ~
                    Era +
                    Substrate_index +
                    Relief_index +
@@ -608,7 +606,7 @@ glmm1 <- glmmTMB(DZ_Density_100m2 ~
                  family = tweedie(link = "log"))
 
 # Interaction model to test if habitat effects differ by Era
-glmm2 <- glmmTMB(DZ_Density_100m2 ~
+glmm2 <- glmmTMB(mean_density_100m2 ~
                    Era * Substrate_index +
                    Era * Relief_index +
                   # Era * giantkelp_stipe_density_m2 +
@@ -619,7 +617,7 @@ glmm2 <- glmmTMB(DZ_Density_100m2 ~
 
 
 # Interaction model to test if habitat effects differ by Era and Site Category
-glmm3 <- glmmTMB(DZ_Density_100m2 ~
+glmm3 <- glmmTMB(mean_density_100m2 ~
                    Site_Category * Era * Substrate_index +
                    Site_Category * Era * Relief_index +
                    #Site_Category * Era * giantkelp_stipe_density_m2 +
@@ -663,18 +661,18 @@ plotQQunif(sim_res)
 ####PURR MAPPING ####
 
 model_formulas <- list(
-  glmm0 = DZ_Density_100m2 ~ Era + (1 | Site),
+  glmm0 = mean_density_100m2 ~ Era + (1 | Site),
   
-  glmm1 = DZ_Density_100m2 ~ Era +
+  glmm1 = mean_density_100m2 ~ Era +
     Substrate_index +
     Relief_index +
     (1 | Site),
   
-  glmm2 = DZ_Density_100m2 ~ Era * Substrate_index +
+  glmm2 = mean_density_100m2 ~ Era * Substrate_index +
     Era * Relief_index +
     (1 | Site),
   
-  glmm3 = DZ_Density_100m2 ~ Site_Category * Era * Substrate_index +
+  glmm3 = mean_density_100m2 ~ Site_Category * Era * Substrate_index +
     Site_Category * Era * Relief_index +
     (1 | Site)
 )
@@ -851,14 +849,14 @@ colnames(habitat_strpur)
 #page 4 -> add ziformula=~1
 #did not work 
 
-#DZ_Density_100m2 ~ Era + habitat_metrics + (1 | Site)
+#mean_density_100m2 ~ Era + habitat_metrics + (1 | Site)
 
-glmm0_sp <- glmmTMB(DZ_Density_100m2 ~ Era + (1 | Site),
+glmm0_sp <- glmmTMB(mean_density_100m2 ~ Era + (1 | Site),
                  ziformula = ~predictor_vars,
                  data   = habitat_strpur,
                  family = tweedie(link = "log"))
 
-glmm1_sp <- glmmTMB(DZ_Density_100m2 ~
+glmm1_sp <- glmmTMB(mean_density_100m2 ~
                    Substrate_index +
                    Relief_index +
                    Era +
@@ -869,7 +867,7 @@ glmm1_sp <- glmmTMB(DZ_Density_100m2 ~
                  family = tweedie(link = "log"))
 
 # Interaction model to test if habitat effects differ by Era
-glmm2_sp <- glmmTMB(DZ_Density_100m2 ~
+glmm2_sp <- glmmTMB(mean_density_100m2 ~
                    Era * Substrate_index +
                    Era * Relief_index +
                    # Era * giantkelp_stipe_density_m2 +
@@ -879,7 +877,7 @@ glmm2_sp <- glmmTMB(DZ_Density_100m2 ~
                  family = tweedie(link = "log"))
 
 # Interaction model to test if habitat effects differ by Era and Site Category
-glmm3_sp <- glmmTMB(DZ_Density_100m2 ~
+glmm3_sp <- glmmTMB(mean_density_100m2 ~
                    Site_Category * Era * Substrate_index +
                    Site_Category * Era * Relief_index +
                    #Site_Category * Era * giantkelp_stipe_density_m2 +
@@ -925,22 +923,14 @@ require(AICcmodavg) # calculate second order AIC (AICc)
 
 pvr_control_sites <- c("Hawthorne Reef",
                        "Honeymoon Cove",
-                       "Lunada Bay",
-                       "Resort Point",  
-                       "Rocky Point South",
-                       "Rocky Point North",
-                       "Ridges North")
+                       "Lunada Bay")
 
-pvr_impact_sites <- c("KOU Rock",
-                      "Old 18th",
+pvr_impact_sites <- c("Old 18th",
                       "Burial Grounds",
-                      "Cape Point",
-                      "3 Palms West",
-                      "3 Palms East",
-                      "Bunker Point")
+                      "Cape Point") #updated 6/9/26 
 
-time.true <- c(2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023) #Sample Years
-time.model <- c(0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11) # 0 = pre-impact and impact, 1 = 2013 onwards (onset of wasting)
+time.true <- c(2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025) #Sample Years
+time.model <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7) # 0 = pre-impact, 1 = 2019 onwards (recovery period = impact)
 
 #Set control and impact and bind to time.true and time.model
 
