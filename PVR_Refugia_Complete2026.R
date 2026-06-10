@@ -938,23 +938,26 @@ time.true <- c(2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018,
 time.model <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7) # 0 = pre-impact, 1 = 2019 onwards (recovery period = impact)
 
 #Set control and impact and bind to time.true and time.model
-
-control <- data_PV %>%
-  filter(Site %in% pvr_control_sites) %>%
-  group_by(Species, Year, Site) %>%
-  dplyr::reframe(control = mean_density_100m2) 
-
-
-impact <- data_PV %>%
-  filter(Site %in% pvr_impact_sites) %>%
-  group_by(Species, Year, Site) %>%
-  dplyr::reframe(impact = mean_density_100m2) 
-
-
-bacips_PV <- control %>%
-  left_join(impact) %>%
-  dplyr::rename(time.true = Year) %>%
-  mutate(time.model = if_else(time.true < 2020, 0, time.true-2020))
+bacips_data <- map(foc_spp, function(sp) {
+  
+  ctrl <- data_PV %>%
+    filter(Site %in% pvr_control_sites, Species == sp) %>%
+    group_by(Year) %>%
+    dplyr::summarise(control = mean(mean_density_100m2, na.rm = TRUE), .groups = "drop") %>%
+    arrange(Year)
+  
+  imp <- data_PV %>%
+    filter(Site %in% pvr_impact_sites, Species == sp) %>%
+    group_by(Year) %>%
+    dplyr::summarise(impact = mean(mean_density_100m2, na.rm = TRUE), .groups = "drop") %>%
+    arrange(Year)
+  
+  list(
+    control = ctrl$control,
+    impact  = imp$impact
+  )
+}) %>%
+  set_names(foc_spp)
 
 ### Create the ProgressiveChangeBACIPS function
 ProgressiveChangeBACIPS <- function(control, impact, time.true, time.model) 
@@ -1074,19 +1077,15 @@ delta <- impact - control
 
 #Create a for loop to have s
 for (i in foc_spp) {
-  control <- dat_pv %>%
-    filter(Species == i) %>%
-    pull(control)
-  impact <- dat_pv %>%
-    filter(Species == i) %>%
-    pull(impact)
+  control <- bacips_data[[i]]$control
+  impact  <- bacips_data[[i]]$impact
+  delta   <- impact - control
   
-  print(paste0("Species = ",i))
-  print(ProgressiveChangeBACIPS(control,impact, time.true, time.model))
-  delta <- impact - control
-  assign(paste ("Delta_PVR", i, sep = "_"), data.frame(i, time.true,time.model,impact, control, delta))
-  #dev.off()
+  print(paste0("Species = ", i))
+  print(ProgressiveChangeBACIPS(control, impact, time.true, time.model))
   
+  assign(paste("Delta_PVR", i, sep = "_"),
+         data.frame(i, time.true, time.model, impact, control, delta))
 }
 
 Delta_PVR_all <- rbind(`Delta_PVR_Mesocentrotus franciscanus`,
