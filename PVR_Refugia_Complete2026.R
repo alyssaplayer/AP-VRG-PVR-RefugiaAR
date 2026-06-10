@@ -44,19 +44,20 @@ library(vip)          # install.packages("vip")
 ####Load Dataset / Feature Engineering####
 
 # Read the PVR dataset (inclusive of ARM, and merge to the habitat data set)
-data_PV <- read.csv("PV_Stars_Urchins2026-06-03 (1).csv", check.names = F)
+data_PV_raw <- read.csv("PV_Stars_Urchins2026-06-03 (1).csv", check.names = F)
 habitat_data_raw <- read.csv("all_env_lat_lon.csv", check.names = F)
 
 #Rename Columns 
-colnames(data_PV)[colnames(data_PV) == "BenthicReefSpecies"] <- "Species"
-colnames(data_PV)[colnames(data_PV) == "SampleYear"] <- "Year"
+colnames(data_PV_raw)[colnames(data_PV_raw) == "BenthicReefSpecies"] <- "Species"
+colnames(data_PV_raw)[colnames(data_PV_raw) == "SampleYear"] <- "Year"
 
 #Merge
-data_PV <- data_PV %>%
+data_PV <- data_PV_raw %>%
   group_by(Year, DepthZone, Site, Species) %>%
-  summarise(mean_density_100m2 = mean(Density_m2) * 100, .groups = "drop") %>%
-  left_join(habitat_data_raw, by = c("Site", "DepthZone")) %>%
-  select(-giantkelp_density_m2, -giantkelp_stipe_density_m2)
+  summarise(mean_density_100m2 = mean(Density_m2, na.rm = TRUE) * 100) %>%
+  ungroup() %>% 
+  left_join(habitat_data_raw, by = c("Site", "DepthZone"))# %>%
+  #select(-giantkelp_density_m2, -giantkelp_stipe_density_m2)
 
 #Focal Species List#
 foc_spp <- c("Mesocentrotus franciscanus",
@@ -129,7 +130,7 @@ data_PV <- data_PV %>%
 
 ####FEATURE IMPORTANCE — RF + GBT PRE-SCREENING####
 
-# Full habitat feature pool
+# Full habitat features
 habitat_features <- c(
   "Relief_index", "Relief_SD", "Relief_simpson",
   "Substrate_index", "Substrate_SD", "Substrate_simpson",
@@ -138,7 +139,7 @@ habitat_features <- c(
   "mean_sst_C", "max_sst_C", "min_sst_C"
 )
 
-# ── 1. Fit RF + GBT per species, extract importance ──────────────────────────
+# Fit RF + GBT per species to extract feature importance 
 importance_results <- map(foc_spp, function(sp) {
   
   sp_data <- data_PV %>%
@@ -191,7 +192,7 @@ importance_results <- map(foc_spp, function(sp) {
 }) %>%
   set_names(foc_spp)
 
-# ── 2. Combine into one tidy table ───────────────────────────────────────────
+# Join results into table
 all_importance <- bind_rows(importance_results)
 
 # Print ranked table per species
@@ -206,7 +207,7 @@ walk(foc_spp, function(sp) {
     print(n = Inf)
 })
 
-# ── 3. Plot — faceted bar chart, one panel per species ───────────────────────
+# Bar chart with feature importance per model
 all_importance %>%
   group_by(species) %>%
   mutate(feature = reorder(feature, rf_perm)) %>%
@@ -220,8 +221,7 @@ all_importance %>%
              labeller = labeller(species = label_wrap_gen(25))) +
   scale_fill_manual(values = c("TRUE" = "steelblue", "FALSE" = "grey70")) +
   labs(
-    title    = "RF Permutation Importance + GBT Impurity (●) by Species",
-    subtitle = "Response: log(Density + 1) | GBT dots scaled to RF axis for visual comparison",
+    title    = "RF Permutation Importance + GBT Impurity by Species",
     x        = NULL,
     y        = "RF Permutation Importance"
   ) +
@@ -235,7 +235,6 @@ all_importance %>%
 ####CREATING THE DENSITY PLOTS####
 densitybydepth <- data_PV %>%
   group_by(DepthZone, Year, Species, Site, Era, Site_Category) %>%
-  dplyr::summarise(mean_density_100m2 = mean(Density_100m2), .groups = "drop") %>%
   mutate(Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE))
 
 density_stars <- densitybydepth %>%
@@ -299,8 +298,8 @@ site_summary <- data_PV %>%
   )) %>%
   group_by(Site_Category, Species, Era, Site) %>%
   dplyr::summarise(
-    Site_Mean = mean(Density_100m2),
-    stdev     = sd(Density_100m2),
+    Site_Mean = mean(mean_density_100m2, na.rm = TRUE), 
+    stdev     = sd(mean_density_100m2, na.rm = TRUE),   
     .groups   = "drop"
   )
 
@@ -399,15 +398,15 @@ show(proportion_bar_plot)
 ###HABITAT METRICS
 
 #Density vs Relief SD 
-data_PV %>%
+density_vs_relief <- data_PV %>%
   filter(!is.na(Relief_SD)) %>%
-  ggplot(aes(x = Relief_SD, y = log(mean_Density_100m2))) +
+  ggplot(aes(x = Relief_SD, y = log1p(mean_density_100m2))) + 
   geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
-  geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7, color = "black")+
+  geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7, color = "black") +
   facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
   labs(
     x = "Relief SD",
-    y = "Log Mean Density (per 100m²)",
+    y = "Log Mean Density + 1 (per 100m²)",
     color = "Site Category",
     title = "Density vs. Relief by Species and Era"
   ) +
@@ -418,9 +417,10 @@ data_PV %>%
   ) +
   scale_color_brewer(palette = "Set2")
 
+show(density_vs_relief)
 
 #Density vs Substrate Index
-data_PV %>%
+density_vs_substrate <- data_PV %>%
   filter(!is.na(Substrate_index)) %>%
   ggplot(aes(x = Substrate_index, y = log(mean_density_100m2), color = Site_Category)) +
   geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
@@ -438,6 +438,8 @@ data_PV %>%
     axis.text.x = element_text(angle = 45, hjust = 1)
   ) +
   scale_color_brewer(palette = "Set2")
+
+show(density_vs_substrate)
 
 # Habitat by Era
 habitat_prewasting <- data_PV %>%
@@ -659,7 +661,9 @@ sim_res <- simulateResiduals(fittedModel = glmm2, n = 1000) # QQ
 plotQQunif(sim_res)
 
 ####PURR MAPPING ####
+#This will run all GLMM models on each species and output the best model for each
 
+# Build the models
 model_formulas <- list(
   glmm0 = mean_density_100m2 ~ Era + (1 | Site),
   
@@ -677,7 +681,7 @@ model_formulas <- list(
     (1 | Site)
 )
 
-# ── 3. Fit all models for one species (helper function) ──────────────────────
+#  Fit all models for one species (helper function)
 fit_species_models <- function(sp, data, formulas) {
   
   sp_data <- data |>
@@ -697,7 +701,7 @@ fit_species_models <- function(sp, data, formulas) {
   # Drop any failed models
   models <- compact(models)
   
-  # ── AIC comparison table ───────────────────────────────────────────────────
+  # Built AIC comparison tables 
   aic_tbl <- map_dfr(models, \(m) tibble(AIC = AIC(m)), .id = "model") |>
     arrange(AIC) |>
     mutate(
@@ -719,14 +723,14 @@ fit_species_models <- function(sp, data, formulas) {
   )
 }
 
-# ── 4. Run across all species ────────────────────────────────────────────────
+# Run across all species 
 results <- map(
   foc_spp,
   \(sp) fit_species_models(sp, data = data_PV, formulas = model_formulas)
 ) |>
   set_names(foc_spp)
 
-# ── 5. Summary table: best model per species ─────────────────────────────────
+# Print summary table: best model per species 
 best_model_summary <- map_dfr(results, \(r) {
   r$aic_table |> filter(model == r$best_name)
 }) |>
@@ -735,14 +739,14 @@ best_model_summary <- map_dfr(results, \(r) {
 
 print(best_model_summary)
 
-# ── 6. Full AIC tables for all species ───────────────────────────────────────
+# Full AIC tables for all species
 all_aic <- map_dfr(results, "aic_table") |>
   select(species, model, AIC, delta_AIC) |>
   arrange(species, delta_AIC)
 
 print(all_aic)
 
-# ── 7. Summaries of best model per species ───────────────────────────────────
+# Summaries of best model per species
 walk(results, \(r) {
   cat("\n", strrep("═", 60), "\n")
   cat(" Species:", r$species, "| Best model:", r$best_name, "\n")
@@ -750,15 +754,14 @@ walk(results, \(r) {
   print(summary(r$best_model))
 })
 
-# ── 8. DHARMa residual diagnostics for best model per species ────────────────
+# DHARMa residual diagnostics for best model per species 
 walk(results, \(r) {
   cat("\nDHARMa diagnostics —", r$species, "(", r$best_name, ")\n")
   sim_res <- simulateResiduals(fittedModel = r$best_model, n = 1000)
   plotQQunif(sim_res, main = paste(r$species, "-", r$best_name))
 })
 
-# ── 9. ggeffects predictions for best model per species ──────────────────────
-#    Only meaningful if best model contains Substrate_index
+# ggeffects predictions for best model per species
 era_colors <- c(
   "Pre-Wasting"          = "darkseagreen4",
   "Wasting Event"        = "chocolate",
@@ -824,6 +827,8 @@ prediction_plots <- imap(results, \(r, sp) {
 
 walk(compact(prediction_plots), print)
 testDispersion(simulationOutput)
+
+
 
 
 #just testing the residuals -> red line bad, black line good 
@@ -936,15 +941,17 @@ time.model <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7) # 0 = pre-
 
 control <- data_PV %>%
   filter(Site %in% pvr_control_sites) %>%
-  group_by(Species, Year) %>%
-  dplyr::summarise(control = mean(Density_100m2)) 
+  group_by(Species, Year, Site) %>%
+  dplyr::reframe(control = mean_density_100m2) 
 
-impact <-data_PV %>%
+
+impact <- data_PV %>%
   filter(Site %in% pvr_impact_sites) %>%
-  group_by(Species, Year) %>%
-  dplyr::summarise(impact = mean(Density_100m2)) 
+  group_by(Species, Year, Site) %>%
+  dplyr::reframe(impact = mean_density_100m2) 
 
-dat_pv <- control %>%
+
+bacips_PV <- control %>%
   left_join(impact) %>%
   dplyr::rename(time.true = Year) %>%
   mutate(time.model = if_else(time.true < 2020, 0, time.true-2020))
