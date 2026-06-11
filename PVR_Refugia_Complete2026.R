@@ -39,12 +39,10 @@ library(vip)          # install.packages("vip")
 
 
 
-
-
 ####Load Dataset / Feature Engineering####
 
 # Read the PVR dataset (inclusive of ARM, and merge to the habitat data set)
-data_PV_raw <- read.csv("PV_Stars_Urchins2026-06-03 (1).csv", check.names = F)
+data_PV_raw <- read.csv("PV_Stars_Urchins2026-06-03 (2).csv", check.names = F)
 habitat_data_raw <- read.csv("all_env_lat_lon.csv", check.names = F)
 
 #Rename Columns 
@@ -291,7 +289,7 @@ site_summary <- data_PV %>%
     Site %in% c("PVR 2A", "PVR 2B", "PVR 2C") ~ "Burial Grounds",
     Site %in% c("PVR 4A", "PVR 4B", "PVR 4C",
                 "PVR 5A", "PVR 5B", "PVR 5C",
-                "PCR 6B", "PVR 6C", "PCR 6D") ~ "Old 18th",
+                "PVR 6B", "PVR 6C", "PVR 6D") ~ "Old 18th",
     Site %in% c("PVR 7A", "PVR 7B", "PVR 7C",
                 "PVR 8A", "PVR 8B", "PVR 8C") ~ "Cape Point",
     .default = as.character(Site)
@@ -934,24 +932,53 @@ pvr_impact_sites <- c("Old 18th",
                       "Burial Grounds",
                       "Cape Point") #updated 6/9/26 
 
-time.true <- c(2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025) #Sample Years
-time.model <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7) # 0 = pre-impact, 1 = 2019 onwards (recovery period = impact)
+bacip_sites <- c("Hawthorne Reef",
+                  "Honeymoon Cove",
+                  "Lunada Bay",
+                 "Old 18th",
+                 "Burial Grounds",
+                 "Cape Point")
+
+time.true <- c(2013, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025) #Sample Years
+time.model <- c(0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5) # 0 = pre-impact, 1 = 2020 onwards (recovery period = impact)
+
+
+subsetyears <- data_PV %>%
+  filter(Year %in% time.true) %>%
+  mutate(Site = case_when(
+    Site %in% c("PVR 2A", "PVR 2B", "PVR 2C") ~ "Burial Grounds",
+    Site %in% c("PVR 4A", "PVR 4B", "PVR 4C",
+                "PVR 5A", "PVR 5B", "PVR 5C",
+                "PVR 6B", "PVR 6C", "PVR 6D") ~ "Old 18th",
+    Site %in% c("PVR 7A", "PVR 7B", "PVR 7C",
+                "PVR 8A", "PVR 8B", "PVR 8C") ~ "Cape Point",
+    .default = Site
+  ))
+
+years <- subsetyears %>%
+  filter(Site %in% bacip_sites) %>%
+  mutate(
+    bacip_cat = case_when(
+      Site %in% pvr_control_sites ~ "Control",
+      Site %in% pvr_impact_sites ~ "Impact")) %>%
+  group_by(bacip_cat) %>%
+  distinct(Year) 
 
 #Set control and impact and bind to time.true and time.model
 bacips_data <- map(foc_spp, function(sp) {
-  
-  ctrl <- data_PV %>%
+
+  ctrl <- subsetyears %>%
     filter(Site %in% pvr_control_sites, Species == sp) %>%
     group_by(Year) %>%
     dplyr::summarise(control = mean(mean_density_100m2, na.rm = TRUE), .groups = "drop") %>%
     arrange(Year)
-  
-  imp <- data_PV %>%
+
+  imp <- subsetyears %>%
     filter(Site %in% pvr_impact_sites, Species == sp) %>%
     group_by(Year) %>%
     dplyr::summarise(impact = mean(mean_density_100m2, na.rm = TRUE), .groups = "drop") %>%
     arrange(Year)
-  
+
   list(
     control = ctrl$control,
     impact  = imp$impact
@@ -959,21 +986,22 @@ bacips_data <- map(foc_spp, function(sp) {
 }) %>%
   set_names(foc_spp)
 
+
 ### Create the ProgressiveChangeBACIPS function
 ProgressiveChangeBACIPS <- function(control, impact, time.true, time.model) 
 {
   ### STEP 2 - Calculate the delta at each sampling date
   delta <- impact - control
   
-  # Plot delta against time.true
-  # dev.new(width=10, height=5)
-  # png(file = paste(i, "_plot_PVR.png", sep = ""), width=10, height=4, unit="in", res = 500)
-  # par(mfrow=c(1,2))
-  # plot(delta~time.true, type="n")
-  # time.model.of.impact=max(which(time.model==0))
-  # abline(v = 2020, col = "cadetblue3", lty = 5)
-  # rect(2013, min(delta)-100, 2016, max(delta)+100, col = "sandybrown", border = NULL)
-  # points(delta~time.true, pch=24, bg="white", cex=2)
+  #Plot delta against time.true
+  dev.new(width=10, height=5)
+  png(file = paste(i, "_plot_PVR.png", sep = ""), width=10, height=4, unit="in", res = 500)
+  par(mfrow=c(1,2))
+  plot(delta~time.true, type="n")
+  time.model.of.impact=max(which(time.model==0))
+  abline(v = 2020, col = "cadetblue3", lty = 5)
+  rect(2013, min(delta)-100, 2016, max(delta)+100, col = "sandybrown", border = NULL)
+  points(delta~time.true, pch=24, bg="white", cex=2)
   
   png(file = paste(i, "_plot_PVR.png", sep = ""), width=11, height=4, unit="in", res = 500)
   par(mfrow=c(1,2))
@@ -1092,13 +1120,12 @@ Delta_PVR_all <- rbind(`Delta_PVR_Mesocentrotus franciscanus`,
                        `Delta_PVR_Patiria miniata`, 
                        `Delta_PVR_Pisaster giganteus`,
                        `Delta_PVR_Pisaster ochraceus`,
-                       `Delta_PVR_Strongylocentrotus purpuratus`, 
-                       `Delta_PVR_Apostichopus parvimensis`,
-                       `Delta_PVR_Apostichopus californicus`)
+                       `Delta_PVR_Strongylocentrotus purpuratus`)
 
 Delta_PVR_all <- Delta_PVR_all %>%
   dplyr::rename(., "Species" = "i") %>%
   dplyr::rename(., "PVR_delta" = "delta")
+
 
 ###Archived Plots-------------------------------
   # 

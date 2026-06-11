@@ -1,21 +1,18 @@
 ---
 title: "BACIPS_APlayer_Nov6"
 author: "Alyssa Player"
-date: "2023-11-06"
+date: "2026-06-10"
 output: html_document
 ---
 ```{r}
 #####Preliminary Data Filtering 
-# CREATION DATE: July 3rd, 2023
-# AUTHOR: Alyssa Player (aplayer@oxy.edu)
+# CREATION DATE: June 8, 2026
+# AUTHOR: Alyssa Player (alyssa18player@gmail.com)
 # EDIT DATE: Oct 16, 2023
 
 # PURPOSE: To do a Progressive-Change BACIPS on Sea Star and Urchin density along the Palos Verdes Peninsula to determine the role of artificial reefs in rehabilitation and recruiment of juvenile species.
-## This version is an expanded code for an analysis incorporating the MPA, Natural Reef, and PVR
-## For my honors project 
+## This version is a simplified BACIPs for my ongoing PVR research 
 
-# Set working directory
-#setwd("/Users/alyssaplayer/Desktop/Honors/HonorsR")
 setwd("~/Desktop/AP-VRG-PVR-RefugiaAR")
 
 # Require packages
