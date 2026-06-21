@@ -74,6 +74,7 @@ require(AICcmodavg) # calculate second order AIC (AICc)
 # time.true: time corresponding to each sample;
 # time.model: surveys from the Before period are assigned time.model=0, and surveys from the After period are assigned time.models that represent the time since the intervention started.
 
+
 pvr_control_sites <- c("Hawthorne Reef",
                    "Honeymoon Cove",
                    "Lunada Bay",
