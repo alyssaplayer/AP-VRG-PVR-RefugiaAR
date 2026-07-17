@@ -251,7 +251,9 @@ densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(mean_dens
   scale_color_brewer(palette = "Blues") +
   scale_fill_brewer(palette = "Blues")
 
+
 print(densitybydepthplot_stars)
+
 
 density_urchins <- densitybydepth %>%
   filter(Species %in% c("Mesocentrotus franciscanus", "Strongylocentrotus purpuratus"))
@@ -580,6 +582,7 @@ habitat_pisgig <- data_PV %>%
             dist_200m_bath)) %>%
   drop_na()
 
+
 colnames(habitat_pisgig)
 
 #https://bedeffinianrowedavies.com/statisticstutorials/multivariateglms
@@ -636,6 +639,7 @@ summary(glmm3)
 ggeffects::ggpredict(glmm2, terms = c("Substrate_index", "Era")) 
 
 pred <- ggpredict(glmm2, terms = c("Substrate_index", "Era")) 
+
 plot(pred)
 
 ggplot(pred, aes(x = x, y = predicted, color = group, fill = group)) + 
