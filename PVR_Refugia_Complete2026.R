@@ -2,6 +2,23 @@
 ##Created Oct 4, 2024 
 #Modified March 4, 2026
 
+#installing the packages
+# Core data wrangling / stats / plotting
+pkgs_core <- c("plyr", "dplyr", "tidyr", "ggplot2", "lubridate", "ggh4x",
+               "broom", "AICcmodavg", "car", "ggpubr", "rstatix")
+# Habitat metrics + GLMM
+pkgs_glmm <- c("GGally", "DataExplorer", "purrr", "patchwork",
+               "stringr", "prismatic", "ggforce", "glmmTMB", "ggeffects",
+               "DHARMa", "tidyverse", "mgcv")
+# Random Forest / GBT
+pkgs_rf <- c("ranger", "gbm")
+# Non-linear model fitting (BACIPS progressive-change models)
+pkgs_nls <- c("minpack.lm", "nls2")
+install.packages(pkgs_core)
+install.packages(pkgs_glmm)
+install.packages(pkgs_rf)
+install.packages(pkgs_nls)
+
 ###LOAD PACKAGES####
 # Require packages
 library("plyr")
@@ -15,7 +32,6 @@ library("AICcmodavg")
 library("car")
 library("ggpubr")
 library("rstatix")
-
 #For Habitat Metric + GLMMM
 library("GGally")
 library("DataExplorer")
@@ -30,13 +46,9 @@ library("ggeffects")
 library("DHARMa")
 library(tidyverse)
 library(mgcv)
-
 #For the Random Forest / GBT 
 library(ranger)       # install.packages("ranger")
 library(gbm)          # install.packages("gbm")
-library(vip)          # install.packages("vip")
-
-
 
 
 ####Load Dataset / Feature Engineering####
@@ -906,9 +918,36 @@ sim_res <- simulateResiduals(fittedModel = glmm3_sp, refit = T) # QQ
 plotQQunif(sim_res)
 
 
+testDispersion(sim_res) 
 
-testDispersion(simulationOutput)
+#convergence test: 
+# Convergence / trustworthiness check for each species' best model
+# Run this after `results` has been built — doesn't touch fit_species_models()
 
+convergence_check <- map_dfr(results, \(r) {
+  if (is.null(r$best_model)) {
+    return(tibble(
+      species        = r$species,
+      best_model     = NA_character_,
+      pdHess         = NA,
+      singular       = NA,
+      converged      = NA
+    ))
+  }
+  
+  pdHess   <- isTRUE(r$best_model$sdr$pdHess)
+  singular <- performance::check_singularity(r$best_model)
+  
+  tibble(
+    species    = r$species,
+    best_model = r$best_name,
+    pdHess     = pdHess,      # TRUE = Hessian positive-definite (good sign)
+    singular   = singular,    # TRUE = singular fit (bad sign)
+    converged  = pdHess & !singular
+  )
+})
+
+print(convergence_check, n = Inf)
 
 ###BACIPS####
 #####PVR ANALYSIS#####
