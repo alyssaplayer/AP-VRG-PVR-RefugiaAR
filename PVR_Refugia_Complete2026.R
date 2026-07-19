@@ -949,11 +949,12 @@ convergence_check <- map_dfr(results, \(r) {
 
 print(convergence_check, n = Inf)
 
+#adjusted code: 7/19/26
 ###BACIPS####
 #####PVR ANALYSIS#####
 ############################################################################################################
 #Object: Perform a Progressive-Change BACIPS analysis using step, linear, asymptotic and sigmoid models	#
-#Authors: L. Thiault, L. Kernal??guen, C.W. Osenberg & J. Claudet												#
+#Authors: L. Thiault, L. Kernaléguen, C.W. Osenberg & J. Claudet												#
 ##### PVR BACIPS #######################################################################################################
 
 # Load packages
@@ -986,6 +987,7 @@ bacip_sites <- c("Hawthorne Reef",
 time.true  <- c(2013, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025)
 time.model <- c(0,    0,    0,    0,    0,    0,    0,    1,    2,    3,    4,    5)
 # 0 = pre-impact; 1+ = years since recovery/impact period began (2021 onwards)
+impact_year <- 2020  # calendar year corresponding to time.model == 0/1 boundary
 
 # ---------------------------------------------------------------------------
 subsetyears <- data_PV %>%
@@ -1032,6 +1034,24 @@ bacips_data <- map(foc_spp, function(sp) {
   set_names(foc_spp)
 
 # ---------------------------------------------------------------------------
+# Helper: get predictions from whichever model won, given a time.model grid
+get_predictions <- function(model_type, models, tm_grid) {
+  switch(model_type,
+         "step" = {
+           per <- ifelse(tm_grid == 0, "Before", "After")
+           predict(models$step, newdata = data.frame(period = per))
+         },
+         "linear" = {
+           predict(models$linear, newdata = data.frame(time.model = tm_grid))
+         },
+         "asymptotic" = {
+           predict(models$asymptotic, newdata = data.frame(time.model = tm_grid))
+         },
+         "sigmoid" = {
+           predict(models$sigmoid, newdata = data.frame(time.model = tm_grid))
+         }
+  )
+}
 
 ProgressiveChangeBACIPS <- function(control, impact, time.true, time.model,
                                     species_name) {
@@ -1048,7 +1068,10 @@ ProgressiveChangeBACIPS <- function(control, impact, time.true, time.model,
       res    = 500)
   
   par(mfrow = c(1, 2))
+  
+  # --- Panel 1: raw delta vs calendar year ---
   plot(delta ~ time.true, type = "n", xaxt = "n",
+       xlab = "Year", ylab = "Delta (Impact - Control)",
        main = species_name)
   abline(v = 2020, col = "cadetblue3", lty = 5)
   rect(2013,
@@ -1071,7 +1094,6 @@ ProgressiveChangeBACIPS <- function(control, impact, time.true, time.model,
   
   ## Asymptotic model: rate of change decreases to zero over time
   myASYfun <- function(delta, time.model) {
-    # time.model.of.impact is available via lexical scoping from parent fn
     funAsy    <- function(parS, time.model) (parS$M * time.model) / (parS$L + time.model) + parS$B
     residFun  <- function(p, observed, time.model) observed + funAsy(p, time.model)
     parStart  <- list(
@@ -1132,6 +1154,11 @@ ProgressiveChangeBACIPS <- function(control, impact, time.true, time.model,
   print(w)
   
   best.Model <- which(w == max(w))
+  model_names <- c("step", "linear", "asymptotic", "sigmoid")
+  best_name   <- model_names[best.Model]
+  
+  models_list <- list(step = step.Model, linear = linear.Model,
+                      asymptotic = asymptotic.Model, sigmoid = sigmoid.Model)
   
   ### STEP 4 — Inference from best model
   if (best.Model == 1) {
@@ -1151,13 +1178,48 @@ ProgressiveChangeBACIPS <- function(control, impact, time.true, time.model,
     print(sigmoid.Model)
   }
   
+  ### STEP 5 — Overlay predicted line on Panel 1 (calendar year axis)
+  # Before-period: a single flat prediction (all pre-impact years pool to time.model == 0)
+  before_pred <- get_predictions(best_name, models_list, 0)
+  segments(x0 = min(time.true[time.model == 0]),
+           x1 = max(time.true[time.model == 0]),
+           y0 = before_pred, y1 = before_pred,
+           col = "black", lwd = 2)
+  
+  # After-period: time.model maps 1:1 onto calendar year via year = impact_year + time.model
+  after_tm_grid <- seq(0, max(time.model), length.out = 200)
+  after_pred    <- get_predictions(best_name, models_list, after_tm_grid)
+  lines(impact_year + after_tm_grid, after_pred, col = "black", lwd = 2)
+  
+  legend("topleft", legend = paste0(best_name, " fit (", round(max(w), 1), "%)"),
+         lty = 1, lwd = 2, bty = "n", cex = 0.8)
+  
+  ### STEP 6 — Panel 2: full model fit vs time.model
+  plot(delta ~ time.model, pch = 24, bg = "white", cex = 2,
+       xlab = "Time since intervention", ylab = "Delta (Impact - Control)",
+       main = paste0(species_name, " - ", best_name, " fit"))
+  tm_grid   <- seq(min(time.model), max(time.model), length.out = 200)
+  pred_grid <- get_predictions(best_name, models_list, tm_grid)
+  lines(tm_grid, pred_grid, col = "black", lwd = 2)
+  
   dev.off()
+  
+  ### list of summary needs
+  list(
+    species     = species_name,
+    weights     = w,
+    best_model  = best_name,
+    models      = models_list,
+    time.model  = time.model,
+    time.true   = time.true,
+    delta       = delta
+  )
 }
 
 # ---------------------------------------------------------------------------
 
-
-delta_list <- list()
+delta_list    <- list()
+bacips_results <- list()
 
 for (i in foc_spp) {
   control <- bacips_data[[i]]$control
@@ -1166,11 +1228,11 @@ for (i in foc_spp) {
   
   print(paste0("Species = ", i))
   
-  ProgressiveChangeBACIPS(control      = control,
-                          impact       = impact,
-                          time.true    = time.true,
-                          time.model   = time.model,
-                          species_name = i)
+  bacips_results[[i]] <- ProgressiveChangeBACIPS(control      = control,
+                                                 impact       = impact,
+                                                 time.true    = time.true,
+                                                 time.model   = time.model,
+                                                 species_name = i)
   
   delta_list[[i]] <- data.frame(
     Species    = i,
@@ -1182,9 +1244,25 @@ for (i in foc_spp) {
   )
 }
 
-
 Delta_PVR_all <- do.call(rbind, delta_list)
 rownames(Delta_PVR_all) <- NULL
+
+# ---------------------------------------------------------------------------
+# 4. SUMMARY OF WINNING MODEL PER SPECIES -----------------------------------
+# (The prediction lines themselves are already drawn onto each species' PNG
+#  inside ProgressiveChangeBACIPS — this just builds a cross-species table.)
+
+model_comparison_all <- do.call(rbind, lapply(names(bacips_results), function(sp) {
+  res <- bacips_results[[sp]]
+  data.frame(
+    Species    = sp,
+    BestModel  = res$best_model,
+    Likelihood = round(max(res$weights), 1)
+  )
+}))
+rownames(model_comparison_all) <- NULL
+
+print(model_comparison_all)
 
 ###Archived Plots-------------------------------
   # 
