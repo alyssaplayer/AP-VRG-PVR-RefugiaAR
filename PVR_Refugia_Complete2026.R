@@ -67,7 +67,7 @@ data_PV <- data_PV_raw %>%
   summarise(mean_density_100m2 = mean(Density_m2, na.rm = TRUE) * 100) %>%
   ungroup() %>% 
   left_join(habitat_data_raw, by = c("Site", "DepthZone"))# %>%
-  #select(-giantkelp_density_m2, -giantkelp_stipe_density_m2)
+#select(-giantkelp_density_m2, -giantkelp_stipe_density_m2)
 
 #Focal Species List#
 foc_spp <- c("Mesocentrotus franciscanus",
@@ -409,50 +409,6 @@ show(proportion_bar_plot)
 
 ###HABITAT METRICS
 
-#Density vs Relief SD 
-density_vs_relief <- data_PV %>%
-  filter(!is.na(Relief_SD)) %>%
-  ggplot(aes(x = Relief_SD, y = log1p(mean_density_100m2))) + 
-  geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
-  geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7, color = "black") +
-  facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
-  labs(
-    x = "Relief SD",
-    y = "Log Mean Density + 1 (per 100m²)",
-    color = "Site Category",
-    title = "Density vs. Relief by Species and Era"
-  ) +
-  theme_minimal() +
-  theme(
-    strip.text = element_text(face = "italic"),
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  ) +
-  scale_color_brewer(palette = "Set2")
-
-show(density_vs_relief)
-
-#Density vs Substrate Index
-density_vs_substrate <- data_PV %>%
-  filter(!is.na(Substrate_index)) %>%
-  ggplot(aes(x = Substrate_index, y = log(mean_density_100m2), color = Site_Category)) +
-  geom_point(aes(color = Site_Category), size = 2.5, alpha = 0.7) +
-  geom_smooth(method = "lm", se = TRUE, linetype = "dashed", linewidth = 0.7, color = "black")+
-  facet_grid(rows = vars(Species), cols = vars(Era), scales = "free_y") +
-  labs(
-    x = "Substrate Index (Hard Rock)",
-    y = "Log Mean Density (per 100m²)",
-    color = "Site Category",
-    title = "Density vs. Hard Substrate by Species and Era"
-  ) +
-  theme_minimal() +
-  theme(
-    strip.text = element_text(face = "italic"),
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  ) +
-  scale_color_brewer(palette = "Set2")
-
-show(density_vs_substrate)
-
 # Habitat by Era
 habitat_prewasting <- data_PV %>%
   filter(Era == 'Pre-Wasting') %>%
@@ -471,8 +427,8 @@ variables <- c("mean_density_100m2",
                "Relief_SD",
                "Relief_simpson",
                "Substrate_index",
-              "Substrate_SD",
-              "Substrate_simpson")
+               "Substrate_SD",
+               "Substrate_simpson")
 
 
 
@@ -583,19 +539,6 @@ for (sp in foc_spp) {
 
 
 #### Multivariate Generalised Linear Model ####
-habitat_pisgig <- data_PV %>%
-  filter(Species == "Pisaster giganteus") %>%
-  select(-c(mean_chl_mg_m3,
-            max_chl_mg_m3,
-            min_chl_mg_m3,
-            mean_sst_C,
-            max_sst_C,
-            min_sst_C,
-            dist_200m_bath)) %>%
-  drop_na()
-
-
-colnames(habitat_pisgig)
 
 #https://bedeffinianrowedavies.com/statisticstutorials/multivariateglms
 #Zero-Inflated Tweedie Generalized Linear Mixed Model (ZI-Tweedie GLMM) is a powerful statistical approach for modeling continuous, strictly positive data that also contains an excessive number of zeros
@@ -604,75 +547,6 @@ colnames(habitat_pisgig)
 #did not work 
 
 #mean_density_100m2 ~ Era + habitat_metrics + (1 | Site)
-
-glmm0 <- glmmTMB(mean_density_100m2 ~ Era + (1 | Site),
-                 #ziformula = ~1,
-                 data   = habitat_pisgig,
-                 family = tweedie(link = "log"))
-
-glmm1 <- glmmTMB(mean_density_100m2 ~
-                   Era +
-                   Substrate_index +
-                   Relief_index +
-                   #giantkelp_stipe_density_m2 +
-                   (1 | Site),          # Site as random intercept
-                 #ziformula = ~1,
-                 data   = habitat_pisgig,  
-                 family = tweedie(link = "log"))
-
-# Interaction model to test if habitat effects differ by Era
-glmm2 <- glmmTMB(mean_density_100m2 ~
-                   Era * Substrate_index +
-                   Era * Relief_index +
-                  # Era * giantkelp_stipe_density_m2 +
-                   (1 | Site),
-                 #ziformula = ~1,
-                 data   = habitat_pisgig,
-                 family = tweedie(link = "log"))
-
-
-# Interaction model to test if habitat effects differ by Era and Site Category
-glmm3 <- glmmTMB(mean_density_100m2 ~
-                   Site_Category * Era * Substrate_index +
-                   Site_Category * Era * Relief_index +
-                   #Site_Category * Era * giantkelp_stipe_density_m2 +
-                   (1 | Site),
-                 #ziformula = ~1,
-                 data   = habitat_pisgig,
-                 family = tweedie(link = "log"))
-
-
-AIC(glmm0, glmm1, glmm2, glmm3)
-summary(glmm0)
-summary(glmm1)
-summary(glmm2)
-summary(glmm3)
-
-ggeffects::ggpredict(glmm2, terms = c("Substrate_index", "Era")) 
-
-pred <- ggpredict(glmm2, terms = c("Substrate_index", "Era")) 
-
-plot(pred)
-
-ggplot(pred, aes(x = x, y = predicted, color = group, fill = group)) + 
-  geom_line(linewidth = 1) + 
-  geom_ribbon(aes(ymin =conf.low, ymax = conf.high), alpha = 0.2, color = NA) + 
-  scale_color_manual( values = c("Pre-Wasting"  ="darkseagreen4", "Wasting Event"  = "chocolate", "Post-Wasting Recovery" = "cadetblue4"), labels = c("Pre-Wasting","Wasting Event", "Post-Wasting Recovery") ) + 
-  scale_fill_manual( values = c("Pre-Wasting"  = "darkseagreen4", "Wasting Event"  = "chocolate", "Post-Wasting Recovery" = "cadetblue4") ) + 
-  labs( title  = expression(italic("Pisaster giganteus") ~"density vs. Substrate Index by Era"), x  = "Substrate Index (Hard Rock)", y  = "Predicted Density (per 100m²)", color  ="Era", fill  = "Era", caption = "Shaded bands = 95% CI; predictions averaged over random Site effect" ) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-
-
-# Extract residuals #u want the points to fall along the red diagonal
-res <- residuals(glmm2, type = "pearson")  # pearson is standard for GLMMs 
-qqnorm(res, main = "QQ Plot - glmm2 Pearson Residuals") 
-qqline(res, col = "red", lwd = 2)
-
-#DHARMa handles non-normal distribution
-library(DHARMa) 
-sim_res <- simulateResiduals(fittedModel = glmm2, n = 1000) # QQ
-plotQQunif(sim_res)
 
 ####PURR MAPPING ####
 #This will run all GLMM models on each species and output the best model for each
@@ -707,7 +581,8 @@ fit_species_models <- function(sp, data, formulas) {
   # Fit each model, catching errors so the loop doesn't break
   models <- imap(formulas, \(formula, name) {
     tryCatch(
-      glmmTMB(formula, data = sp_data, family = tweedie(link = "log")),
+      glmmTMB(formula, data = sp_data, family = tweedie(link = "log"),
+              ziformula = ~1),
       error = \(e) { message("  ", name, " failed: ", e$message); NULL }
     )
   })
@@ -841,75 +716,6 @@ prediction_plots <- imap(results, \(r, sp) {
 
 walk(compact(prediction_plots), print)
 testDispersion(simulationOutput)
-
-
-
-
-#just testing the residuals -> red line bad, black line good 
-#https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html
-#plot residuals against predictors 
-
-habitat_strpur <- data_PV %>%
-  filter(Species == "Strongylocentrotus purpuratus") %>%
-  select(-c(mean_chl_mg_m3,
-            max_chl_mg_m3,
-            min_chl_mg_m3,
-            mean_sst_C,
-            max_sst_C,
-            min_sst_C,
-            dist_200m_bath)) %>%
-  drop_na()
-
-colnames(habitat_strpur)
-
-#https://bedeffinianrowedavies.com/statisticstutorials/multivariateglms
-#Zero-Inflated Tweedie Generalized Linear Mixed Model (ZI-Tweedie GLMM) is a powerful statistical approach for modeling continuous, strictly positive data that also contains an excessive number of zeros
-#https://cran.r-project.org/web/packages/glmmTMB/vignettes/glmmTMB.pdf
-#page 4 -> add ziformula=~1
-#did not work 
-
-#mean_density_100m2 ~ Era + habitat_metrics + (1 | Site)
-
-glmm0_sp <- glmmTMB(mean_density_100m2 ~ Era + (1 | Site),
-                 ziformula = ~predictor_vars,
-                 data   = habitat_strpur,
-                 family = tweedie(link = "log"))
-
-glmm1_sp <- glmmTMB(mean_density_100m2 ~
-                   Substrate_index +
-                   Relief_index +
-                   Era +
-                   #giantkelp_stipe_density_m2 +
-                   (1 | Site),          # Site as random intercept
-                 ziformula = ~ Era,
-                 data   = habitat_strpur,  
-                 family = tweedie(link = "log"))
-
-# Interaction model to test if habitat effects differ by Era
-glmm2_sp <- glmmTMB(mean_density_100m2 ~
-                   Era * Substrate_index +
-                   Era * Relief_index +
-                   # Era * giantkelp_stipe_density_m2 +
-                   (1 | Site),
-                 ziformula = ~1,
-                 data   = habitat_strpur,
-                 family = tweedie(link = "log"))
-
-# Interaction model to test if habitat effects differ by Era and Site Category
-glmm3_sp <- glmmTMB(mean_density_100m2 ~
-                   Site_Category * Era * Substrate_index +
-                   Site_Category * Era * Relief_index +
-                   #Site_Category * Era * giantkelp_stipe_density_m2 +
-                   (1 | Site),
-                 ziformula = ~1,
-                 data   = habitat_strpur,
-                 family = tweedie(link = "log"))
-
-AIC(glmm0_sp, glmm1_sp, glmm2_sp, glmm3_sp)
-summary(glmm0_sp)
-summary(glmm1_sp)
-summary(glmm2_sp)
-summary(glmm3_sp)
 
 
 #DHARMa handles non-normal distribution
@@ -1265,32 +1071,32 @@ rownames(model_comparison_all) <- NULL
 print(model_comparison_all)
 
 ###Archived Plots-------------------------------
-  # 
-  # # Proportion plot: boxplot with jittered points
-  # proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline,
-  #                                           color = Site_Category, fill = Site_Category)) +
-  #   geom_boxplot(alpha = 0.4, linewidth = 0.8, outlier.size = 1.5) +
-  #   geom_jitter(width = 0.1, size = 2, alpha = 0.6) +
-  #   geom_hline(yintercept = 1, linetype = "dashed", color = "black", alpha = 0.6) + # reference line at baseline
-  #   facet_wrap(~ Species, ncol = 2) +
-  #   labs(
-  #     title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
-  #     x = "Site Category",
-  #     y = "Proportion of Baseline",
-  #     color = "Site Category",
-  #     fill = "Site Category"
-  #   ) +
-  #   ylim(0, 6) +
-  #   theme_minimal() +
-  #   theme(
-  #     axis.text.x = element_text(angle = 45, hjust = 1),
-  #     strip.text = element_text(face = "italic", size = 10),
-  #     panel.grid.major.x = element_blank()
-  #   ) +
-  #   scale_color_brewer(palette = "Set2") +
-  #   scale_fill_brewer(palette = "Set2")
-  # 
-  # show(proportion_plot)
+# 
+# # Proportion plot: boxplot with jittered points
+# proportion_plot <- ggplot(proportion, aes(x = Site_Category, y = prop_baseline,
+#                                           color = Site_Category, fill = Site_Category)) +
+#   geom_boxplot(alpha = 0.4, linewidth = 0.8, outlier.size = 1.5) +
+#   geom_jitter(width = 0.1, size = 2, alpha = 0.6) +
+#   geom_hline(yintercept = 1, linetype = "dashed", color = "black", alpha = 0.6) + # reference line at baseline
+#   facet_wrap(~ Species, ncol = 2) +
+#   labs(
+#     title = "Post-Wasting Recovery as Proportion of Pre-Wasting",
+#     x = "Site Category",
+#     y = "Proportion of Baseline",
+#     color = "Site Category",
+#     fill = "Site Category"
+#   ) +
+#   ylim(0, 6) +
+#   theme_minimal() +
+#   theme(
+#     axis.text.x = element_text(angle = 45, hjust = 1),
+#     strip.text = element_text(face = "italic", size = 10),
+#     panel.grid.major.x = element_blank()
+#   ) +
+#   scale_color_brewer(palette = "Set2") +
+#   scale_fill_brewer(palette = "Set2")
+# 
+# show(proportion_plot)
 
 
 
