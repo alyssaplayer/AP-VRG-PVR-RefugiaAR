@@ -641,6 +641,10 @@ walk(results, \(r) {
   cat(" Species:", r$species, "| Best model:", r$best_name, "\n")
   cat(strrep("═", 60), "\n")
   print(summary(r$best_model))
+  
+  cat("\n-- p-values (", r$species, ", ", r$best_name, ") --\n", sep = "")
+  coef_tbl <- as.data.frame(summary(r$best_model)$coefficients$cond)
+  print(coef_tbl["Pr(>|z|)"])
 })
 
 # DHARMa residual diagnostics for best model per species 
@@ -755,6 +759,76 @@ convergence_check <- map_dfr(results, \(r) {
 
 print(convergence_check, n = Inf)
 
+
+
+#https://bedeffinianrowedavies.com/statisticstutorials/multivariateglms
+#Zero-Inflated Tweedie Generalized Linear Mixed Model (ZI-Tweedie GLMM) is a powerful statistical approach for modeling continuous, strictly positive data that also contains an excessive number of zeros
+#https://cran.r-project.org/web/packages/glmmTMB/vignettes/glmmTMB.pdf
+#page 4 -> add ziformula=~1
+#did not work 
+
+#mean_density_100m2 ~ Era + habitat_metrics + (1 | Site)
+
+###pisoch only
+habitat_pisoch <- data_PV %>%
+  filter(Species == "Pisaster ochraceus") %>%
+  select(-c(mean_chl_mg_m3,
+            max_chl_mg_m3,
+            min_chl_mg_m3,
+            mean_sst_C,
+            max_sst_C,
+            min_sst_C,
+            dist_200m_bath)) %>%
+  drop_na()
+
+colnames(habitat_pisoch)
+
+glmm0 <- glmmTMB(mean_density_100m2 ~ Era + (1 | Site),
+                 ziformula = ~1,
+                 data   = habitat_pisoch,
+                 family = tweedie(link = "log"))
+
+glmm1 <- glmmTMB(mean_density_100m2 ~
+                   Era +
+                   Substrate_index +
+                   Relief_index +
+                   #giantkelp_stipe_density_m2 +
+                   (1 | Site),          # Site as random intercept
+                 ziformula = ~1,
+                 data   = habitat_pisoch,  
+                 family = tweedie(link = "log"))
+
+# Interaction model to test if habitat effects differ by Era
+glmm2 <- glmmTMB(mean_density_100m2 ~
+                   Era * Substrate_index +
+                   Era * Relief_index +
+                   # Era * giantkelp_stipe_density_m2 +
+                   (1 | Site),
+                 ziformula = ~1,
+                 data   = habitat_pisoch,
+                 family = tweedie(link = "log"))
+
+
+# Interaction model to test if habitat effects differ by Era and Site Category
+glmm3 <- glmmTMB(mean_density_100m2 ~
+                   Site_Category * Era * Substrate_index +
+                   Site_Category * Era * Relief_index +
+                   #Site_Category * Era * giantkelp_stipe_density_m2 +
+                   (1 | Site),
+                 ziformula = ~1,
+                 data   = habitat_pisoch,
+                 family = tweedie(link = "log"))
+
+
+AIC(glmm0, glmm1, glmm2, glmm3)
+summary(glmm0)
+summary(glmm1)
+summary(glmm2)
+summary(glmm3)
+
+
+
+
 #adjusted code: 7/19/26
 ###BACIPS####
 #####PVR ANALYSIS#####
@@ -791,7 +865,7 @@ bacip_sites <- c("Hawthorne Reef",
                  "Cape Point")
 
 time.true  <- c(2013, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025)
-time.model <- c(0,    0,    0,    0,    0,    0,    0,    1,    2,    3,    4,    5)
+time.model <- c(0,    0,    0,    0,    0,    0,    1,    2,    3,    4,    5,   6) #2020 is the first year of impact because data was
 # 0 = pre-impact; 1+ = years since recovery/impact period began (2021 onwards)
 impact_year <- 2020  # calendar year corresponding to time.model == 0/1 boundary
 
