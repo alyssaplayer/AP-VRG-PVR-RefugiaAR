@@ -70,21 +70,32 @@ data_PV <- data_PV_raw %>%
 #select(-giantkelp_density_m2, -giantkelp_stipe_density_m2)
 
 #Focal Species List#
-foc_spp <- c("Mesocentrotus franciscanus",
-             "Strongylocentrotus purpuratus",
-             "Patiria miniata",
-             "Pisaster ochraceus",
-             "Pisaster giganteus")
+
+species_abbrev <- c(
+  "Mesocentrotus franciscanus"   = "M. franciscanus",
+  "Strongylocentrotus purpuratus" = "S. purpuratus",
+  "Patiria miniata"               = "P. miniata",
+  "Pisaster ochraceus"            = "P. ochraceus",
+  "Pisaster giganteus"            = "P. giganteus"
+)
+
+foc_spp <- c("M. franciscanus",
+             "S. purpuratus",
+             "P. miniata",
+             "P. ochraceus",
+             "P. giganteus")
+
 
 # Functional groups for the species
 data_PV <- data_PV %>%
   mutate(
     FunctionalGroup = case_when(
-      Species %in% c("Patiria miniata", "Pisaster ochraceus", "Pisaster giganteus") ~ "Stars",
-      Species %in% c("Mesocentrotus franciscanus", "Strongylocentrotus purpuratus") ~ "Urchins",
+      Species %in% c("P. miniata", "P. ochraceus", "P. giganteus") ~ "Stars",
+      Species %in% c("M. franciscanus", "S. purpuratus") ~ "Urchins",
       TRUE ~ "Other"
     ),
-    FunctionalGroup = factor(FunctionalGroup, levels = c("Stars", "Urchins"))
+    FunctionalGroup = factor(FunctionalGroup, levels = c("Stars", "Urchins")),
+    Species = species_abbrev[Species]
   )
 
 
@@ -245,10 +256,11 @@ all_importance %>%
 ####CREATING THE DENSITY PLOTS####
 densitybydepth <- data_PV %>%
   group_by(DepthZone, Year, Species, Site, Era, Site_Category) %>%
-  mutate(Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE))
+  mutate(Era = factor(Era, levels = c("Pre-Wasting", "Wasting Event", "Post-Wasting Recovery"), ordered = TRUE)) %>%
+  ungroup()
 
 density_stars <- densitybydepth %>%
-  filter(Species %in% c("Patiria miniata", "Pisaster ochraceus", "Pisaster giganteus"))
+  filter(Species %in% c("P. miniata", "P. ochraceus", "P. giganteus"))
 
 densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(mean_density_100m2), color = Era)) +
   geom_boxplot(outlier.shape = NA, aes(fill = Era), alpha = 0.4) +
@@ -256,19 +268,20 @@ densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(mean_dens
              position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.5),
              size = 0.7) +
   theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "Site Type",
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        strip.text.y = element_text(face = "italic")) +  labs(x = "Site Type",
        y = expression("log of Mean Density (100" * m^2 * " / yr)")) +
-  facet_grid(rows = vars(Species), cols = vars(Site_Category), scales = "free_y", space = "free") +
+  facet_grid(rows = vars(Species), cols = vars(Site_Category), space = "free") + # scales = "free_y"
   scale_color_brewer(palette = "Blues") +
   scale_fill_brewer(palette = "Blues")
 
 
 print(densitybydepthplot_stars)
+#ggsave(filename = "Density_Stars.png", plot = densitybydepthplot_stars, width = 8, height = 10)
 
 
 density_urchins <- densitybydepth %>%
-  filter(Species %in% c("Mesocentrotus franciscanus", "Strongylocentrotus purpuratus"))
+  filter(Species %in% c("M. franciscanus", "S. purpuratus"))
 
 densitybydepthplot_urchins <- ggplot(density_urchins, aes(x = Era, y = log(mean_density_100m2), color = Era)) +
   geom_boxplot(outlier.shape = NA, aes(fill = Era), alpha = 0.4) +
@@ -276,7 +289,8 @@ densitybydepthplot_urchins <- ggplot(density_urchins, aes(x = Era, y = log(mean_
              position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.5),
              size = 0.7) +
   theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        strip.text.y = element_text(face = "italic")) +
   labs(x = "Site Type",
        y = expression("log of Mean Density (100" * m^2 * " / yr)")) +
   facet_grid(rows = vars(Species), cols = vars(Site_Category), scales = "free_y", space = "free") +
@@ -284,6 +298,8 @@ densitybydepthplot_urchins <- ggplot(density_urchins, aes(x = Era, y = log(mean_
   scale_fill_brewer(palette = "Oranges")
 
 print(densitybydepthplot_urchins)
+#ggsave(filename = "Density_Urchins.png", plot = densitybydepthplot_urchins, width = 8, height = 10)
+
 
 
 ###PROPORTION CALCULATIONS####
@@ -308,7 +324,7 @@ site_summary <- data_PV %>%
                 "PVR 8A", "PVR 8B", "PVR 8C") ~ "Cape Point",
     .default = as.character(Site)
   )) %>%
-  group_by(Site_Category, Species, Era, Site) %>%
+  group_by(Site_Category, Species, Era, Site, FunctionalGroup) %>%
   dplyr::summarise(
     Site_Mean = mean(mean_density_100m2, na.rm = TRUE), 
     stdev     = sd(mean_density_100m2, na.rm = TRUE),   
@@ -344,15 +360,13 @@ proportion <- site_summary %>%
     `Site_Mean_Pre-Wasting` > 0   # exclude true pre-wasting absences
   ) %>%
   mutate(
-    LRR = log(`Site_Mean_Post-Wasting Recovery` / `Site_Mean_Pre-Wasting`)
-  )
-
+    LRR = log(`Site_Mean_Post-Wasting Recovery` / `Site_Mean_Pre-Wasting`))
 #write.csv(proportion, "proportion_LRR.csv", row.names = FALSE)
 
 # Summary: mean LRR ± 95% CI across sites per Site_Category x Species
 # Used for error bars on the plot
 error_bars <- proportion %>%
-  dplyr::group_by(Site_Category, Species) %>%
+  dplyr::group_by(Site_Category, Species, FunctionalGroup) %>%
   dplyr::summarise(
     LRR_mean = mean(LRR),
     LRR_se   = sd(LRR) / sqrt(n()),
@@ -367,7 +381,6 @@ proportion_bar_plot <- ggplot() +
     aes(x = Site_Category, y = LRR, fill = Site_Category),
     alpha = 0.6, width = 0.6, outlier.shape = NA
   ) +
-  # Mean ± 95% CI across sites
   geom_errorbar(
     data = error_bars,
     aes(x = Site_Category, ymin = LRR_mean - LRR_ci, ymax = LRR_mean + LRR_ci),
@@ -378,34 +391,30 @@ proportion_bar_plot <- ggplot() +
     aes(x = Site_Category, y = LRR_mean),
     size = 2.5, shape = 18, color = "grey30"
   ) +
-  # Jittered individual site points
   geom_jitter(
     data  = proportion,
     aes(x = Site_Category, y = LRR, color = Site_Category),
     width = 0.15, size = 1.8, alpha = 0.6
   ) +
-  # Reference line at 0 = no change from pre-wasting baseline
   geom_hline(yintercept = 0, linetype = "dashed", color = "black", alpha = 0.6) +
-  facet_wrap(~ Species, ncol = 2) +
+  ggh4x::facet_nested(rows = vars(FunctionalGroup, Species), scales = "free_y") +
   labs(
-    title   = "Post-Wasting Recovery: Log Response Ratio vs. Pre-Wasting Baseline",
-    caption = "LRR = 0: no change  |  LRR > 0: increased density  |  LRR < 0: decreased density\nDiamond = mean; error bars = 95% CI; sites with zero pre-wasting density excluded",
-    x       = "Site Category",
-    y       = "Log Response Ratio (LRR)",
-    fill    = "Site Category",
-    color   = "Site Category"
+    x    = "Site Category",
+    y    = "Log Response Ratio (LRR)",
+    fill = "Site Category",
+    color = "Site Category"
   ) +
   theme_minimal() +
   theme(
     axis.text.x    = element_text(angle = 45, hjust = 1),
-    strip.text     = element_text(face = "italic", size = 10),
-    panel.grid.major.x = element_blank(),
-    plot.caption   = element_text(size = 8, color = "grey40", hjust = 0)
+    strip.text.y   = element_text(face = "italic", size = 10),
+    panel.grid.major.x = element_blank()
   ) +
   scale_fill_brewer(palette = "Set2") +
   scale_color_brewer(palette = "Set2")
 
-show(proportion_bar_plot)
+proportion_bar_plot
+#ggsave(filename = "LogResponseRatio.png", plot = proportion_bar_plot, width = 6, height = 8)
 
 ###HABITAT METRICS
 
@@ -535,6 +544,17 @@ for (sp in foc_spp) {
     )
   
   print(p)
+  
+  sp_slug <- sp %>%
+    str_replace_all("\\.", "") %>%   # remove periods
+    str_replace_all(" ", "_")        # spaces -> underscores
+  
+  # ggsave(
+  #   filename = paste0("Habitat_", sp_slug, ".png"),
+  #   plot     = p,
+  #   width    = 8,
+  #   height   = 6
+  #)
 }
 
 
@@ -572,11 +592,30 @@ model_formulas <- list(
 #  Fit all models for one species (helper function)
 fit_species_models <- function(sp, data, formulas) {
   
+  # Only require complete cases on the variables the models actually use —
+  # NAs in unrelated habitat columns (e.g. chl/sst metrics not in these
+  # formulas) shouldn't wipe out a species' rows.
+  model_vars <- c("mean_density_100m2", "Era", "Substrate_index",
+                  "Relief_index", "Site_Category", "Site")
+  
   sp_data <- data |>
     filter(Species == .env$sp) |>   # ← Species, not foc_spp
+    select(all_of(model_vars)) |>
     drop_na()
   
   message("\n── Fitting models for: ", sp, " (n = ", nrow(sp_data), ") ──")
+  
+  if (nrow(sp_data) == 0) {
+    message("  Skipping ", sp, " — no complete cases for the model variables.")
+    return(list(
+      species    = sp,
+      models     = list(),
+      aic_table  = tibble(model = character(), AIC = double(),
+                          delta_AIC = double(), species = character()),
+      best_name  = NA_character_,
+      best_model = NULL
+    ))
+  }
   
   # Fit each model, catching errors so the loop doesn't break
   models <- imap(formulas, \(formula, name) {
@@ -590,9 +629,22 @@ fit_species_models <- function(sp, data, formulas) {
   # Drop any failed models
   models <- compact(models)
   
-  # Built AIC comparison tables 
-  aic_tbl <- map_dfr(models, \(m) tibble(AIC = AIC(m)), .id = "model") |>
-    arrange(AIC) |>
+  if (length(models) == 0) {
+    message("  All models failed to fit for ", sp, ".")
+    return(list(
+      species    = sp,
+      models     = list(),
+      aic_table  = tibble(model = character(), AIC = double(),
+                          delta_AIC = double(), species = character()),
+      best_name  = NA_character_,
+      best_model = NULL
+    ))
+  }
+  
+  # Built AIC comparison tables
+  # (stats::AIC(m) + .data$AIC avoid the AIC-function/AIC-column name clash)
+  aic_tbl <- map_dfr(models, \(m) tibble(AIC = stats::AIC(m)), .id = "model") |>
+    arrange(.data$AIC) |>
     mutate(
       delta_AIC  = AIC - min(AIC),
       species    = sp
