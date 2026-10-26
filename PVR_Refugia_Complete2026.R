@@ -75,14 +75,12 @@ species_abbrev <- c(
   "Mesocentrotus franciscanus"   = "M. franciscanus",
   "Strongylocentrotus purpuratus" = "S. purpuratus",
   "Patiria miniata"               = "P. miniata",
-  "Pisaster ochraceus"            = "P. ochraceus",
   "Pisaster giganteus"            = "P. giganteus"
 )
 
 foc_spp <- c("M. franciscanus",
              "S. purpuratus",
              "P. miniata",
-             "P. ochraceus",
              "P. giganteus")
 
 
@@ -90,7 +88,7 @@ foc_spp <- c("M. franciscanus",
 data_PV <- data_PV %>%
   mutate(
     FunctionalGroup = case_when(
-      Species %in% c("P. miniata", "P. ochraceus", "P. giganteus") ~ "Stars",
+      Species %in% c("P. miniata", "P. giganteus") ~ "Stars",
       Species %in% c("M. franciscanus", "S. purpuratus") ~ "Urchins",
       TRUE ~ "Other"
     ),
@@ -139,9 +137,8 @@ data_PV <- data_PV %>%
   filter(Species %in% foc_spp, Year >= 2011) %>%
   filter(DepthZone %in% c("Outer", "Deep", "ARM"))
 
+unique_sites <- data_PV %>% distinct(Site, Site_Category)
 
-#print list of unique sites
-#unique_sites <- data_PV %>% distinct(Site)
 
 #unhash to save the file
 #write_csv(data_PV, "data_PV_**replace with date***.csv")
@@ -269,7 +266,7 @@ densitybydepthplot_stars <- ggplot(density_stars, aes(x = Era, y = log(mean_dens
              size = 0.7) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        strip.text.y = element_text(face = "italic")) +  labs(x = "Site Type",
+        strip.text.y = element_text(face = "italic")) +  labs(x = "Site Category",
        y = expression("log of Mean Density (100" * m^2 * " / yr)")) +
   facet_grid(rows = vars(Species), cols = vars(Site_Category), space = "free") + # scales = "free_y"
   scale_color_brewer(palette = "Blues") +
@@ -291,7 +288,7 @@ densitybydepthplot_urchins <- ggplot(density_urchins, aes(x = Era, y = log(mean_
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         strip.text.y = element_text(face = "italic")) +
-  labs(x = "Site Type",
+  labs(x = "Site Category",
        y = expression("log of Mean Density (100" * m^2 * " / yr)")) +
   facet_grid(rows = vars(Species), cols = vars(Site_Category), scales = "free_y", space = "free") +
   scale_color_brewer(palette = "Oranges") +
@@ -374,6 +371,16 @@ error_bars <- proportion %>%
     .groups  = "drop"
   )
 
+species_order <- c("P. giganteus", "P. miniata", "M. franciscanus", "S. purpuratus")
+
+proportion <- proportion %>%
+  filter(Species %in% species_order) %>%
+  mutate(Species = factor(Species, levels = species_order))
+
+error_bars <- error_bars %>%
+  filter(Species %in% species_order) %>%
+  mutate(Species = factor(Species, levels = species_order))
+
 # LRR plot: boxplot + jittered site points + mean 95% CI + reference line at 0
 proportion_bar_plot <- ggplot() +
   geom_boxplot(
@@ -414,7 +421,7 @@ proportion_bar_plot <- ggplot() +
   scale_color_brewer(palette = "Set2")
 
 proportion_bar_plot
-#ggsave(filename = "LogResponseRatio.png", plot = proportion_bar_plot, width = 6, height = 8)
+ggsave(filename = "LogResponseRatio.png", plot = proportion_bar_plot, width = 8, height = 10)
 
 ###HABITAT METRICS
 
@@ -844,7 +851,7 @@ glmm1 <- glmmTMB(mean_density_100m2 ~
                    Era +
                    Substrate_index +
                    Relief_index +
-                   #giantkelp_stipe_density_m2 +
+                   #giantkelp_stipe_density_m2 +_
                    (1 | Site),          # Site as random intercept
                  ziformula = ~1,
                  data   = habitat_pisoch,  
@@ -1196,6 +1203,43 @@ rownames(model_comparison_all) <- NULL
 
 print(model_comparison_all)
 
+
+#####GLMM p values
+
+interaction_pvals <- map_dfr(results, function(r) {
+  if (is.null(r$best_model)) {
+    return(tibble(species = r$species, best_model = NA_character_,
+                  term = NA_character_, p_value = NA_real_))
+  }
+  
+  coef_tbl <- as.data.frame(summary(r$best_model)$coefficients$cond)
+  coef_tbl$term <- rownames(coef_tbl)
+  
+  max_order <- max(str_count(coef_tbl$term, ":"))  # 2 for glmm3, 1 for glmm2, 0 for glmm0
+  
+  if (max_order == 0) {
+    return(tibble(species = r$species, best_model = r$best_name,
+                  term = "No interaction (Era-only model)", p_value = NA_real_))
+  }
+  
+  coef_tbl %>%
+    filter(str_count(term, ":") == max_order) %>%   # keep only the top-order interaction rows
+    transmute(species = r$species, best_model = r$best_name, term,
+              p_value = `Pr(>|z|)`) %>%
+    arrange(p_value)
+})
+
+print(interaction_pvals, n = Inf)
+
+# smallest p-value among the top-order interaction rows, per species
+most_sig_interaction <- interaction_pvals %>%
+  filter(!is.na(p_value)) %>%
+  group_by(species) %>%
+  slice_min(p_value, n = 1) %>%
+  ungroup()
+
+print(most_sig_interaction)
+write.csv(most_sig_interaction, "most_sig_interaction.csv", row.names = FALSE)
 ###Archived Plots-------------------------------
 # 
 # # Proportion plot: boxplot with jittered points

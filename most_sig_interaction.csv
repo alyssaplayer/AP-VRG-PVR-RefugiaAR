@@ -1,0 +1,5 @@
+"species","best_model","term","p_value"
+"M. franciscanus","glmm3","Site_CategoryPVR&Adj:Era.L:Substrate_index",0.0392316374010293
+"P. giganteus","glmm2","Era.Q:Substrate_index",0.00553949932285718
+"P. miniata","glmm3","Site_CategoryReference:Era.L:Relief_index",0.003539461831382
+"S. purpuratus","glmm3","Site_CategoryReference:Era.Q:Relief_index",0.0123603929855605
