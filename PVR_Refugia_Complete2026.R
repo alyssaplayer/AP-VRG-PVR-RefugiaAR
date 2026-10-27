@@ -564,6 +564,59 @@ for (sp in foc_spp) {
   #)
 }
 
+#### SIMPLIFIED HABITAT FIGURE ####
+# Density vs relief index, substrate index and kelp stipe density,
+# for all four focal species, coloured by Era
+
+species_order <- c("P. giganteus", "P. miniata", "M. franciscanus", "S. purpuratus")
+
+era_colors <- c(
+  "Pre-Wasting"           = "darkseagreen4",
+  "Wasting Event"         = "chocolate",
+  "Post-Wasting Recovery" = "cadetblue4"
+)
+
+habitat_labels <- c(
+  "Relief_index"               = "Relief index",
+  "Substrate_index"            = "Substrate index",
+  "giantkelp_stipe_density_m2" = "Giant kelp stipes m⁻²"
+)
+
+habitat_long <- data_PV %>%
+  filter(Species %in% species_order) %>%
+  mutate(
+    Species     = factor(Species, levels = species_order),
+    log_density = log1p(mean_density_100m2)          # keeps zeros
+  ) %>%
+  select(Species, Era, Site_Category, DepthZone, log_density,
+         all_of(names(habitat_labels))) %>%
+  pivot_longer(cols      = all_of(names(habitat_labels)),
+               names_to  = "variable",
+               values_to = "value") %>%
+  filter(!is.na(value)) %>%
+  mutate(variable = factor(variable, levels = names(habitat_labels),
+                           labels = habitat_labels))
+
+habitat_fig <- ggplot(habitat_long, aes(x = value, y = log_density,
+                                        color = Era, fill = Era)) +
+  geom_point(size = 0.9, alpha = 0.25) +
+  geom_smooth(method = "lm", se = TRUE, linewidth = 0.8, alpha = 0.15) +
+  facet_grid(rows = vars(Species), cols = vars(variable), scales = "free") +
+  scale_color_manual(values = era_colors) +
+  scale_fill_manual(values = era_colors) +
+  labs(x = NULL,
+       y = "log(Density + 1) (ind. 100 m⁻²)",
+       color = "Era", fill = "Era") +
+  theme_bw(base_size = 10) +
+  theme(
+    strip.text.y     = element_text(face = "italic"),
+    strip.background = element_rect(fill = "grey95"),
+    panel.grid.minor = element_blank(),
+    legend.position  = "bottom"
+  )
+
+print(habitat_fig)
+#ggsave("Habitat_Metrics_Simplified.png", habitat_fig, width = 8, height = 9, dpi = 300)
 
 #### Multivariate Generalised Linear Model ####
 

@@ -1,5 +1,5 @@
 "species","best_model","term","p_value"
-"M. franciscanus","glmm3","Site_CategoryPVR&Adj:Era.L:Substrate_index",0.0392316374010293
-"P. giganteus","glmm2","Era.Q:Substrate_index",0.00553949932285718
-"P. miniata","glmm3","Site_CategoryReference:Era.L:Relief_index",0.003539461831382
-"S. purpuratus","glmm3","Site_CategoryReference:Era.Q:Relief_index",0.0123603929855605
+"M. franciscanus","glmm3","Site_CategoryPVR&Adj:EraPost-Wasting Recovery:Substrate_index",0.0317070271729758
+"P. giganteus","glmm4","EraPost-Wasting Recovery:Relief_index",0.00689356152066119
+"P. miniata","glmm4","EraPost-Wasting Recovery:kelp_stipes_m2",5.00477699005545e-20
+"S. purpuratus","glmm4","EraWasting Event:Relief_index",0.0538386647736803
